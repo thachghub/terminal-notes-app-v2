@@ -51,13 +51,15 @@
 /* Master Login Panel Styles */
 .masterloginpanel {
   display: flex;
-  gap: 2rem;
+  flex-direction: column;
+  gap: 0.3rem;
   padding: 0;
+  background: #062c33;
 }
 
 .masterloginpanel .panel {
   border: 1px solid #00ffff;
-  padding: 1.5rem;
+  padding: 0.3rem;
   width: 260px;
   background: #062c33;
 }
@@ -66,20 +68,26 @@
   display: block;
   margin: 0.5rem 0 0.25rem;
   color: #00ffff;
+  font-size: 0.875rem;
+  line-height: 1.2;
 }
 
 .masterloginpanel input {
   width: 100%;
-  padding: 0.3rem;
-  margin-bottom: 1rem;
+  padding: 0.1rem;
+  margin-bottom: 0.5rem;
   font-family: inherit;
+  font-size: 0.875rem;
+  line-height: 1.2;
 }
 
 .masterloginpanel button {
   width: 100%;
-  padding: 0.5rem;
-  font-size: 1rem;
+  padding: 0.15rem;
+  font-size: 0.875rem;
   cursor: pointer;
   font-family: inherit;
   box-shadow: 2px 2px 5px #00ffff50;
+  line-height: 1.2;
+  margin-top: 0.5rem;
 }

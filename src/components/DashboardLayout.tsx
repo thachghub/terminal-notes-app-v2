@@ -10,7 +10,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <Sidebar />
 
       {/* Right Frame */}
-      <div className="flex flex-col flex-1 overflow-hidden bg-[#042336]">
+      <div className="flex flex-col flex-1 overflow-hidden bg-[#062c33]">
         {/* Top Navigation Frame */}
         <div className="h-14 bg-[#0f2124] border-b border-cyan-500 px-4 py-2">
           <TopNav />
