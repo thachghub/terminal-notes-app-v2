@@ -10,7 +10,7 @@ export default function Sidebar() {
 
   return (
     <motion.div
-      className="relative bg-[#062c33] border-r border-cyan-500"
+      className="relative bg-[#0f2124] border-r border-cyan-500"
       style={{ width: isCollapsed ? '3rem' : '12rem' }}
       initial={{ width: '12rem' }}
       animate={{ width: isCollapsed ? '3rem' : '12rem' }}
