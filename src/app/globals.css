@@ -19,11 +19,18 @@
   }
 }
 
-/* Terminal-style font */
+/* Terminal-style fonts */
 @font-face {
   font-family: 'TerminalFont';
   src: url('/fonts/terminal-font.woff2') format('woff2'),
        url('/fonts/terminal-font.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'VT323';
+  src: url('/fonts/vt323.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
 }
@@ -39,4 +46,40 @@
     color: var(--foreground);
     font-family: 'TerminalFont', monospace;
   }
+}
+
+/* Master Login Panel Styles */
+.masterloginpanel {
+  display: flex;
+  gap: 2rem;
+  padding: 0;
+}
+
+.masterloginpanel .panel {
+  border: 1px solid #00ffff;
+  padding: 1.5rem;
+  width: 200px;
+  background: #062c33;
+}
+
+.masterloginpanel label {
+  display: block;
+  margin: 0.5rem 0 0.25rem;
+  color: #00ffff;
+}
+
+.masterloginpanel input {
+  width: 100%;
+  padding: 0.3rem;
+  margin-bottom: 1rem;
+  font-family: inherit;
+}
+
+.masterloginpanel button {
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  font-family: inherit;
+  box-shadow: 2px 2px 5px #00ffff50;
 }
