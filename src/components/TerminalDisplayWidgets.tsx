@@ -3,6 +3,19 @@
 import { useState, useEffect } from 'react';
 
 export default function TerminalDisplayWidgets() {
+  // Helper to get ISO week number
+  function getWeekString() {
+    const now = new Date();
+    // Copy date so don't modify original
+    const d = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
+    // Set to nearest Thursday: current date + 4 - current day number
+    d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7));
+    // Get first day of year
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+    // Calculate full weeks to nearest Thursday
+    const weekNo = Math.ceil((((d.getTime()-yearStart.getTime())/86400000)+1)/7);
+    return `${weekNo}/52`;
+  }
   const [currentTime, setCurrentTime] = useState('');
 
   // --- SUNRISE/SUNSET STATE AND LOGIC ---
@@ -122,6 +135,10 @@ export default function TerminalDisplayWidgets() {
       <div className="flex gap-24 items-center">
         <span className="text-cyan-500">Time:</span>
         <span className="text-cyan-300">{currentTime || 'Loading...'}</span>
+      </div>
+      <div className="flex gap-24 items-center">
+        <span className="text-cyan-500">Week:</span>
+        <span className="text-cyan-300">{getWeekString()}</span>
       </div>
       <div className="flex gap-24 items-center relative">
         <span
