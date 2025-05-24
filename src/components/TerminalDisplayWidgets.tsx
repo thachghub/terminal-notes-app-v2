@@ -122,62 +122,112 @@ export default function TerminalDisplayWidgets() {
     return () => clearInterval(timer);
   }, []);
 
+  // --- CUSTOMIZATION STATE ---
+  const [showCustomize, setShowCustomize] = useState(false);
+  const [visibleRows, setVisibleRows] = useState({
+    user: true,
+    date: true,
+    time: true,
+    week: true,
+    sunrise: true,
+    sunset: true,
+  });
+
+  function handleToggleRow(row: keyof typeof visibleRows) {
+    setVisibleRows(v => ({ ...v, [row]: !v[row] }));
+  }
+
+  // --- END CUSTOMIZATION STATE ---
+
   return (
     <div className="space-y-1 pl-2 max-w-md">
-      <div className="flex gap-24 items-center">
-        <span className="text-cyan-500">user:</span>
-        <span className="text-cyan-300">example@email.com</span>
-      </div>
-      <div className="flex gap-24 items-center">
-        <span className="text-cyan-500">Date:</span>
-        <span className="text-cyan-300">May 23, 2025</span>
-      </div>
-      <div className="flex gap-24 items-center">
-        <span className="text-cyan-500">Time:</span>
-        <span className="text-cyan-300">{currentTime || 'Loading...'}</span>
-      </div>
-      <div className="flex gap-24 items-center">
-        <span className="text-cyan-500">Week:</span>
-        <span className="text-cyan-300">{getWeekString()}</span>
-      </div>
-      <div className="flex gap-24 items-center relative">
-        <span
-          className="text-cyan-500 cursor-pointer select-none"
-          title="Click to change time zone"
-          onClick={() => setShowTimezoneDropdown((v: boolean) => !v)}
-        >
-          {label}
-        </span>
-        <span className="text-cyan-300">{displayTime}</span>
-        {showTimezoneDropdown && (
-          <div className="absolute left-0 top-6 bg-gray-900 border border-cyan-700 rounded shadow-lg z-10">
-            <ul className="py-1 px-2 max-h-48 overflow-y-auto">
-              {timezones.map((tz: string) => (
-                <li
-                  key={tz}
-                  className={`py-1 px-2 hover:bg-cyan-800 cursor-pointer ${tz === timezone ? 'text-yellow-400' : 'text-cyan-300'}`}
-                  onClick={() => {
-                    setTimezone(tz);
-                    setShowTimezoneDropdown(false);
-                  }}
-                >
-                  {tz}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </div>
-      <div className="flex gap-24 items-center relative">
-        <span
-          className="text-cyan-500 cursor-pointer select-none"
-          title="Click to change time zone"
-          onClick={() => setShowTimezoneDropdown((v: boolean) => !v)}
-        >
-          *Sunset:
-        </span>
-        <span className="text-cyan-300">{sunset}</span>
-      </div>
+      <button
+        className="mb-1 px-2 py-1 text-xs border border-cyan-500 text-cyan-400 rounded hover:bg-cyan-900"
+        onClick={() => setShowCustomize(v => !v)}
+      >
+        Customize
+      </button>
+      {showCustomize && (
+        <div className="mb-2 p-2 bg-gray-900 border border-cyan-700 rounded shadow">
+          <div className="mb-1 text-cyan-300 text-xs">Toggle sections:</div>
+          {Object.entries(visibleRows).map(([key, val]) => (
+            <label key={key} className="flex items-center gap-2 text-cyan-400 text-xs cursor-pointer mb-1">
+              <input
+                type="checkbox"
+                checked={val}
+                onChange={() => handleToggleRow(key as keyof typeof visibleRows)}
+              />
+              {key.charAt(0).toUpperCase() + key.slice(1)}
+            </label>
+          ))}
+        </div>
+      )}
+      {visibleRows.user && (
+        <div className="flex gap-24 items-center">
+          <span className="text-cyan-500">user:</span>
+          <span className="text-cyan-300">example@email.com</span>
+        </div>
+      )}
+      {visibleRows.date && (
+        <div className="flex gap-24 items-center">
+          <span className="text-cyan-500">Date:</span>
+          <span className="text-cyan-300">May 23, 2025</span>
+        </div>
+      )}
+      {visibleRows.time && (
+        <div className="flex gap-24 items-center">
+          <span className="text-cyan-500">Time:</span>
+          <span className="text-cyan-300">{currentTime || 'Loading...'}</span>
+        </div>
+      )}
+      {visibleRows.week && (
+        <div className="flex gap-24 items-center">
+          <span className="text-cyan-500">Week:</span>
+          <span className="text-cyan-300">{getWeekString()}</span>
+        </div>
+      )}
+      {visibleRows.sunrise && (
+        <div className="flex gap-24 items-center relative">
+          <span
+            className="text-cyan-500 cursor-pointer select-none"
+            title="Click to change time zone"
+            onClick={() => setShowTimezoneDropdown((v: boolean) => !v)}
+          >
+            {label}
+          </span>
+          <span className="text-cyan-300">{displayTime}</span>
+          {showTimezoneDropdown && (
+            <div className="absolute left-0 top-6 bg-gray-900 border border-cyan-700 rounded shadow-lg z-10">
+              <ul className="py-1 px-2 max-h-48 overflow-y-auto">
+                {timezones.map((tz: string) => (
+                  <li
+                    key={tz}
+                    className={`py-1 px-2 hover:bg-cyan-800 cursor-pointer ${tz === timezone ? 'text-yellow-400' : 'text-cyan-300'}`}
+                    onClick={() => {
+                      setTimezone(tz);
+                      setShowTimezoneDropdown(false);
+                    }}
+                  >
+                    {tz}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      )}
+      {visibleRows.sunset && (
+        <div className="flex gap-24 items-center relative">
+          <span
+            className="text-cyan-500 cursor-pointer select-none"
+            title="Click to change time zone"
+            onClick={() => setShowTimezoneDropdown((v: boolean) => !v)}
+          >
+            *Sunset:
+          </span>
+          <span className="text-cyan-300">{sunset}</span>
+        </div>
+      )}
     </div>
   );
 }
