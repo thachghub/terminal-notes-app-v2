@@ -92,71 +92,83 @@ export default function SettingsDashboard() {
       fontOpacity={fontOpacity}
       topNavBg={topNavBg}
       topNavBgOpacity={topNavBgOpacity}
-      sidebarBg={sidebarBg}
-      sidebarBgOpacity={sidebarBgOpacity}
+      sidebarBg={topNavBg}
+      sidebarBgOpacity={topNavBgOpacity}
       terminalBg={terminalBg}
       terminalBgOpacity={terminalBgOpacity}
     >
-      <div className="flex flex-col items-start h-full w-full pt-8 pl-8 bg-white text-black rounded shadow">
-        <button
-          className="mb-4 px-4 py-2 text-base border border-cyan-500 text-cyan-400 rounded hover:bg-cyan-900 transition-colors"
-          onClick={() => setShowCustomize(v => !v)}
-        >
-          Customize Widgets
-        </button>
-        {showCustomize && (
-          <div className="p-4 bg-[#0f2124] border border-cyan-700 rounded shadow max-w-xs w-full mb-4">
-            <div className="mb-2 text-cyan-300 text-sm font-bold">Toggle widgets:</div>
-            {Object.entries(visibleRows).map(([key, val]) => (
-              <label key={key} className="flex items-center gap-2 text-cyan-400 text-sm cursor-pointer mb-2">
-                <input
-                  type="checkbox"
-                  checked={val}
-                  onChange={() => handleToggleRow(key as keyof typeof visibleRows)}
-                  className="accent-cyan-500"
-                />
-                {key.charAt(0).toUpperCase() + key.slice(1)}
-              </label>
-            ))}
-          </div>
-        )}
+      <div
+        className="flex flex-col h-full w-full"
+        style={{ backgroundColor: (() => {
+          if (!terminalBg || terminalBg[0] !== '#' || terminalBg.length !== 7) return '#062c33';
+          let r = parseInt(terminalBg.slice(1, 3), 16);
+          let g = parseInt(terminalBg.slice(3, 5), 16);
+          let b = parseInt(terminalBg.slice(5, 7), 16);
+          return `rgba(${r},${g},${b},${terminalBgOpacity ?? 1})`;
+        })() }}
+      >
+        {/* Settings UI only */}
+        <div className="flex flex-col items-start pt-8 pl-8 text-black mt-4">
+          <button
+            className="mb-4 px-4 py-2 text-base border border-cyan-500 text-cyan-400 rounded hover:bg-cyan-900 transition-colors"
+            onClick={() => setShowCustomize(v => !v)}
+          >
+            Customize Widgets
+          </button>
+          {showCustomize && (
+            <div className="p-4 bg-[#0f2124] border border-cyan-700 rounded shadow max-w-xs w-full mb-4">
+              <div className="mb-2 text-cyan-300 text-sm font-bold">Toggle widgets:</div>
+              {Object.entries(visibleRows).map(([key, val]) => (
+                <label key={key} className="flex items-center gap-2 text-cyan-400 text-sm cursor-pointer mb-2">
+                  <input
+                    type="checkbox"
+                    checked={val}
+                    onChange={() => handleToggleRow(key as keyof typeof visibleRows)}
+                    className="accent-cyan-500"
+                  />
+                  {key.charAt(0).toUpperCase() + key.slice(1)}
+                </label>
+              ))}
+            </div>
+          )}
 
-        {/* Customize Colors Button & Panel */}
-        <button
-          className="mb-4 px-4 py-2 text-base border border-cyan-500 text-cyan-400 rounded hover:bg-cyan-900 transition-colors"
-          onClick={() => setShowColors((v: boolean) => !v)}
-        >
-          Customize Font Color
-        </button>
-        {showColors && (
-          <FontColorPanel
-            fontColor={fontColor} fontOpacity={fontOpacity}
-            onApply={(c, o) => { setFontColor(c); setFontOpacity(o); setShowColors(false); }}
-            onCancel={() => setShowColors(false)}
-          />
-        )}
+          {/* Customize Colors Button & Panel */}
+          <button
+            className="mb-4 px-4 py-2 text-base border border-cyan-500 text-cyan-400 rounded hover:bg-cyan-900 transition-colors"
+            onClick={() => setShowColors((v: boolean) => !v)}
+          >
+            Customize Font Color
+          </button>
+          {showColors && (
+            <FontColorPanel
+              fontColor={fontColor} fontOpacity={fontOpacity}
+              onApply={(c, o) => { setFontColor(c); setFontOpacity(o); setShowColors(false); }}
+              onCancel={() => setShowColors(false)}
+            />
+          )}
 
-        {/* Customize Background Color Button & Panel */}
-        <button
-          className="mb-4 px-4 py-2 text-base border border-cyan-500 text-cyan-400 rounded hover:bg-cyan-900 transition-colors"
-          onClick={() => setShowBgColors((v: boolean) => !v)}
-        >
-          Customize Background Color
-        </button>
-        {showBgColors && (
-          <BgColorPanel
-            topNavBg={topNavBg} topNavBgOpacity={topNavBgOpacity}
-            sidebarBg={sidebarBg} sidebarBgOpacity={sidebarBgOpacity}
-            terminalBg={terminalBg} terminalBgOpacity={terminalBgOpacity}
-            onApply={(tbg, to, sbg, so, tdb, tdo) => {
-              setTopNavBg(tbg); setTopNavBgOpacity(to);
-              setSidebarBg(sbg); setSidebarBgOpacity(so);
-              setTerminalBg(tdb); setTerminalBgOpacity(tdo);
-              setShowBgColors(false);
-            }}
-            onCancel={() => setShowBgColors(false)}
-          />
-        )}
+          {/* Customize Background Color Button & Panel */}
+          <button
+            className="mb-4 px-4 py-2 text-base border border-cyan-500 text-cyan-400 rounded hover:bg-cyan-900 transition-colors"
+            onClick={() => setShowBgColors((v: boolean) => !v)}
+          >
+            Customize Background Color
+          </button>
+          {showBgColors && (
+            <BgColorPanel
+              topNavBg={topNavBg} topNavBgOpacity={topNavBgOpacity}
+              sidebarBg={sidebarBg} sidebarBgOpacity={sidebarBgOpacity}
+              terminalBg={terminalBg} terminalBgOpacity={terminalBgOpacity}
+              onApply={(tbg, to, sbg, so, tdb, tdo) => {
+                setTopNavBg(tbg); setTopNavBgOpacity(to);
+                setSidebarBg(sbg); setSidebarBgOpacity(so);
+                setTerminalBg(tdb); setTerminalBgOpacity(tdo);
+                setShowBgColors(false);
+              }}
+              onCancel={() => setShowBgColors(false)}
+            />
+          )}
+        </div>
       </div>
     </DashboardLayout>
   );

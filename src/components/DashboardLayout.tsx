@@ -43,8 +43,8 @@ export default function DashboardLayout({
       <Sidebar
         fontColor={fontColor}
         fontOpacity={fontOpacity}
-        bgColor={sidebarBg}
-        bgOpacity={sidebarBgOpacity}
+        bgColor={topNavBg}
+        bgOpacity={topNavBgOpacity}
       />
       {/* Right Frame */}
       <div className="flex flex-col flex-1 overflow-hidden" style={{ background: "none" }}>
