@@ -35,7 +35,7 @@ export default function TerminalDisplay({ fontColor, fontOpacity, bgColor, bgOpa
   const backgroundColor = bgColor ? hexToRgba(bgColor, bgOpacity) : '#062c33';
 
   return (
-    <div className="flex flex-col gap-8 p-4" style={{ backgroundColor, color: textColor }}>
+    <div className="flex flex-col gap-8 p-4 h-full min-h-0" style={{ backgroundColor, color: textColor }}>
       <TerminalTitle />
       <TerminalDisplayWidgets />
       

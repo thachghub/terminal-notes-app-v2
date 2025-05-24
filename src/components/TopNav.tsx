@@ -18,7 +18,7 @@ export default function TopNav({ fontColor, fontOpacity, bgColor, bgOpacity }: {
   const borderColor = fontColor ? hexToRgba(fontColor, fontOpacity) : '#06b6d4';
 
   return (
-    <div className="flex items-center h-full space-x-2" style={{ backgroundColor }}>
+    <div className="flex items-center h-full space-x-2">
       {/* Nav Buttons */}
       <button style={{ color: textColor, borderColor }} className="h-8 px-4 border text-cyan-300 hover:text-black hover:bg-cyan-500">
         &gt; New Note
