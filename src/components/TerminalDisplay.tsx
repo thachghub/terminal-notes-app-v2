@@ -5,7 +5,12 @@ import { useState } from 'react';
 import TerminalTitle from './TerminalTitle';
 import TerminalDisplayWidgets from './TerminalDisplayWidgets';
 
-export default function TerminalDisplay() {
+export default function TerminalDisplay({ fontColor, fontOpacity, bgColor, bgOpacity }: {
+  fontColor?: string;
+  fontOpacity?: number;
+  bgColor?: string;
+  bgOpacity?: number;
+}) {
   const [showSignIn, setShowSignIn] = useState(false);
   const [showSignUp, setShowSignUp] = useState(false);
 
@@ -19,8 +24,18 @@ export default function TerminalDisplay() {
     setShowSignIn(false);
   };
 
+  // Helper to convert hex + opacity to rgba
+  function hexToRgba(hex: string, alpha: number = 1) {
+    let r = parseInt(hex.slice(1, 3), 16);
+    let g = parseInt(hex.slice(3, 5), 16);
+    let b = parseInt(hex.slice(5, 7), 16);
+    return `rgba(${r},${g},${b},${alpha})`;
+  }
+  const textColor = fontColor ? hexToRgba(fontColor, fontOpacity) : '#67e8f9';
+  const backgroundColor = bgColor ? hexToRgba(bgColor, bgOpacity) : '#062c33';
+
   return (
-    <div className="flex flex-col gap-8 bg-[#062c33] p-4">
+    <div className="flex flex-col gap-8 p-4" style={{ backgroundColor, color: textColor }}>
       <TerminalTitle />
       <TerminalDisplayWidgets />
       
