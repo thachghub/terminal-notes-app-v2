@@ -42,11 +42,7 @@ export default function TopNav({ fontColor, fontOpacity, bgColor, bgOpacity }: {
       <button style={{ color: textColor, borderColor }} className="h-8 px-4 border text-cyan-300 hover:text-black hover:bg-cyan-500">
         &gt; Log Entry
       </button>
-      <a href="/settings">
-        <button style={{ color: textColor, borderColor }} className="h-8 px-4 border text-cyan-300 hover:text-black hover:bg-cyan-500">
-          &gt; Settings
-        </button>
-      </a>
+
       <button style={{ color: textColor, borderColor }} className="h-8 px-4 border text-cyan-300 hover:text-black hover:bg-cyan-500">
         &gt; Log-in-out
       </button>
