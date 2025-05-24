@@ -109,6 +109,27 @@ export default function SettingsDashboard() {
       >
         {/* Settings UI only */}
         <div className="flex flex-col items-start pt-8 pl-8 text-black mt-4">
+          <a
+  href="/"
+  className="mb-6 block border px-4 py-2 text-center transition-colors cursor-pointer"
+  style={{
+    color: '#bfa14b',
+    borderColor: '#bfa14b',
+    backgroundColor: 'transparent',
+  }}
+  onMouseOver={e => {
+    e.currentTarget.style.backgroundColor = '#ffe066';
+    e.currentTarget.style.color = '#7c6512';
+    e.currentTarget.style.borderColor = '#ffe066';
+  }}
+  onMouseOut={e => {
+    e.currentTarget.style.backgroundColor = 'transparent';
+    e.currentTarget.style.color = '#bfa14b';
+    e.currentTarget.style.borderColor = '#bfa14b';
+  }}
+>
+  Return
+</a>
           <button
             className="mb-4 px-4 py-2 text-base border border-cyan-500 text-cyan-400 rounded hover:bg-cyan-900 transition-colors"
             onClick={() => setShowCustomize(v => !v)}

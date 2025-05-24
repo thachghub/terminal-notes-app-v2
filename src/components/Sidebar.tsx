@@ -52,17 +52,30 @@ export default function Sidebar({ fontColor, fontOpacity, bgColor, bgOpacity }: 
             className="flex flex-col"
           >
             <nav className="flex flex-col space-y-3 p-8 pt-16 text-lg">
-              <a href="/" style={{ color: textColor }} className="hover:text-white cursor-pointer py-1">
+              <a href="/" style={{ color: textColor }}
+                className="relative py-2 px-4 my-1 text-cyan-300 hover:text-cyan-100 transition-colors cursor-pointer group block">
                 Dashboard
+                <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-cyan-400 transition-all duration-300 group-hover:w-full"></span>
               </a>
-              <a href="#" style={{ color: textColor }} className="hover:text-white cursor-pointer py-1">
-                Notes
+              <a href="#" style={{ color: textColor }}
+                className="relative py-2 px-4 my-1 text-cyan-300 hover:text-cyan-100 transition-colors cursor-pointer group block">
+                List
+                <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-cyan-400 transition-all duration-300 group-hover:w-full"></span>
               </a>
-              <a href="#" style={{ color: textColor }} className="hover:text-white cursor-pointer py-1">
-                Tags
+              <a href="#" style={{ color: textColor }}
+                className="relative py-2 px-4 my-1 text-cyan-300 hover:text-cyan-100 transition-colors cursor-pointer group block">
+                Dates
+                <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-cyan-400 transition-all duration-300 group-hover:w-full"></span>
               </a>
-              <a href="#" style={{ color: textColor }} className="hover:text-white cursor-pointer py-1">
+              <a href="#" style={{ color: textColor }}
+                className="relative py-2 px-4 my-1 text-cyan-300 hover:text-cyan-100 transition-colors cursor-pointer group block">
+                Timer
+                <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-cyan-400 transition-all duration-300 group-hover:w-full"></span>
+              </a>
+              <a href="/settings" style={{ color: textColor }}
+                className="relative py-2 px-4 my-1 text-cyan-300 hover:text-cyan-100 transition-colors cursor-pointer group block">
                 Settings
+                <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-cyan-400 transition-all duration-300 group-hover:w-full"></span>
               </a>
             </nav>
           </motion.div>
