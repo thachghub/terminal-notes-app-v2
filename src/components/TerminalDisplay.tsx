@@ -34,12 +34,25 @@ export default function TerminalDisplay({ fontColor, fontOpacity, bgColor, bgOpa
   const textColor = fontColor ? hexToRgba(fontColor, fontOpacity) : '#67e8f9';
   const backgroundColor = bgColor ? hexToRgba(bgColor, bgOpacity) : '#062c33';
 
+  // Helper to darken a hex color
+  function darkenHex(hex: string, percent: number) {
+    let r = parseInt(hex.slice(1, 3), 16);
+    let g = parseInt(hex.slice(3, 5), 16);
+    let b = parseInt(hex.slice(5, 7), 16);
+    r = Math.floor(r * (1 - percent));
+    g = Math.floor(g * (1 - percent));
+    b = Math.floor(b * (1 - percent));
+    return `rgba(${r},${g},${b},${bgOpacity ?? 1})`;
+  }
+  const gradientStart = backgroundColor;
+  const gradientEnd = bgColor ? darkenHex(bgColor, 0.18) : '#03161a';
+
   return (
-    <div className="flex flex-col gap-8 p-4 h-full min-h-0" style={{ backgroundColor, color: textColor }}>
+    <div className="flex flex-col gap-8 p-4 h-full min-h-0" style={{ background: `linear-gradient(135deg, ${gradientStart} 0%, ${gradientEnd} 100%)`, color: textColor }}>
       <TerminalTitle />
       <TerminalDisplayWidgets />
       
-      <div className="masterloginpanel mt-8">
+      <div className="masterloginpanel mt-8 bg-transparent">
         <div className="flex gap-4 mb-4">
           <button
             onClick={handleSignInClick}
@@ -61,7 +74,7 @@ export default function TerminalDisplay({ fontColor, fontOpacity, bgColor, bgOpa
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="panel mt-4"
+              className="panel mt-4 bg-transparent"
             >
               <div>/ sign in</div>
               <label htmlFor="signin-email">email:</label>
@@ -82,7 +95,7 @@ export default function TerminalDisplay({ fontColor, fontOpacity, bgColor, bgOpa
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="panel mt-4 border-2 text-yellow-400"
+              className="panel mt-4 border-2 text-yellow-400 bg-transparent"
               style={{ borderColor: '#FFD700' }}
             >
               <div>/ create account</div>

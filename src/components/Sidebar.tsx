@@ -25,10 +25,23 @@ export default function Sidebar({ fontColor, fontOpacity, bgColor, bgOpacity }: 
   const backgroundColor = bgColor ? hexToRgba(bgColor, bgOpacity) : '#0f2124';
   const borderColor = fontColor ? hexToRgba(fontColor, fontOpacity) : '#06b6d4';
 
+  // Helper to darken a hex color
+  function darkenHex(hex: string, percent: number) {
+    let r = parseInt(hex.slice(1, 3), 16);
+    let g = parseInt(hex.slice(3, 5), 16);
+    let b = parseInt(hex.slice(5, 7), 16);
+    r = Math.floor(r * (1 - percent));
+    g = Math.floor(g * (1 - percent));
+    b = Math.floor(b * (1 - percent));
+    return `rgba(${r},${g},${b},${bgOpacity ?? 1})`;
+  }
+  const gradientStart = backgroundColor;
+  const gradientEnd = bgColor ? darkenHex(bgColor, 0.18) : '#0a1417';
+
   return (
     <motion.div
       className="relative border-r"
-      style={{ width: isCollapsed ? '3rem' : '12rem', backgroundColor, borderColor }}
+      style={{ width: isCollapsed ? '3rem' : '12rem', background: `linear-gradient(180deg, ${gradientStart} 0%, ${gradientEnd} 100%)`, borderColor }}
       initial={{ width: '12rem' }}
       animate={{ width: isCollapsed ? '3rem' : '12rem' }}
       transition={{ duration: 0.3, ease: 'easeInOut' }}
