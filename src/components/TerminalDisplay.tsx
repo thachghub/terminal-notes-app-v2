@@ -34,7 +34,7 @@ export default function TerminalDisplay() {
           </button>
           <button
             onClick={handleSignUpClick}
-            className="inline-block border border-cyan-500 text-cyan-500 hover:bg-cyan-500/10 transition-colors px-3 py-1 text-sm w-32"
+            className="inline-block border border-yellow-400 text-yellow-400 hover:bg-yellow-400/10 transition-colors px-3 py-1 text-sm w-32"
           >
             / create account
           </button>
@@ -67,15 +67,16 @@ export default function TerminalDisplay() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="panel mt-4"
+              className="panel mt-4 border-2 text-yellow-400"
+              style={{ borderColor: '#FFD700' }}
             >
               <div>/ create account</div>
-              <label htmlFor="signup-email">email:</label>
-              <input type="email" id="signup-email" className="border-b border-cyan-500 text-cyan-500 bg-transparent" />
-              <label htmlFor="signup-password">password:</label>
-              <input type="password" id="signup-password" className="border-b border-cyan-500 text-cyan-500 bg-transparent" />
+              <label htmlFor="signup-email" className="text-yellow-400" style={{ color: '#FFD700' }}>email:</label>
+              <input type="email" id="signup-email" className="border-b border-yellow-400 text-yellow-400 bg-transparent" />
+              <label htmlFor="signup-password" className="text-yellow-400" style={{ color: '#FFD700' }}>password:</label>
+              <input type="password" id="signup-password" className="border-b border-yellow-400 text-yellow-400 bg-transparent" />
               <button 
-                className="border border-cyan-500 text-cyan-500 hover:bg-cyan-500/10 transition-colors mt-2"
+                className="border border-yellow-400 text-yellow-400 hover:bg-yellow-400/10 transition-colors mt-2"
                 onClick={() => setShowSignUp(false)}
               >
                 &gt; sign up
