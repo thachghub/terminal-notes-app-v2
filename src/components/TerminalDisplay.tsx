@@ -28,13 +28,13 @@ export default function TerminalDisplay() {
         <div className="flex gap-4 mb-4">
           <button
             onClick={handleSignInClick}
-            className="border border-cyan-500 text-cyan-500 hover:bg-cyan-500/10 transition-colors px-3 py-1 text-sm"
+            className="inline-block border border-cyan-500 text-cyan-500 hover:bg-cyan-500/10 transition-colors px-3 py-1 text-sm w-32"
           >
             / sign in
           </button>
           <button
             onClick={handleSignUpClick}
-            className="border border-cyan-500 text-cyan-500 hover:bg-cyan-500/10 transition-colors px-3 py-1 text-sm"
+            className="inline-block border border-cyan-500 text-cyan-500 hover:bg-cyan-500/10 transition-colors px-3 py-1 text-sm w-32"
           >
             / create account
           </button>
