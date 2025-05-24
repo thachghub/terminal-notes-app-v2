@@ -49,24 +49,26 @@ export default function TerminalTitle() {
         ))}
       </div>
       {/* Title letters */}
-      <h1
-        ref={containerRef}
-        className="text-cyan-400 text-6xl mb-4 font-[VT323] tracking-tight relative z-[1]"
-        style={{ position: 'relative' }}
-      >
-        {title.split('').map((char, idx) => (
-          <motion.span
-            key={idx}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: idx * 0.07 }}
-            style={{ display: 'inline-block', whiteSpace: char === ' ' ? 'pre' : undefined }}
-          >
-            {char}
-          </motion.span>
-        ))}
-      </h1>
+      <div className="relative flex flex-col items-center mb-2" style={{ minHeight: 48 }}>
+        <h1
+          ref={containerRef}
+          className="text-cyan-400 text-6xl mb-4 font-[VT323] tracking-tight relative z-[1]"
+          style={{ position: 'relative' }}
+        >
+          {title.split('').map((char, idx) => (
+            <motion.span
+              key={idx}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: idx * 0.07 }}
+              style={{ display: 'inline-block', whiteSpace: char === ' ' ? 'pre' : undefined }}
+            >
+              {char}
+            </motion.span>
+          ))}
+        </h1>
+        <span className="text-cyan-400 text-sm font-mono mt-1 opacity-80">// sending transmission...</span>
+      </div>
     </div>
   );
 }
-
