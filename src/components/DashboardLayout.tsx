@@ -50,7 +50,7 @@ export default function DashboardLayout({
       <div className="flex flex-col flex-1 overflow-hidden" style={{ background: "none" }}>
         {/* Top Navigation Frame */}
         <div
-          className="h-14 px-4 py-2"
+          className="h-14 px-4 py-2 border-b border-cyan-500"
           style={{ background: topNavBackground }}
         >
           <TopNav
