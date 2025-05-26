@@ -41,18 +41,23 @@ export default function Sidebar({ fontColor, fontOpacity, bgColor, bgOpacity }: 
   return (
     <motion.div
       className="relative border-r"
-      style={{ width: isCollapsed ? '3rem' : '12rem', background: `linear-gradient(180deg, ${gradientStart} 0%, ${gradientEnd} 100%)`, borderColor }}
+      style={{ width: isCollapsed ? '2.4rem' : '12rem', background: `linear-gradient(180deg, ${gradientStart} 0%, ${gradientEnd} 100%)`, borderColor }}
       initial={{ width: '12rem' }}
-      animate={{ width: isCollapsed ? '3rem' : '12rem' }}
+      animate={{ width: isCollapsed ? '2.4rem' : '12rem' }}
       transition={{ duration: 0.3, ease: 'easeInOut' }}
     >
       {/* Toggle Button */}
-      <button
+      <motion.button
         onClick={toggleSidebar}
         className="absolute top-2 left-1/2 -translate-x-1/2 text-4xl font-bold text-cyan-300 hover:text-white cursor-pointer transition-colors duration-300"
+        animate={{
+          scale: isCollapsed ? 0.5 : 1,
+          rotate: isCollapsed ? 180 : 0
+        }}
+        transition={{ duration: 0.3, ease: 'easeInOut' }}
       >
-        {isCollapsed ? '<' : '>'}
-      </button>
+        &gt;
+      </motion.button>
 
       {/* Collapsible Sidebar Content */}
       <AnimatePresence>
