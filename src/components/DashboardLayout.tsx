@@ -82,13 +82,15 @@ export default function DashboardLayout({
           }}
           transition={{ duration: 0.3, ease: 'easeInOut' }}
         >
-          <div className="relative flex items-start space-x-2 min-h-[3.5rem] py-2 px-4">
+          <div className="relative flex items-start min-h-[3.5rem] px-4">
             <NavToggle 
               isCollapsed={isCollapsed} 
               onToggle={() => setIsCollapsed(!isCollapsed)} 
             />
             {!isCollapsed && (
-              <TopNav fontColor={fontColor} fontOpacity={fontOpacity} />
+              <div className="flex items-start space-x-2 pl-12">
+                <TopNav fontColor={fontColor} fontOpacity={fontOpacity} />
+              </div>
             )}
           </div>
           <div className="w-full border-b border-cyan-500" />
