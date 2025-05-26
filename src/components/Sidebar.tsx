@@ -49,14 +49,14 @@ export default function Sidebar({ fontColor, fontOpacity, bgColor, bgOpacity }: 
       {/* Toggle Button */}
       <motion.button
         onClick={toggleSidebar}
-        className="absolute top-2 left-1/2 -translate-x-1/2 text-4xl font-bold text-cyan-300 hover:text-white cursor-pointer transition-colors duration-300"
+        className="absolute top-2 left-1/2 -translate-x-1/2 text-4xl font-bold text-cyan-300 hover:text-yellow-500 cursor-pointer transition-colors duration-300"
         animate={{
           scale: isCollapsed ? 0.5 : 1,
           rotate: isCollapsed ? 180 : 0
         }}
         transition={{ duration: 0.3, ease: 'easeInOut' }}
       >
-        &gt;
+        &lt;
       </motion.button>
 
       {/* Collapsible Sidebar Content */}
