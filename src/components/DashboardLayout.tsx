@@ -69,34 +69,46 @@ export default function DashboardLayout({
       {/* Right Frame */}
       <div className="flex flex-col flex-1 overflow-hidden" style={{ background: "none" }}>
         {/* Outer container for the entire Top Navigation area */}
-        <div 
-          className="px-4 py-2 border-b border-cyan-500 relative" 
-          style={{ background: `linear-gradient(90deg, ${gradientStart} 0%, ${gradientEnd} 100%)` }}
+        <motion.div 
+          className="px-4 border-b border-cyan-500 relative" 
+          style={{ 
+            background: `linear-gradient(90deg, ${gradientStart} 0%, ${gradientEnd} 100%)`,
+            overflow: 'hidden' 
+          }}
+          initial={{
+            height: '3rem',
+            paddingTop: '0.5rem',
+            paddingBottom: '0.5rem',
+          }}
+          animate={{
+            height: isCollapsed ? '1rem' : '3rem', // Collapsed height for shrunken toggle + border
+            paddingTop: '0.5rem', // Keep paddingTop for NavToggle positioning
+            paddingBottom: isCollapsed ? '0px' : '0.5rem', // No bottom padding when collapsed
+          }}
+          transition={{ duration: 0.3, ease: 'easeInOut' }}
         >
           <NavToggle 
             isCollapsed={isCollapsed} 
             onToggle={() => setIsCollapsed(!isCollapsed)} 
-            // NavToggle positions itself absolutely using its own styles (e.g., left-2, top-2)
           />
           <AnimatePresence>
             {!isCollapsed && (
               <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 'auto', opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
+                initial={{ height: 0, opacity: 0 }} 
+                animate={{ height: '2rem', opacity: 1 }} 
+                exit={{ height: 0, opacity: 0 }} 
                 transition={{ duration: 0.3 }}
-                className="pl-12" // Padding to make space for NavToggle on the left
-                style={{ overflow: 'hidden' }} // Ensures content is clipped during animation
+                className="pl-12" 
+                style={{ overflow: 'hidden' }} 
               >
                 <TopNav
                   fontColor={fontColor}
                   fontOpacity={fontOpacity}
-                  // bgColor and bgOpacity are no longer directly used by TopNav for its background
                 />
               </motion.div>
             )}
           </AnimatePresence>
-        </div>
+        </motion.div>
 
         {/* Main Content Section */}
         <div className="flex-1 overflow-auto">
