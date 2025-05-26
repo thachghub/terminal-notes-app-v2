@@ -41,9 +41,9 @@ export default function Sidebar({ fontColor, fontOpacity, bgColor, bgOpacity }: 
   return (
     <motion.div
       className="relative border-r"
-      style={{ width: isCollapsed ? '2.4rem' : '12rem', background: `linear-gradient(180deg, ${gradientStart} 0%, ${gradientEnd} 100%)`, borderColor }}
+      style={{ width: isCollapsed ? '1.92rem' : '12rem', background: `linear-gradient(180deg, ${gradientStart} 0%, ${gradientEnd} 100%)`, borderColor }}
       initial={{ width: '12rem' }}
-      animate={{ width: isCollapsed ? '2.4rem' : '12rem' }}
+      animate={{ width: isCollapsed ? '1.92rem' : '12rem' }}
       transition={{ duration: 0.3, ease: 'easeInOut' }}
     >
       {/* Toggle Button */}
