@@ -41,9 +41,9 @@ export default function Sidebar({ fontColor, fontOpacity, bgColor, bgOpacity }: 
   return (
     <motion.div
       className="relative border-r"
-      style={{ width: isCollapsed ? '1.92rem' : '12rem', background: `linear-gradient(180deg, ${gradientStart} 0%, ${gradientEnd} 100%)`, borderColor }}
-      initial={{ width: '12rem' }}
-      animate={{ width: isCollapsed ? '1.92rem' : '12rem' }}
+      style={{ width: isCollapsed ? '1.54rem' : '9.6rem', background: `linear-gradient(180deg, ${gradientStart} 0%, ${gradientEnd} 100%)`, borderColor }}
+      initial={{ width: '9.6rem' }}
+      animate={{ width: isCollapsed ? '1.54rem' : '9.6rem' }}
       transition={{ duration: 0.3, ease: 'easeInOut' }}
     >
       {/* Toggle Button */}
@@ -73,31 +73,31 @@ export default function Sidebar({ fontColor, fontOpacity, bgColor, bgOpacity }: 
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.3 }}
-            className="flex flex-col"
+            className="flex flex-col items-center"
           >
-            <nav className="flex flex-col space-y-3 p-8 pt-16 text-lg">
+            <nav className="flex flex-col space-y-3 pt-16 text-lg w-full items-center">
               <a href="/" style={{ color: textColor }}
-                className="relative py-2 px-4 my-1 text-cyan-300 hover:text-cyan-100 transition-colors cursor-pointer group block">
+                className="relative py-2 my-1 text-cyan-300 hover:text-cyan-100 transition-colors cursor-pointer group block text-center w-full">
                 Dashboard
                 <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-cyan-400 transition-all duration-300 group-hover:w-full"></span>
               </a>
               <a href="#" style={{ color: textColor }}
-                className="relative py-2 px-4 my-1 text-cyan-300 hover:text-cyan-100 transition-colors cursor-pointer group block">
+                className="relative py-2 my-1 text-cyan-300 hover:text-cyan-100 transition-colors cursor-pointer group block text-center w-full">
                 List
                 <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-cyan-400 transition-all duration-300 group-hover:w-full"></span>
               </a>
               <a href="#" style={{ color: textColor }}
-                className="relative py-2 px-4 my-1 text-cyan-300 hover:text-cyan-100 transition-colors cursor-pointer group block">
+                className="relative py-2 my-1 text-cyan-300 hover:text-cyan-100 transition-colors cursor-pointer group block text-center w-full">
                 Dates
                 <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-cyan-400 transition-all duration-300 group-hover:w-full"></span>
               </a>
               <a href="#" style={{ color: textColor }}
-                className="relative py-2 px-4 my-1 text-cyan-300 hover:text-cyan-100 transition-colors cursor-pointer group block">
+                className="relative py-2 my-1 text-cyan-300 hover:text-cyan-100 transition-colors cursor-pointer group block text-center w-full">
                 Timer
                 <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-cyan-400 transition-all duration-300 group-hover:w-full"></span>
               </a>
               <a href="/settings" style={{ color: textColor }}
-                className="relative py-2 px-4 my-1 text-cyan-300 hover:text-cyan-100 transition-colors cursor-pointer group block">
+                className="relative py-2 my-1 text-cyan-300 hover:text-cyan-100 transition-colors cursor-pointer group block text-center w-full">
                 Settings
                 <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-cyan-400 transition-all duration-300 group-hover:w-full"></span>
               </a>
