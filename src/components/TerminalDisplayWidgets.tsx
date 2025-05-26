@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 
+import { useRef } from 'react';
+
 export default function TerminalDisplayWidgets() {
   // Helper to get ISO week number
   function getWeekString() {
@@ -20,6 +22,19 @@ export default function TerminalDisplayWidgets() {
 
   // --- SUNRISE/SUNSET STATE AND LOGIC ---
   const [showTimezoneDropdown, setShowTimezoneDropdown] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    if (!showTimezoneDropdown) return;
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowTimezoneDropdown(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showTimezoneDropdown]);
   const [timezone, setTimezone] = useState(Intl.DateTimeFormat().resolvedOptions().timeZone);
   const [sunrise, setSunrise] = useState('6:00 AM');
   const [sunset, setSunset] = useState('6:00 PM');
@@ -167,7 +182,7 @@ export default function TerminalDisplayWidgets() {
         </div>
       )}
       {visibleRows.sunrise && (
-        <div className="flex gap-24 items-center relative">
+        <div className="flex gap-24 items-center relative" ref={dropdownRef}>
           <span
             className="text-cyan-500 cursor-pointer select-none hover:text-yellow-400 transition-colors"
             title="Click to change time zone"
@@ -197,7 +212,7 @@ export default function TerminalDisplayWidgets() {
         </div>
       )}
       {visibleRows.sunset && (
-        <div className="flex gap-24 items-center relative">
+        <div className="flex gap-24 items-center relative" ref={dropdownRef}>
           <span
             className="text-cyan-500 cursor-pointer select-none hover:text-yellow-400 transition-colors"
             title="Click to change time zone"

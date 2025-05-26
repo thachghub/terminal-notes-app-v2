@@ -105,6 +105,14 @@ export default function Sidebar({ fontColor, fontOpacity, bgColor, bgOpacity }: 
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Footer only visible when expanded */}
+      {!isCollapsed && (
+        <div className="absolute bottom-0 left-0 w-full pb-2 text-xs text-center">
+          <div className="text-cyan-300">&copy; HYPERSKYE LLC</div>
+          <div className="text-cyan-500 opacity-80">Developed <span className="text-yellow-400">2025</span></div>
+        </div>
+      )}
     </motion.div>
   );
 }
