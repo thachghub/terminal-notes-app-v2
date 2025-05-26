@@ -71,21 +71,28 @@ export default function DashboardLayout({
       {/* Right Frame */}
       <div className="flex flex-col flex-1 overflow-hidden">
         {/* Outer container for the entire Top Navigation area */}
-        <div
+        <motion.div
           className="w-full"
           style={{
             background: `linear-gradient(90deg, ${gradientStart} 0%, ${gradientEnd} 100%)`
           }}
+          animate={{
+            paddingTop: isCollapsed ? 4 : 16, // px
+            paddingBottom: isCollapsed ? 4 : 16 // px
+          }}
+          transition={{ duration: 0.3, ease: 'easeInOut' }}
         >
-          <div className="flex items-start space-x-2 min-h-[3.5rem] py-2 px-4">
+          <div className="relative flex items-start space-x-2 min-h-[3.5rem] py-2 px-4">
             <NavToggle 
               isCollapsed={isCollapsed} 
               onToggle={() => setIsCollapsed(!isCollapsed)} 
             />
-            <TopNav fontColor={fontColor} fontOpacity={fontOpacity} />
+            {!isCollapsed && (
+              <TopNav fontColor={fontColor} fontOpacity={fontOpacity} />
+            )}
           </div>
-          <div className="w-full border-b border-cyan-500" style={{height: 0}} />
-        </div>
+          <div className="w-full border-b border-cyan-500" />
+        </motion.div>
 
         {/* Main Content Section */}
         <div className="flex-1 overflow-auto h-full" style={{ background: `linear-gradient(90deg, ${gradientStart} 0%, ${gradientEnd} 100%)` }}>
