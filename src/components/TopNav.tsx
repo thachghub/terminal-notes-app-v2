@@ -37,17 +37,17 @@ export default function TopNav({ fontColor, fontOpacity, bgColor, bgOpacity }: {
       className="flex items-center h-full space-x-2"
     >
       {/* Nav Buttons */}
-      <button style={{ color: textColor, borderColor }} className="h-8 px-4 border text-cyan-300 hover:text-black hover:bg-cyan-500">
+      <button style={{ borderColor }} className="h-8 px-4 border text-cyan-300 hover:text-yellow-400">
         &gt; New Note
       </button>
-      <button style={{ color: textColor, borderColor }} className="h-8 px-4 border text-cyan-300 hover:text-black hover:bg-cyan-500">
+      <button style={{ borderColor }} className="h-8 px-4 border text-cyan-300 hover:text-yellow-400">
         &gt; View Notes
       </button>
-      <button style={{ color: textColor, borderColor }} className="h-8 px-4 border text-cyan-300 hover:text-black hover:bg-cyan-500">
+      <button style={{ borderColor }} className="h-8 px-4 border text-cyan-300 hover:text-yellow-400">
         &gt; Log Entry
       </button>
 
-      <button style={{ color: textColor, borderColor }} className="h-8 px-4 border text-cyan-300 hover:text-black hover:bg-cyan-500">
+      <button style={{ borderColor }} className="h-8 px-4 border text-cyan-300 hover:text-yellow-400">
         &gt; Log-in-out
       </button>
     </div>

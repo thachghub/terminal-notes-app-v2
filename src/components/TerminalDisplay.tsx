@@ -56,7 +56,7 @@ export default function TerminalDisplay({ fontColor, fontOpacity, bgColor, bgOpa
         <div className="flex gap-4 mb-4">
           <button
             onClick={handleSignInClick}
-            className="inline-block border border-cyan-500 text-cyan-500 hover:bg-cyan-500/10 transition-colors px-3 py-1 text-sm w-32"
+            className="inline-block border border-cyan-500 text-cyan-500 hover:text-yellow-400 hover:bg-cyan-500/10 transition-colors px-3 py-1 text-sm w-32"
           >
             / sign in
           </button>
@@ -81,12 +81,21 @@ export default function TerminalDisplay({ fontColor, fontOpacity, bgColor, bgOpa
               <input type="email" id="signin-email" className="border-b border-cyan-500 text-cyan-500 bg-transparent" />
               <label htmlFor="signin-password">password:</label>
               <input type="password" id="signin-password" className="border-b border-cyan-500 text-cyan-500 bg-transparent" />
-              <button 
-                className="border border-cyan-500 text-cyan-500 hover:bg-cyan-500/10 transition-colors mt-2"
-                onClick={() => setShowSignIn(false)}
-              >
-                &gt; sign in
-              </button>
+              <div className="flex gap-3 mt-2">
+                <button 
+                  className="border border-cyan-500 text-cyan-500 hover:bg-cyan-500/10 hover:text-yellow-400 transition-colors"
+                  onClick={() => setShowSignIn(false)}
+                >
+                  &gt; sign in
+                </button>
+                <button
+                  type="button"
+                  className="text-cyan-400 underline underline-offset-2 hover:text-yellow-400 transition-colors"
+                  onClick={() => alert('Forgot password flow coming soon!')}
+                >
+                  forgot password
+                </button>
+              </div>
             </motion.div>
           )}
 
