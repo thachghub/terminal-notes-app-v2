@@ -17,6 +17,10 @@ interface DashboardLayoutProps {
   terminalBgOpacity: number;
 }
 
+import { motion, AnimatePresence } from 'framer-motion';
+
+import NavToggle from './NavToggle';
+
 export default function DashboardLayout({
   children,
   fontColor,
@@ -28,6 +32,8 @@ export default function DashboardLayout({
   terminalBg,
   terminalBgOpacity
 }: DashboardLayoutProps) {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
   // Helper to convert hex + opacity to rgba
   function hexToRgba(hex: string, alpha: number = 1) {
     if (!hex || hex[0] !== '#' || hex.length !== 7) return '#0f2124';
@@ -50,6 +56,7 @@ export default function DashboardLayout({
   }
   const gradientStart = topNavBackground;
   const gradientEnd = topNavBg ? darkenHex(topNavBg, 0.18) : '#0a1417';
+
   return (
     <div className="flex h-screen text-[#fff] font-mono">
       {/* Left Navigation Frame */}
@@ -61,18 +68,36 @@ export default function DashboardLayout({
       />
       {/* Right Frame */}
       <div className="flex flex-col flex-1 overflow-hidden" style={{ background: "none" }}>
-        {/* Top Navigation Frame */}
-        <div
-          className="h-14 px-4 py-2 border-b border-cyan-500"
+        {/* Outer container for the entire Top Navigation area */}
+        <div 
+          className="px-4 py-2 border-b border-cyan-500 relative" 
           style={{ background: `linear-gradient(90deg, ${gradientStart} 0%, ${gradientEnd} 100%)` }}
         >
-          <TopNav
-            fontColor={fontColor}
-            fontOpacity={fontOpacity}
-            bgColor={topNavBg}
-            bgOpacity={topNavBgOpacity}
+          <NavToggle 
+            isCollapsed={isCollapsed} 
+            onToggle={() => setIsCollapsed(!isCollapsed)} 
+            // NavToggle positions itself absolutely using its own styles (e.g., left-2, top-2)
           />
+          <AnimatePresence>
+            {!isCollapsed && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="pl-12" // Padding to make space for NavToggle on the left
+                style={{ overflow: 'hidden' }} // Ensures content is clipped during animation
+              >
+                <TopNav
+                  fontColor={fontColor}
+                  fontOpacity={fontOpacity}
+                  // bgColor and bgOpacity are no longer directly used by TopNav for its background
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
+
         {/* Main Content Section */}
         <div className="flex-1 overflow-auto">
           {children}

@@ -1,5 +1,7 @@
 // src/components/TopNav.tsx
 
+import { motion, AnimatePresence } from 'framer-motion';
+
 export default function TopNav({ fontColor, fontOpacity, bgColor, bgOpacity }: {
   fontColor?: string;
   fontOpacity?: number;
@@ -31,7 +33,9 @@ export default function TopNav({ fontColor, fontOpacity, bgColor, bgOpacity }: {
   const gradientEnd = bgColor ? darkenHex(bgColor, 0.18) : '#0a1417';
 
   return (
-    <div className="flex items-center h-full space-x-2" style={{ background: `linear-gradient(90deg, ${gradientStart} 0%, ${gradientEnd} 100%)` }}>
+    <div
+      className="flex items-center h-full space-x-2"
+    >
       {/* Nav Buttons */}
       <button style={{ color: textColor, borderColor }} className="h-8 px-4 border text-cyan-300 hover:text-black hover:bg-cyan-500">
         &gt; New Note
