@@ -46,8 +46,9 @@ export default function NavToggle({ isCollapsed, onToggle }: { isCollapsed: bool
         opacity: { duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }, // Delay pulse slightly after size change
       }}
       whileHover={{ 
-        ...(isCollapsed ? {} : { scale: 1.1, color: 'gold' }), // Hover effect only when expanded
-        opacity: 1, // Always bring opacity to 1 on hover
+        scale: isCollapsed ? 1 : 1.1, // No scale change for line, scale up for circle
+        color: 'gold',                 // Always change color to gold on hover
+        opacity: 1,                    // Always bring opacity to 1 on hover
       }}
       whileTap={{ scale: isCollapsed ? 1 : 0.95 }} // No extra tap scale down if already small
       onClick={onToggle}

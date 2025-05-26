@@ -48,7 +48,7 @@ export default function TerminalDisplay({ fontColor, fontOpacity, bgColor, bgOpa
   const gradientEnd = bgColor ? darkenHex(bgColor, 0.18) : '#03161a';
 
   return (
-    <div className="flex flex-col gap-8 p-4 h-full min-h-0" style={{ background: `linear-gradient(135deg, ${gradientStart} 0%, ${gradientEnd} 100%)`, color: textColor }}>
+    <div className="flex flex-col gap-8 p-4 h-full min-h-full bg-transparent" style={{ color: textColor }}>
       <TerminalTitle />
       <TerminalDisplayWidgets />
       
