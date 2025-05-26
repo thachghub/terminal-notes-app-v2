@@ -169,7 +169,7 @@ export default function TerminalDisplayWidgets() {
       {visibleRows.sunrise && (
         <div className="flex gap-24 items-center relative">
           <span
-            className="text-cyan-500 cursor-pointer select-none"
+            className="text-cyan-500 cursor-pointer select-none hover:text-yellow-400 transition-colors"
             title="Click to change time zone"
             onClick={() => setShowTimezoneDropdown((v: boolean) => !v)}
           >
@@ -199,7 +199,7 @@ export default function TerminalDisplayWidgets() {
       {visibleRows.sunset && (
         <div className="flex gap-24 items-center relative">
           <span
-            className="text-cyan-500 cursor-pointer select-none"
+            className="text-cyan-500 cursor-pointer select-none hover:text-yellow-400 transition-colors"
             title="Click to change time zone"
             onClick={() => setShowTimezoneDropdown((v: boolean) => !v)}
           >
