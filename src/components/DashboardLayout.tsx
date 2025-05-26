@@ -72,13 +72,14 @@ export default function DashboardLayout({
       <div className="flex flex-col flex-1 overflow-hidden">
         {/* Outer container for the entire Top Navigation area */}
         <motion.div
-          className="w-full"
+          className="w-full overflow-hidden"
           style={{
             background: `linear-gradient(90deg, ${gradientStart} 0%, ${gradientEnd} 100%)`
           }}
           animate={{
-            paddingTop: isCollapsed ? 4 : 16, // px
-            paddingBottom: isCollapsed ? 4 : 16 // px
+            maxHeight: isCollapsed ? '2.5rem' : '999px',
+            paddingTop: 0,
+            paddingBottom: 0
           }}
           transition={{ duration: 0.3, ease: 'easeInOut' }}
         >
@@ -93,7 +94,7 @@ export default function DashboardLayout({
               </div>
             )}
           </div>
-          <div className="w-full border-b border-cyan-500" />
+          <div className="w-full border-b border-cyan-500" style={{height: 2}} />
         </motion.div>
 
         {/* Main Content Section */}
