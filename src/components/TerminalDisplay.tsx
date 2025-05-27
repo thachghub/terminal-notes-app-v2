@@ -5,6 +5,7 @@ import { useState } from 'react';
 import TerminalTitle from './TerminalTitle';
 import TerminalDisplayWidgets from './TerminalDisplayWidgets';
 import { hexToRgba, darkenHex } from '@/lib/colorUtils';
+import { useUIStore } from '@/store/uiStore';
 
 export default function TerminalDisplay({ fontColor, fontOpacity, bgColor, bgOpacity }: {
   fontColor?: string;
@@ -12,8 +13,10 @@ export default function TerminalDisplay({ fontColor, fontOpacity, bgColor, bgOpa
   bgColor?: string;
   bgOpacity?: number;
 }) {
-  const [showSignIn, setShowSignIn] = useState(false);
-  const [showSignUp, setShowSignUp] = useState(false);
+  const showSignIn = useUIStore((s) => s.showSignIn);
+  const showSignUp = useUIStore((s) => s.showSignUp);
+  const setShowSignIn = useUIStore((s) => s.setShowSignIn);
+  const setShowSignUp = useUIStore((s) => s.setShowSignUp);
 
   const handleSignInClick = () => {
     setShowSignIn(true);
