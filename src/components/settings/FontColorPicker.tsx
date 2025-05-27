@@ -6,8 +6,8 @@ export default function FontColorPicker() {
   const setFontColor = usePreferencesStore(s => s.setFontColor);
 
   return (
-    <div>
-      <label htmlFor="font-color">Font Color</label>
+    <div className="flex items-center gap-4">
+      <label htmlFor="font-color" className="whitespace-nowrap">Font Color</label>
       <input
         id="font-color"
         type="color"

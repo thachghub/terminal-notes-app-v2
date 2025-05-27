@@ -6,8 +6,8 @@ export default function FontOpacitySlider() {
   const setFontOpacity = usePreferencesStore(s => s.setFontOpacity);
 
   return (
-    <div>
-      <label htmlFor="font-opacity">Font Opacity</label>
+    <div className="flex items-center gap-4">
+      <label htmlFor="font-opacity" className="whitespace-nowrap">Font Opacity</label>
       <input
         id="font-opacity"
         type="range"
