@@ -4,6 +4,7 @@ import TopNav from "./TopNav";
 import Sidebar from "./Sidebar";
 import TerminalDisplay from "./TerminalDisplay";
 import { useState } from "react";
+import { hexToRgba, darkenHex } from '@/lib/colorUtils';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -34,27 +35,8 @@ export default function DashboardLayout({
 }: DashboardLayoutProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  // Helper to convert hex + opacity to rgba
-  function hexToRgba(hex: string, alpha: number = 1) {
-    if (!hex || hex[0] !== '#' || hex.length !== 7) return '#0f2124';
-    let r = parseInt(hex.slice(1, 3), 16);
-    let g = parseInt(hex.slice(3, 5), 16);
-    let b = parseInt(hex.slice(5, 7), 16);
-    return `rgba(${r},${g},${b},${alpha})`;
-  }
   // Always use full opacity for TopNav background to avoid black bar
   const topNavBackground = topNavBg ? hexToRgba(topNavBg, 1) : '#0f2124';
-  // Helper to darken a hex color
-  function darkenHex(hex: string, percent: number) {
-    if (!hex || hex[0] !== '#' || hex.length !== 7) return '#0f2124';
-    let r = parseInt(hex.slice(1, 3), 16);
-    let g = parseInt(hex.slice(3, 5), 16);
-    let b = parseInt(hex.slice(5, 7), 16);
-    r = Math.floor(r * (1 - percent));
-    g = Math.floor(g * (1 - percent));
-    b = Math.floor(b * (1 - percent));
-    return `rgba(${r},${g},${b},${topNavBgOpacity ?? 1})`;
-  }
   const gradientStart = topNavBackground;
   // Always use full opacity for gradient end as well
   const gradientEnd = topNavBg ? darkenHex(topNavBg, 0.18) : '#0a1417';

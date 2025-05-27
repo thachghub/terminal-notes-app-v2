@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import TerminalTitle from './TerminalTitle';
 import TerminalDisplayWidgets from './TerminalDisplayWidgets';
+import { hexToRgba, darkenHex } from '@/lib/colorUtils';
 
 export default function TerminalDisplay({ fontColor, fontOpacity, bgColor, bgOpacity }: {
   fontColor?: string;
@@ -24,26 +25,9 @@ export default function TerminalDisplay({ fontColor, fontOpacity, bgColor, bgOpa
     setShowSignIn(false);
   };
 
-  // Helper to convert hex + opacity to rgba
-  function hexToRgba(hex: string, alpha: number = 1) {
-    let r = parseInt(hex.slice(1, 3), 16);
-    let g = parseInt(hex.slice(3, 5), 16);
-    let b = parseInt(hex.slice(5, 7), 16);
-    return `rgba(${r},${g},${b},${alpha})`;
-  }
   const textColor = fontColor ? hexToRgba(fontColor, fontOpacity) : '#67e8f9';
   const backgroundColor = bgColor ? hexToRgba(bgColor, bgOpacity) : '#062c33';
 
-  // Helper to darken a hex color
-  function darkenHex(hex: string, percent: number) {
-    let r = parseInt(hex.slice(1, 3), 16);
-    let g = parseInt(hex.slice(3, 5), 16);
-    let b = parseInt(hex.slice(5, 7), 16);
-    r = Math.floor(r * (1 - percent));
-    g = Math.floor(g * (1 - percent));
-    b = Math.floor(b * (1 - percent));
-    return `rgba(${r},${g},${b},${bgOpacity ?? 1})`;
-  }
   const gradientStart = backgroundColor;
   const gradientEnd = bgColor ? darkenHex(bgColor, 0.18) : '#03161a';
 

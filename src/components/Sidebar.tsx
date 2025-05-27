@@ -1,6 +1,7 @@
 'use client';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
+import { hexToRgba, darkenHex } from '@/lib/colorUtils';
 
 export default function Sidebar({ fontColor, fontOpacity, bgColor, bgOpacity }: {
   fontColor?: string;
@@ -14,27 +15,10 @@ export default function Sidebar({ fontColor, fontOpacity, bgColor, bgOpacity }: 
     setIsCollapsed(!isCollapsed);
   };
 
-  // Helper to convert hex + opacity to rgba
-  function hexToRgba(hex: string, alpha: number = 1) {
-    let r = parseInt(hex.slice(1, 3), 16);
-    let g = parseInt(hex.slice(3, 5), 16);
-    let b = parseInt(hex.slice(5, 7), 16);
-    return `rgba(${r},${g},${b},${alpha})`;
-  }
   const textColor = fontColor ? hexToRgba(fontColor, fontOpacity) : '#22d3ee';
   const backgroundColor = bgColor ? hexToRgba(bgColor, bgOpacity) : '#0f2124';
   const borderColor = fontColor ? hexToRgba(fontColor, fontOpacity) : '#06b6d4';
 
-  // Helper to darken a hex color
-  function darkenHex(hex: string, percent: number) {
-    let r = parseInt(hex.slice(1, 3), 16);
-    let g = parseInt(hex.slice(3, 5), 16);
-    let b = parseInt(hex.slice(5, 7), 16);
-    r = Math.floor(r * (1 - percent));
-    g = Math.floor(g * (1 - percent));
-    b = Math.floor(b * (1 - percent));
-    return `rgba(${r},${g},${b},${bgOpacity ?? 1})`;
-  }
   const gradientStart = backgroundColor;
   const gradientEnd = bgColor ? darkenHex(bgColor, 0.18) : '#0a1417';
 
