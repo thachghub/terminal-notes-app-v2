@@ -1,8 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-
-import { useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { usePreferencesStore } from '@/store/preferencesStore';
 
 export default function TerminalDisplayWidgets() {
   // Helper to get ISO week number
@@ -19,6 +18,13 @@ export default function TerminalDisplayWidgets() {
     return `${weekNo}/52`;
   }
   const [currentTime, setCurrentTime] = useState('');
+
+  // Widget visibility preferences from Zustand (use individual selectors!)
+  const showUserInfo = usePreferencesStore(s => s.showUserInfo);
+  const showCurrentTime = usePreferencesStore(s => s.showCurrentTime);
+  const showCurrentDate = usePreferencesStore(s => s.showCurrentDate);
+  const showSunriseSunset = usePreferencesStore(s => s.showSunriseSunset);
+  const showWeekNumber = usePreferencesStore(s => s.showWeekNumber);
 
   // --- SUNRISE/SUNSET STATE AND LOGIC ---
   const [showTimezoneDropdown, setShowTimezoneDropdown] = useState(false);
@@ -137,51 +143,33 @@ export default function TerminalDisplayWidgets() {
     return () => clearInterval(timer);
   }, []);
 
-  // --- CUSTOMIZATION STATE ---
-  const [showCustomize, setShowCustomize] = useState(false);
-  const [visibleRows, setVisibleRows] = useState({
-    user: true,
-    date: true,
-    time: true,
-    week: true,
-    sunrise: true,
-    sunset: true,
-  });
-
-  function handleToggleRow(row: keyof typeof visibleRows) {
-    setVisibleRows(v => ({ ...v, [row]: !v[row] }));
-  }
-
-  // --- END CUSTOMIZATION STATE ---
-
   return (
     <div className="space-y-1 pl-2 max-w-md">
-
-      {visibleRows.user && (
+      {showUserInfo && (
         <div className="flex gap-24 items-center">
           <span className="text-cyan-500">user:</span>
           <span className="text-cyan-300">example@email.com</span>
         </div>
       )}
-      {visibleRows.date && (
+      {showCurrentDate && (
         <div className="flex gap-24 items-center">
           <span className="text-cyan-500">Date:</span>
           <span className="text-cyan-300">May 23, 2025</span>
         </div>
       )}
-      {visibleRows.time && (
+      {showCurrentTime && (
         <div className="flex gap-24 items-center">
           <span className="text-cyan-500">Time:</span>
           <span className="text-cyan-300">{currentTime || 'Loading...'}</span>
         </div>
       )}
-      {visibleRows.week && (
+      {showWeekNumber && (
         <div className="flex gap-24 items-center">
           <span className="text-cyan-500">Week:</span>
           <span className="text-cyan-300">{getWeekString()}</span>
         </div>
       )}
-      {visibleRows.sunrise && (
+      {showSunriseSunset && (
         <div className="flex gap-24 items-center relative" ref={dropdownRef}>
           <button
             className="text-cyan-500 cursor-pointer select-none hover:text-yellow-400 transition-colors"
@@ -223,18 +211,6 @@ export default function TerminalDisplayWidgets() {
               </ul>
             </div>
           )}
-        </div>
-      )}
-      {visibleRows.sunset && (
-        <div className="flex gap-24 items-center relative" ref={dropdownRef}>
-          <span
-            className="text-cyan-500 cursor-pointer select-none hover:text-yellow-400 transition-colors"
-            title="Click to change time zone"
-            onClick={() => setShowTimezoneDropdown((v: boolean) => !v)}
-          >
-            *Sunset:
-          </span>
-          <span className="text-cyan-300">{sunset}</span>
         </div>
       )}
     </div>
