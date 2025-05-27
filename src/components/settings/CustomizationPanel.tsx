@@ -8,8 +8,8 @@ import ResetToDefaultButton from './ResetToDefaultButton';
 
 export default function CustomizationPanel() {
   return (
-    <div className="space-y-4 p-4 border rounded bg-neutral-800 text-white">
-      <h2 className="text-lg font-bold">Customization Settings</h2>
+    <div className="border border-cyan-500 p-4 space-y-6 font-mono text-sm text-cyan-100 bg-[#0a0f11]">
+      <h2 className="text-base border-b border-cyan-700 pb-1 uppercase tracking-wide">Customization Panel</h2>
       <FontColorPicker />
       <FontOpacitySlider />
       <TimezoneSelector />

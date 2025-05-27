@@ -18,54 +18,37 @@ export default function LoadOutManager() {
   const [confirmReset, setConfirmReset] = useState<string | null>(null);
 
   return (
-    <div className="space-y-3 mt-6 border-t pt-4">
-      <h3 className="text-md font-semibold">Preference Load Outs</h3>
+    <div className="space-y-3 mt-6 border-t border-cyan-900 pt-4">
+      <h3 className="text-md font-semibold text-cyan-300 font-mono uppercase tracking-wide mb-2">Preference Load Outs</h3>
       {loadOutKeys.map((key) => {
         const isSaved = !!savedLoadOuts[key];
         return (
-          <div key={key} className="flex items-center justify-between gap-2">
-            <div className="text-sm w-32">
-              <input
-                className="bg-transparent border-b text-sm font-semibold w-32 mb-1 focus:outline-none"
-                value={loadOutLabels[key] ?? key}
-                onChange={(e) => renameLoadOut(key, e.target.value)}
-                placeholder={key}
-                disabled={!isSaved}
-              />
-              {isSaved && (
-                <div className="flex items-center gap-2 mt-1 text-xs text-neutral-300">
-                  <div
-                    className="w-4 h-4 rounded border"
-                    style={{ backgroundColor: savedLoadOuts[key].fontColor }}
-                    title={`Font color: ${savedLoadOuts[key].fontColor}`}
-                  />
-                  <span>{savedLoadOuts[key].timezone}</span>
-                  <span>{Math.round(savedLoadOuts[key].fontOpacity * 100)}%</span>
-                  {savedLoadOuts[key].showSeconds && <span title="Show seconds">🕒</span>}
-                </div>
-              )}
-            </div>
-            <div className="flex gap-1 ml-auto">
-              <button
-                onClick={() => saveLoadOut(key)}
-                className="px-2 py-1 bg-green-600 text-white rounded text-sm"
-              >
-                Save
-              </button>
-              <button
-                disabled={!isSaved}
-                onClick={() => loadLoadOut(key)}
-                className="px-2 py-1 bg-blue-600 text-white rounded text-sm disabled:opacity-40"
-              >
-                Load
-              </button>
-              <button
-                disabled={!isSaved}
-                onClick={() =>
-                  confirmReset === key ? resetLoadOut(key) : setConfirmReset(key)
-                }
-                className="px-2 py-1 bg-red-600 text-white rounded text-sm disabled:opacity-40"
-              >
+          <div
+            key={key}
+            className="grid grid-cols-[auto_1fr_auto_auto_auto] gap-2 items-center py-1 border-b border-cyan-900 last:border-none font-mono"
+          >
+            <input
+              className="bg-transparent text-cyan-300 focus:outline-none font-mono w-full text-xs border-b border-cyan-700 mb-1"
+              value={loadOutLabels[key] ?? key}
+              onChange={(e) => renameLoadOut(key, e.target.value)}
+              placeholder={key}
+              disabled={!isSaved}
+            />
+            {isSaved && (
+              <div className="flex items-center gap-2 text-xs text-cyan-500">
+                <div
+                  className="w-4 h-4 border border-cyan-700"
+                  style={{ backgroundColor: savedLoadOuts[key].fontColor }}
+                />
+                <span>{savedLoadOuts[key].timezone}</span>
+                <span>{Math.round(savedLoadOuts[key].fontOpacity * 100)}%</span>
+                {savedLoadOuts[key].showSeconds && <span className="text-cyan-400">🕒</span>}
+              </div>
+            )}
+            <div className="flex gap-1 justify-end">
+              <button className="text-green-400 hover:underline font-mono text-xs" onClick={() => saveLoadOut(key)}>Save</button>
+              <button className="text-blue-400 hover:underline font-mono text-xs" disabled={!isSaved} onClick={() => loadLoadOut(key)}>Load</button>
+              <button className="text-red-400 hover:underline font-mono text-xs" disabled={!isSaved} onClick={() => confirmReset === key ? resetLoadOut(key) : setConfirmReset(key)}>
                 {confirmReset === key ? 'Confirm' : 'Reset'}
               </button>
             </div>
