@@ -5,6 +5,7 @@ import Sidebar from "./Sidebar";
 import TerminalDisplay from "./TerminalDisplay";
 import { useState } from "react";
 import { hexToRgba, darkenHex } from '@/lib/colorUtils';
+import GlobalOverlay from './ui/GlobalOverlay';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -43,6 +44,7 @@ export default function DashboardLayout({
 
   return (
     <div className="flex h-screen text-[#fff] font-mono min-h-screen">
+      <GlobalOverlay />
       {/* Left Navigation Frame */}
       <Sidebar
         fontColor={fontColor}
