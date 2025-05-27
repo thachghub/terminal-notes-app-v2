@@ -5,6 +5,12 @@ export type Preferences = {
   fontOpacity: number;
   timezone: string;
   showSeconds: boolean;
+  // Widget visibility
+  showUserInfo: boolean;
+  showCurrentTime: boolean;
+  showCurrentDate: boolean;
+  showSunriseSunset: boolean;
+  showWeekNumber: boolean;
 };
 
 export const DEFAULT_PREFERENCES: Preferences = {
@@ -12,6 +18,11 @@ export const DEFAULT_PREFERENCES: Preferences = {
   fontOpacity: 1,
   timezone: 'America/New_York',
   showSeconds: false,
+  showUserInfo: true,
+  showCurrentTime: true,
+  showCurrentDate: true,
+  showSunriseSunset: true,
+  showWeekNumber: true,
 };
 
 export type PreferencesStore = {
@@ -30,6 +41,17 @@ export type PreferencesStore = {
   resetToDefault: () => void;
   loadOutLabels: Record<string, string>;
   renameLoadOut: (key: string, newName: string) => void;
+  // Widget visibility
+  showUserInfo: boolean;
+  setShowUserInfo: (v: boolean) => void;
+  showCurrentTime: boolean;
+  setShowCurrentTime: (v: boolean) => void;
+  showCurrentDate: boolean;
+  setShowCurrentDate: (v: boolean) => void;
+  showSunriseSunset: boolean;
+  setShowSunriseSunset: (v: boolean) => void;
+  showWeekNumber: boolean;
+  setShowWeekNumber: (v: boolean) => void;
 };
 
 export const usePreferencesStore = create<PreferencesStore>((set, get) => ({
@@ -40,11 +62,11 @@ export const usePreferencesStore = create<PreferencesStore>((set, get) => ({
   setShowSeconds: (v) => set({ showSeconds: v }),
   savedLoadOuts: {},
   saveLoadOut: (key) => {
-    const { fontColor, fontOpacity, timezone, showSeconds } = get();
+    const { fontColor, fontOpacity, timezone, showSeconds, showUserInfo, showCurrentTime, showCurrentDate, showSunriseSunset, showWeekNumber } = get();
     set((state) => ({
       savedLoadOuts: {
         ...state.savedLoadOuts,
-        [key]: { fontColor, fontOpacity, timezone, showSeconds },
+        [key]: { fontColor, fontOpacity, timezone, showSeconds, showUserInfo, showCurrentTime, showCurrentDate, showSunriseSunset, showWeekNumber },
       },
     }));
   },
@@ -69,4 +91,15 @@ export const usePreferencesStore = create<PreferencesStore>((set, get) => ({
         [key]: newName,
       },
     })),
+  // Widget visibility setters
+  showUserInfo: true,
+  setShowUserInfo: (v) => set({ showUserInfo: v }),
+  showCurrentTime: true,
+  setShowCurrentTime: (v) => set({ showCurrentTime: v }),
+  showCurrentDate: true,
+  setShowCurrentDate: (v) => set({ showCurrentDate: v }),
+  showSunriseSunset: true,
+  setShowSunriseSunset: (v) => set({ showSunriseSunset: v }),
+  showWeekNumber: true,
+  setShowWeekNumber: (v) => set({ showWeekNumber: v }),
 })); 
