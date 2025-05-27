@@ -17,23 +17,24 @@ export default function TopNav({ fontColor, fontOpacity, bgColor, bgOpacity }: {
   const gradientEnd = bgColor ? darkenHex(bgColor, 0.18) : '#0a1417';
 
   return (
-    <div
-      className="flex items-start space-x-2 min-h-[3.5rem] py-2"
-    >
-      {/* Nav Buttons */}
-      <button style={{ borderColor }} className="px-4 border text-cyan-300 hover:text-yellow-400 text-sm whitespace-normal py-2 h-auto min-h-[2.5rem]">
-        &gt; New Note
-      </button>
-      <button style={{ borderColor }} className="px-4 border text-cyan-300 hover:text-yellow-400 text-sm whitespace-normal py-2 h-auto min-h-[2.5rem]">
-        &gt; View Notes
-      </button>
-      <button style={{ borderColor }} className="px-4 border text-cyan-300 hover:text-yellow-400 text-sm whitespace-normal py-2 h-auto min-h-[2.5rem]">
-        &gt; Log Entry
-      </button>
-
-      <button style={{ borderColor }} className="px-4 border text-cyan-300 hover:text-yellow-400 text-sm whitespace-normal py-2 h-auto min-h-[2.5rem]">
-        &gt; Log-in-out
-      </button>
-    </div>
+    <header aria-label="Top Navigation Bar">
+      <div
+        className="flex items-start space-x-2 min-h-[3.5rem] py-2"
+      >
+        {/* Nav Buttons */}
+        <button style={{ borderColor }} className="px-4 border text-cyan-300 hover:text-yellow-400 text-sm whitespace-normal py-2 h-auto min-h-[2.5rem]" aria-label="Create new note">
+          &gt; New Note
+        </button>
+        <button style={{ borderColor }} className="px-4 border text-cyan-300 hover:text-yellow-400 text-sm whitespace-normal py-2 h-auto min-h-[2.5rem]" aria-label="View notes">
+          &gt; View Notes
+        </button>
+        <button style={{ borderColor }} className="px-4 border text-cyan-300 hover:text-yellow-400 text-sm whitespace-normal py-2 h-auto min-h-[2.5rem]" aria-label="Log entry">
+          &gt; Log Entry
+        </button>
+        <button style={{ borderColor }} className="px-4 border text-cyan-300 hover:text-yellow-400 text-sm whitespace-normal py-2 h-auto min-h-[2.5rem]" aria-label="Log in or out">
+          &gt; Log-in-out
+        </button>
+      </div>
+    </header>
   );
 }

@@ -45,6 +45,7 @@ export default function Sidebar({ fontColor, fontOpacity, bgColor, bgOpacity }: 
           rotate: isCollapsed ? 180 : 0
         }}
         transition={{ duration: 0.3, ease: 'easeInOut' }}
+        aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
       >
         &gt;
       </motion.button>
@@ -59,29 +60,42 @@ export default function Sidebar({ fontColor, fontOpacity, bgColor, bgOpacity }: 
             transition={{ duration: 0.3 }}
             className="flex flex-col items-center"
           >
-            <nav className="flex flex-col space-y-3 pt-16 text-lg w-full items-center">
+            <nav className="flex flex-col space-y-3 pt-16 text-lg w-full items-center" aria-label="Main Sidebar">
               <a href="/" style={{ color: textColor }}
-                className="relative py-2 my-1 text-cyan-300 hover:text-cyan-100 transition-colors cursor-pointer group block text-center w-full">
+                className="relative py-2 my-1 text-cyan-300 hover:text-cyan-100 transition-colors cursor-pointer group block text-center w-full"
+                aria-label="Go to Dashboard"
+              >
                 Dashboard
                 <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-cyan-400 transition-all duration-300 group-hover:w-full"></span>
               </a>
-              <a href="#" style={{ color: textColor }}
-                className="relative py-2 my-1 text-cyan-300 hover:text-cyan-100 transition-colors cursor-pointer group block text-center w-full">
+              {/* TODO: Replace with real route when implemented */}
+              <a href="#" onClick={e => e.preventDefault()} style={{ color: textColor }}
+                className="relative py-2 my-1 text-cyan-300 hover:text-cyan-100 transition-colors cursor-pointer group block text-center w-full"
+                aria-label="View List (coming soon)"
+              >
                 List
                 <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-cyan-400 transition-all duration-300 group-hover:w-full"></span>
               </a>
-              <a href="#" style={{ color: textColor }}
-                className="relative py-2 my-1 text-cyan-300 hover:text-cyan-100 transition-colors cursor-pointer group block text-center w-full">
+              {/* TODO: Replace with real route when implemented */}
+              <a href="#" onClick={e => e.preventDefault()} style={{ color: textColor }}
+                className="relative py-2 my-1 text-cyan-300 hover:text-cyan-100 transition-colors cursor-pointer group block text-center w-full"
+                aria-label="View Dates (coming soon)"
+              >
                 Dates
                 <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-cyan-400 transition-all duration-300 group-hover:w-full"></span>
               </a>
-              <a href="#" style={{ color: textColor }}
-                className="relative py-2 my-1 text-cyan-300 hover:text-cyan-100 transition-colors cursor-pointer group block text-center w-full">
+              {/* TODO: Replace with real route when implemented */}
+              <a href="#" onClick={e => e.preventDefault()} style={{ color: textColor }}
+                className="relative py-2 my-1 text-cyan-300 hover:text-cyan-100 transition-colors cursor-pointer group block text-center w-full"
+                aria-label="View Timer (coming soon)"
+              >
                 Timer
                 <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-cyan-400 transition-all duration-300 group-hover:w-full"></span>
               </a>
               <a href="/settings" style={{ color: textColor }}
-                className="relative py-2 my-1 text-cyan-300 hover:text-cyan-100 transition-colors cursor-pointer group block text-center w-full">
+                className="relative py-2 my-1 text-cyan-300 hover:text-cyan-100 transition-colors cursor-pointer group block text-center w-full"
+                aria-label="Go to Settings"
+              >
                 Settings
                 <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-cyan-400 transition-all duration-300 group-hover:w-full"></span>
               </a>
@@ -92,10 +106,10 @@ export default function Sidebar({ fontColor, fontOpacity, bgColor, bgOpacity }: 
 
       {/* Footer only visible when expanded */}
       {!isCollapsed && (
-        <div className="absolute bottom-0 left-0 w-full pb-2 text-xs text-center">
+        <footer className="absolute bottom-0 left-0 w-full pb-2 text-xs text-center" aria-label="Sidebar Footer">
           <div className="text-cyan-300">&copy; HYPERSKYE LLC</div>
           <div className="text-cyan-500 opacity-80">Developed <span className="text-yellow-400">2025</span></div>
-        </div>
+        </footer>
       )}
     </motion.div>
   );

@@ -183,24 +183,38 @@ export default function TerminalDisplayWidgets() {
       )}
       {visibleRows.sunrise && (
         <div className="flex gap-24 items-center relative" ref={dropdownRef}>
-          <span
+          <button
             className="text-cyan-500 cursor-pointer select-none hover:text-yellow-400 transition-colors"
             title="Click to change time zone"
+            aria-haspopup="listbox"
+            aria-expanded={showTimezoneDropdown}
+            aria-controls="timezone-listbox"
+            aria-label="Change time zone"
             onClick={() => setShowTimezoneDropdown((v: boolean) => !v)}
+            type="button"
           >
             {label}
-          </span>
+          </button>
           <span className="text-cyan-300">{displayTime}</span>
           {showTimezoneDropdown && (
             <div className="absolute left-0 top-6 bg-gray-900 border border-cyan-700 rounded shadow-lg z-10">
-              <ul className="py-1 px-2 max-h-48 overflow-y-auto">
+              <ul className="py-1 px-2 max-h-48 overflow-y-auto" id="timezone-listbox" role="listbox">
                 {timezones.map((tz: string) => (
                   <li
                     key={tz}
                     className={`py-1 px-2 hover:bg-cyan-800 cursor-pointer ${tz === timezone ? 'text-yellow-400' : 'text-cyan-300'}`}
+                    role="option"
+                    aria-selected={tz === timezone}
+                    tabIndex={0}
                     onClick={() => {
                       setTimezone(tz);
                       setShowTimezoneDropdown(false);
+                    }}
+                    onKeyDown={e => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        setTimezone(tz);
+                        setShowTimezoneDropdown(false);
+                      }
                     }}
                   >
                     {tz}

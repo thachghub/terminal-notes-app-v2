@@ -146,6 +146,9 @@ export default function SettingsDashboard() {
                     checked={val}
                     onChange={() => handleToggleRow(key as keyof typeof visibleRows)}
                     className="accent-cyan-500"
+                    role="switch"
+                    aria-checked={val}
+                    aria-label={`Toggle ${key.charAt(0).toUpperCase() + key.slice(1)} widget`}
                   />
                   {key.charAt(0).toUpperCase() + key.slice(1)}
                 </label>

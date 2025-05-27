@@ -39,15 +39,15 @@ export default function ColorPickerPalette({ label, color, opacity = 1, onChange
 
   return (
     <div className="flex flex-col gap-2 mb-4 p-2 bg-[#062c33] rounded border border-cyan-700 w-full max-w-xs">
-      <span className="text-cyan-300 text-xs font-bold mb-1">{label}</span>
-      <input type="color" value={color} onChange={handleColorChange} className="w-10 h-10 rounded-full border border-cyan-500" />
+      <span className="text-cyan-300 text-xs font-bold mb-1" id="color-label">{label}</span>
+      <input type="color" value={color} onChange={handleColorChange} className="w-10 h-10 rounded-full border border-cyan-500" aria-label={`Select ${label} color`} aria-labelledby="color-label" />
       <div className="flex gap-2 items-center">
         <span className="text-cyan-400 text-xs">R</span>
-        <input type="number" min={0} max={255} value={r} onChange={e => handleRGBChange('r', Number(e.target.value))} className="w-12 px-1 py-0.5 rounded bg-[#0f2124] text-cyan-100 border border-cyan-600" />
+        <input type="number" min={0} max={255} value={r} onChange={e => handleRGBChange('r', Number(e.target.value))} className="w-12 px-1 py-0.5 rounded bg-[#0f2124] text-cyan-100 border border-cyan-600" aria-label="Red channel" />
         <span className="text-cyan-400 text-xs">G</span>
-        <input type="number" min={0} max={255} value={g} onChange={e => handleRGBChange('g', Number(e.target.value))} className="w-12 px-1 py-0.5 rounded bg-[#0f2124] text-cyan-100 border border-cyan-600" />
+        <input type="number" min={0} max={255} value={g} onChange={e => handleRGBChange('g', Number(e.target.value))} className="w-12 px-1 py-0.5 rounded bg-[#0f2124] text-cyan-100 border border-cyan-600" aria-label="Green channel" />
         <span className="text-cyan-400 text-xs">B</span>
-        <input type="number" min={0} max={255} value={b} onChange={e => handleRGBChange('b', Number(e.target.value))} className="w-12 px-1 py-0.5 rounded bg-[#0f2124] text-cyan-100 border border-cyan-600" />
+        <input type="number" min={0} max={255} value={b} onChange={e => handleRGBChange('b', Number(e.target.value))} className="w-12 px-1 py-0.5 rounded bg-[#0f2124] text-cyan-100 border border-cyan-600" aria-label="Blue channel" />
       </div>
       <div className="flex gap-2 items-center mt-2">
         <span className="text-cyan-400 text-xs">Opacity</span>
@@ -57,6 +57,7 @@ export default function ColorPickerPalette({ label, color, opacity = 1, onChange
           value={opacity}
           onChange={handleOpacityChange}
           className="w-24 accent-cyan-500"
+          aria-label="Opacity"
         />
         <input
           type="number"
@@ -64,6 +65,7 @@ export default function ColorPickerPalette({ label, color, opacity = 1, onChange
           value={opacity}
           onChange={handleOpacityChange}
           className="w-14 px-1 py-0.5 rounded bg-[#0f2124] text-cyan-100 border border-cyan-600"
+          aria-label="Opacity value"
         />
       </div>
     </div>
