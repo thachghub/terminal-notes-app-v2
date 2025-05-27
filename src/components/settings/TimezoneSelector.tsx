@@ -1,13 +1,33 @@
-import { ToggleProps } from '@/types/ui';
+'use client';
+import { usePreferencesStore } from '@/store/preferencesStore';
 
-// TODO: Replace ToggleProps with actual props for timezone selection
-export default function TimezoneSelector({ value, onChange, label }: ToggleProps) {
+const timezones = [
+  'America/New_York',
+  'America/Chicago',
+  'America/Denver',
+  'America/Los_Angeles',
+  'Europe/London',
+  'Europe/Paris',
+  'Asia/Tokyo',
+  'Australia/Sydney',
+];
+
+export default function TimezoneSelector() {
+  const timezone = usePreferencesStore(s => s.timezone);
+  const setTimezone = usePreferencesStore(s => s.setTimezone);
+
   return (
     <div>
-      <label htmlFor="timezone-selector">{label}</label>
-      <select id="timezone-selector" onChange={e => onChange(e.target.value === 'true')} aria-label={label}>
-        <option value="true">Timezone 1</option>
-        <option value="false">Timezone 2</option>
+      <label htmlFor="timezone-selector">Timezone</label>
+      <select
+        id="timezone-selector"
+        value={timezone}
+        onChange={e => setTimezone(e.target.value)}
+        className="ml-2 p-1 rounded bg-neutral-700 text-white"
+      >
+        {timezones.map(tz => (
+          <option key={tz} value={tz}>{tz}</option>
+        ))}
       </select>
     </div>
   );
