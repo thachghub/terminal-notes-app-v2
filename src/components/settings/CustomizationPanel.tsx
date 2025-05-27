@@ -8,7 +8,7 @@ import ResetToDefaultButton from './ResetToDefaultButton';
 
 export default function CustomizationPanel() {
   return (
-    <div className="border border-cyan-500 p-4 space-y-6 font-mono text-sm text-cyan-100 bg-[#0a0f11]">
+    <div className="border border-cyan-500 p-4 space-y-6 font-mono text-sm text-cyan-100 bg-transparent">
       <h2 className="text-base border-b border-cyan-700 pb-1 uppercase tracking-wide">Customization Panel</h2>
       <FontColorPicker />
       <FontOpacitySlider />
