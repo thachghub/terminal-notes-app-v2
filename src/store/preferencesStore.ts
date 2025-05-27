@@ -28,6 +28,8 @@ export type PreferencesStore = {
   loadLoadOut: (key: string) => void;
   resetLoadOut: (key: string) => void;
   resetToDefault: () => void;
+  loadOutLabels: Record<string, string>;
+  renameLoadOut: (key: string, newName: string) => void;
 };
 
 export const usePreferencesStore = create<PreferencesStore>((set, get) => ({
@@ -59,4 +61,12 @@ export const usePreferencesStore = create<PreferencesStore>((set, get) => ({
     });
   },
   resetToDefault: () => set(DEFAULT_PREFERENCES),
+  loadOutLabels: {},
+  renameLoadOut: (key, newName) =>
+    set((state) => ({
+      loadOutLabels: {
+        ...state.loadOutLabels,
+        [key]: newName,
+      },
+    })),
 })); 
