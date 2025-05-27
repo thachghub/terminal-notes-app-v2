@@ -1,21 +1,30 @@
 'use client';
 
 import { usePreferencesStore } from '@/store/preferencesStore';
-import { useState } from 'react';
+import { useState, useRef, useCallback } from 'react';
 
 const loadOutKeys = ['LoadOut1', 'LoadOut2', 'LoadOut3', 'LoadOut4', 'LoadOut5'];
 
 export default function LoadOutManager() {
-  const { savedLoadOuts, saveLoadOut, loadLoadOut, resetLoadOut, loadOutLabels, renameLoadOut } = usePreferencesStore((s) => ({
-    savedLoadOuts: s.savedLoadOuts,
-    saveLoadOut: s.saveLoadOut,
-    loadLoadOut: s.loadLoadOut,
-    resetLoadOut: s.resetLoadOut,
-    loadOutLabels: s.loadOutLabels,
-    renameLoadOut: s.renameLoadOut,
-  }));
+  const savedLoadOuts = usePreferencesStore(s => s.savedLoadOuts);
+  const saveLoadOut = usePreferencesStore(s => s.saveLoadOut);
+  const loadLoadOut = usePreferencesStore(s => s.loadLoadOut);
+  const resetLoadOut = usePreferencesStore(s => s.resetLoadOut);
+  const loadOutLabels = usePreferencesStore(s => s.loadOutLabels);
+  const renameLoadOut = usePreferencesStore(s => s.renameLoadOut);
 
   const [confirmReset, setConfirmReset] = useState<string | null>(null);
+  const renameTimeouts = useRef<Record<string, NodeJS.Timeout>>({});
+
+  const debouncedRename = useCallback((key: string, value: string) => {
+    if (renameTimeouts.current[key]) {
+      clearTimeout(renameTimeouts.current[key]);
+    }
+
+    renameTimeouts.current[key] = setTimeout(() => {
+      renameLoadOut(key, value);
+    }, 300);
+  }, [renameLoadOut]);
 
   return (
     <div className="space-y-3 mt-6 border-t border-cyan-900 pt-4">
@@ -30,11 +39,11 @@ export default function LoadOutManager() {
             <input
               className="bg-transparent text-cyan-300 focus:outline-none font-mono w-full text-xs border-b border-cyan-700 mb-1"
               value={loadOutLabels[key] ?? key}
-              onChange={(e) => renameLoadOut(key, e.target.value)}
+              onChange={(e) => debouncedRename(key, e.target.value)}
               placeholder={key}
               disabled={!isSaved}
             />
-            {isSaved && (
+            {isSaved && savedLoadOuts[key] && (
               <div className="flex items-center gap-2 text-xs text-cyan-500">
                 <div
                   className="w-4 h-4 border border-cyan-700"

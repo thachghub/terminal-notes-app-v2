@@ -1,6 +1,6 @@
 // src/app/settings/page.tsx
-import SettingsDashboard from "../../components/SettingsDashboard";
+import SettingsClient from './SettingsClient';
 
 export default function SettingsPage() {
-  return <SettingsDashboard />;
+  return <SettingsClient />;
 }

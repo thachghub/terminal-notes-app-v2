@@ -1,3 +1,5 @@
+'use client';
+
 // src/components/TerminalDisplay.tsx
 
 import { motion, AnimatePresence } from 'framer-motion';
@@ -7,11 +9,20 @@ import TerminalDisplayWidgets from './TerminalDisplayWidgets';
 import { hexToRgba, darkenHex } from '@/lib/colorUtils';
 import { useUIStore } from '@/store/uiStore';
 
-export default function TerminalDisplay({ fontColor, fontOpacity, bgColor, bgOpacity }: {
+export default function TerminalDisplay({ 
+  fontColor, 
+  fontOpacity, 
+  bgColor, 
+  bgOpacity,
+  children,
+  title
+}: {
   fontColor?: string;
   fontOpacity?: number;
   bgColor?: string;
   bgOpacity?: number;
+  children?: React.ReactNode;
+  title?: string;
 }) {
   const showSignIn = useUIStore((s) => s.showSignIn);
   const showSignUp = useUIStore((s) => s.showSignUp);
@@ -68,8 +79,14 @@ export default function TerminalDisplay({ fontColor, fontOpacity, bgColor, bgOpa
 
   return (
     <main className="flex flex-col gap-8 p-4 h-full min-h-full bg-transparent" style={{ color: textColor }} aria-label="Terminal Main Content">
-      <TerminalTitle />
-      <TerminalDisplayWidgets />
+      <header className="flex flex-col gap-8">
+        {title ? (
+          <h1 className="text-cyan-400 text-4xl font-[VT323] tracking-tight">{title}</h1>
+        ) : (
+          <TerminalTitle />
+        )}
+        <TerminalDisplayWidgets />
+      </header>
       
       <section className="masterloginpanel mt-8 bg-transparent" aria-label="Authentication Panel">
         <div className="flex gap-4 mb-4">
@@ -155,6 +172,12 @@ export default function TerminalDisplay({ fontColor, fontOpacity, bgColor, bgOpa
           )}
         </AnimatePresence>
       </section>
+
+      {children && (
+        <div className="flex-1 mt-8">
+          {children}
+        </div>
+      )}
     </main>
   );
 }
