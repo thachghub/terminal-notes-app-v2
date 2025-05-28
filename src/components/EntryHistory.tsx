@@ -64,6 +64,36 @@ export default function EntryHistory() {
     }
   }, [user]);
 
+  // Global click handler to clear highlighting when clicking outside entries
+  useEffect(() => {
+    const handleGlobalClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      
+      // Check if click is inside any entry-related element
+      const isInsideEntry = target.closest('.entry-container') || 
+                           target.closest('[data-entry-content]') ||
+                           target.closest('[data-editing-area]') ||
+                           target.closest('button') ||
+                           target.closest('textarea') ||
+                           target.closest('input');
+      
+      console.log('Global click:', target, 'Inside entry:', !!isInsideEntry);
+      
+      // If clicked outside any entry-related element, clear states
+      if (!isInsideEntry) {
+        console.log('Clearing edit state - clicked outside entry');
+        setSelectedIndex(-1);
+        setHoveredIndex(-1);
+        setIsMouseActive(false);
+        setEditingId(null); // Exit edit mode
+        setEditContent(''); // Clear edit content
+      }
+    };
+
+    document.addEventListener('click', handleGlobalClick);
+    return () => document.removeEventListener('click', handleGlobalClick);
+  }, []);
+
   useEffect(() => {
     if (!user || !user.emailVerified) {
       setEntries([]);
@@ -297,12 +327,19 @@ export default function EntryHistory() {
     setTimestampsCollapsed(prev => !prev);
   };
 
+  const handleTimestampToggleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    handleToggleTimestamps();
+  };
+
   // Handle direct click on entry content to start inline editing
   const handleContentClick = (e: React.MouseEvent, entry: Entry) => {
+    console.log('Content clicked:', entry.id);
     e.stopPropagation();
     setEditingId(entry.id);
     setEditContent(entry.content);
     setIsMouseActive(true);
+    console.log('Edit state set:', entry.id);
   };
 
   // Handle mouse enter with priority over keyboard
@@ -321,6 +358,15 @@ export default function EntryHistory() {
     // Don't immediately set isMouseActive to false, let keyboard take over naturally
   };
 
+  // Handle click on input area to clear entry highlighting
+  const handleInputClick = () => {
+    setSelectedIndex(-1);
+    setHoveredIndex(-1);
+    setIsMouseActive(false);
+    setEditingId(null); // Exit edit mode
+    setEditContent(''); // Clear edit content
+  };
+
   if (!user || !user.emailVerified) {
     return (
       <div className="text-gray-400 font-mono">
@@ -336,7 +382,7 @@ export default function EntryHistory() {
     <div className="text-cyan-400 font-mono">
       
       {/* Entry Input - Pure terminal style */}
-      <form onSubmit={handleSubmit} className="mb-2">
+      <form onSubmit={handleSubmit} className="mb-2" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-start">
           <textarea
             ref={inputRef}
@@ -359,6 +405,7 @@ export default function EntryHistory() {
               target.style.height = 'auto';
               target.style.height = target.scrollHeight + 'px';
             }}
+            onClick={handleInputClick}
           />
           {isSubmitting && (
             <span className="text-yellow-400 text-sm ml-2 mt-1">saving...</span>
@@ -439,7 +486,7 @@ export default function EntryHistory() {
               {/* Timestamp toggle control */}
               <div className="flex justify-end mb-2">
                 <button
-                  onClick={handleToggleTimestamps}
+                  onClick={handleTimestampToggleClick}
                   className="text-gray-400 hover:text-yellow-400 transition-colors text-sm focus:outline-none focus:ring-2 focus:ring-cyan-400/50 bg-transparent border-none p-1 font-mono"
                   title={timestampsCollapsed ? "Show timestamps" : "Hide timestamps"}
                 >
@@ -455,7 +502,7 @@ export default function EntryHistory() {
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.2 }}
-                    className={`group transition-all duration-200 ${
+                    className={`group transition-all duration-200 entry-container ${
                       // Mouse hover takes priority over keyboard selection
                       isMouseActive && hoveredIndex === index
                         ? 'bg-cyan-400/5 shadow-lg shadow-cyan-400/10'
@@ -465,6 +512,7 @@ export default function EntryHistory() {
                     }`}
                     onMouseEnter={() => handleMouseEnter(index)}
                     onMouseLeave={handleMouseLeave}
+                    onClick={(e) => e.stopPropagation()}
                   >
                     {editingId === entry.id ? (
                       <div className="space-y-1">
@@ -480,6 +528,7 @@ export default function EntryHistory() {
                             className="flex-1 bg-transparent border-none outline-none text-cyan-400 font-mono cursor-text resize-none min-h-[1.5rem] scrollbar-hide"
                             autoFocus
                             rows={1}
+                            data-editing-area="true"
                             style={{ 
                               height: 'auto',
                               minHeight: '1.5rem',
@@ -517,7 +566,7 @@ export default function EntryHistory() {
                             {!timestampsCollapsed && (
                               <div 
                                 className="font-mono text-base text-gray-500 shrink-0 mr-4 flex items-center cursor-pointer hover:text-yellow-400 transition-colors"
-                                onClick={handleToggleTimestamps}
+                                onClick={handleTimestampToggleClick}
                                 title={timestampsCollapsed ? "Show timestamps" : "Hide timestamps"}
                               >
                                 {formatTimestamp(entry.createdAt)}
@@ -527,6 +576,7 @@ export default function EntryHistory() {
                               className={`font-mono text-base text-gray-300 flex-1 min-w-0 break-words cursor-text hover:bg-cyan-400/5 hover:text-cyan-300 transition-all duration-200 rounded px-1 py-0.5 ${accomplishedEntries.has(entry.id) ? 'line-through text-gray-500 opacity-60' : ''}`}
                               onClick={(e) => handleContentClick(e, entry)}
                               title="Click to edit"
+                              data-entry-content="true"
                             >
                               {entry.content}
                               {accomplishedEntries.has(entry.id) && <span className="ml-2 text-green-400 text-xs">✓ accomplished</span>}
