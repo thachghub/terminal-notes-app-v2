@@ -21,7 +21,7 @@ function Sparkle({ width, height }: { width: number; height: number }) {
   );
 }
 
-export default function TerminalTitle() {
+export default function TerminalTitle({ customTitle, customSubtitle }: { customTitle?: string; customSubtitle?: string }) {
   const [typingKey, setTypingKey] = useState(0);
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -29,7 +29,8 @@ export default function TerminalTitle() {
     }, 5000); // 5 seconds for typing effect
     return () => clearInterval(intervalId);
   }, []);
-  const title = 'HYPER TERMINAL';
+  const title = customTitle || 'HYPER TERMINAL';
+  const subtitle = customSubtitle || '// sending transmission';
   const containerRef = useRef<HTMLHeadingElement>(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const [animationKey, setAnimationKey] = useState(0); // State to trigger re-animation
@@ -85,7 +86,7 @@ export default function TerminalTitle() {
           ))}
         </h1>
         <span className="text-cyan-400 text-sm font-mono mt-1 opacity-80">
-          {'// sending transmission'}
+          {subtitle}
           {[0, 1, 2].map(dotIdx => (
             <motion.span
               key={`dot-${dotIdx}-${typingKey}`}

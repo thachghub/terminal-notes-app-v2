@@ -21,6 +21,7 @@ export default function TerminalDisplay({
   bgOpacity,
   children,
   title,
+  subtitle,
   hideAuthPanel,
   showEntryTerminal
 }: {
@@ -30,6 +31,7 @@ export default function TerminalDisplay({
   bgOpacity?: number;
   children?: React.ReactNode;
   title?: string;
+  subtitle?: string;
   hideAuthPanel?: boolean;
   showEntryTerminal?: boolean;
 }) {
@@ -316,7 +318,7 @@ export default function TerminalDisplay({
 
       <header className="flex flex-col gap-8">
         {title ? (
-          <h1 className="text-cyan-400 text-4xl font-[VT323] tracking-tight">{title}</h1>
+          <TerminalTitle customTitle={title} customSubtitle={subtitle} />
         ) : (
           <TerminalTitle />
         )}

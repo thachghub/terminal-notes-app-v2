@@ -54,7 +54,8 @@ export default function EntryTerminalPage() {
           fontOpacity={fontOpacity}
           bgColor="#062c33"
           bgOpacity={1}
-          title="$ loading --entry-terminal"
+          title="Entry Terminal"
+          subtitle="// enter a note, reminder, or thought"
           hideAuthPanel={true}
         >
           <div className="text-cyan-400">
@@ -86,7 +87,8 @@ export default function EntryTerminalPage() {
         fontOpacity={fontOpacity}
         bgColor="#062c33"
         bgOpacity={1}
-        title="$ entry --terminal"
+        title="Entry Terminal"
+        subtitle="// enter a note, reminder, or thought"
         hideAuthPanel={true}
       >
         {/* Pure Terminal Interface */}

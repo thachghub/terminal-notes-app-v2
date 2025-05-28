@@ -40,6 +40,9 @@ export default function EntryHistory() {
   const [showFeedback, setShowFeedback] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
+  // Delete confirmation states
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
@@ -167,14 +170,40 @@ export default function EntryHistory() {
   };
 
   const handleDelete = async (entryId: string) => {
-    if (!confirm('Are you sure you want to delete this entry?')) return;
+    setDeleteConfirmId(entryId);
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteConfirmId) return;
 
     try {
-      await deleteDoc(doc(db, 'entryterminalentries', entryId));
+      await deleteDoc(doc(db, 'entryterminalentries', deleteConfirmId));
+      setDeleteConfirmId(null);
     } catch (error) {
       console.error('Error deleting entry:', error);
+      setDeleteConfirmId(null);
     }
   };
+
+  const cancelDelete = () => {
+    setDeleteConfirmId(null);
+  };
+
+  // Handle keyboard events for delete confirmation
+  useEffect(() => {
+    if (!deleteConfirmId) return;
+
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.key.toLowerCase() === 'y') {
+        confirmDelete();
+      } else if (e.key.toLowerCase() === 'n' || e.key === 'Escape') {
+        cancelDelete();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyPress);
+    return () => document.removeEventListener('keydown', handleKeyPress);
+  }, [deleteConfirmId]);
 
   const formatTimestamp = (timestamp: Timestamp) => {
     if (!timestamp) return 'Unknown time';
@@ -206,19 +235,21 @@ export default function EntryHistory() {
       {/* Entry Input - Pure terminal style */}
       <form onSubmit={handleSubmit} className="mb-2">
         <div className="flex items-start">
-          <span className="text-cyan-400 mr-2 mt-1">&gt;</span>
           <textarea
             ref={inputRef}
             value={entry}
             onChange={(e) => setEntry(e.target.value)}
             onKeyDown={handleKeyPress}
-            placeholder="Type your entry and press Cmd+Enter to submit...(notes, reminders, thoughts...)"
+            placeholder="Type entry, press Cmd+Enter to submit..."
             disabled={isSubmitting}
-            className="flex-1 bg-transparent border-none outline-none text-cyan-400 placeholder-cyan-600 font-mono resize-none min-h-[1.5rem]"
+            className="flex-1 bg-transparent border-none outline-none text-cyan-400 placeholder-cyan-600 font-mono resize-none min-h-[1.5rem] scrollbar-hide animate-pulse focus:animate-none"
             rows={1}
             style={{ 
               height: 'auto',
-              minHeight: '1.5rem'
+              minHeight: '1.5rem',
+              backgroundColor: 'transparent',
+              resize: 'none',
+              overflow: 'hidden'
             }}
             onInput={(e) => {
               const target = e.target as HTMLTextAreaElement;
@@ -242,6 +273,46 @@ export default function EntryHistory() {
             className="mb-2 text-green-400 text-sm"
           >
             {feedback}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Delete Confirmation Modal */}
+      <AnimatePresence>
+        {deleteConfirmId && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black flex items-center justify-center z-50"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-black border border-cyan-400 p-6 max-w-md w-full mx-4 font-mono"
+            >
+              <div className="text-cyan-400 mb-4">
+                $ rm --confirm entry
+              </div>
+              <div className="text-gray-300 mb-6">
+                &gt; Are you sure you want to delete this entry?
+              </div>
+              <div className="flex space-x-4">
+                <button
+                  onClick={confirmDelete}
+                  className="text-red-400 hover:text-red-300 border border-red-400 hover:border-red-300 px-4 py-2 transition-colors"
+                >
+                  [Y] Delete
+                </button>
+                <button
+                  onClick={cancelDelete}
+                  className="text-cyan-400 hover:text-cyan-300 border border-cyan-400 hover:border-cyan-300 px-4 py-2 transition-colors"
+                >
+                  [N] Cancel
+                </button>
+              </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -306,11 +377,14 @@ export default function EntryHistory() {
                   ) : (
                     <div>
                       <div className="py-1">
-                        <div className="flex items-center mb-1">
-                          <div className="text-xs text-gray-500">
+                        <div className="flex flex-wrap items-start gap-2">
+                          <div className="text-xs text-gray-500 shrink-0">
                             {formatTimestamp(entry.createdAt)}
                           </div>
-                          <div className="ml-3 flex space-x-1">
+                          <div className="text-gray-300 flex-1 min-w-0 break-words">
+                            {entry.content}
+                          </div>
+                          <div className="flex space-x-1 shrink-0">
                             <button
                               onClick={() => handleEdit(entry)}
                               className="text-cyan-400 hover:text-cyan-300 text-xs"
@@ -324,9 +398,6 @@ export default function EntryHistory() {
                               [X]
                             </button>
                           </div>
-                        </div>
-                        <div className="text-gray-300">
-                          &gt; {entry.content}
                         </div>
                       </div>
                     </div>
