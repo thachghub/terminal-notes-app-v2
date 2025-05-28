@@ -233,7 +233,7 @@ export default function TerminalDisplay({
   const handleCloseWelcome = () => {
     setShowWelcome(false);
     setWelcomeStep(0);
-    router.push('/dashboard');
+    router.push('/userdashboard');
     window.location.reload();
   };
 

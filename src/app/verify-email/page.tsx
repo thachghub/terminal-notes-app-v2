@@ -62,7 +62,7 @@ export default function VerifyEmailPage() {
   };
 
   const goToDashboard = () => {
-    router.push("/dashboard");
+    router.push("/userdashboard");
   };
 
   const goToSignup = () => {

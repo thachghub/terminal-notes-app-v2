@@ -21,9 +21,9 @@ export default function SignUpPage() {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         console.log("User signed up:", user.email);
-        // If user is already signed in and verified, redirect to dashboard
+        // If user is already signed in and verified, redirect to user dashboard
         if (user.emailVerified) {
-          router.push("/dashboard");
+          router.push("/userdashboard");
         }
       }
     });

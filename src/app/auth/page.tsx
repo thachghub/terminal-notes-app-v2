@@ -47,7 +47,7 @@ export default function AuthPage() {
   };
 
   const goToDashboard = () => {
-    router.push("/dashboard");
+    router.push("/userdashboard");
   };
 
   if (isLoading) {
