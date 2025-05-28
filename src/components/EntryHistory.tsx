@@ -43,6 +43,10 @@ export default function EntryHistory() {
   // Delete confirmation states
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
+  // Navigation states
+  const [selectedIndex, setSelectedIndex] = useState(-1); // -1 means no selection (input field)
+  const [originalEntry, setOriginalEntry] = useState(''); // Store original input when navigating
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
@@ -141,6 +145,49 @@ export default function EntryHistory() {
     if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
       e.preventDefault();
       handleSubmit(e);
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (selectedIndex === -1) {
+        // First time pressing down - store original entry and select first entry
+        setOriginalEntry(entry);
+        if (entries.length > 0) {
+          setSelectedIndex(0);
+          setEntry(entries[0].content);
+        }
+      } else if (selectedIndex < entries.length - 1) {
+        // Navigate to next entry
+        const newIndex = selectedIndex + 1;
+        setSelectedIndex(newIndex);
+        setEntry(entries[newIndex].content);
+      }
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (selectedIndex > 0) {
+        // Navigate to previous entry
+        const newIndex = selectedIndex - 1;
+        setSelectedIndex(newIndex);
+        setEntry(entries[newIndex].content);
+      } else if (selectedIndex === 0) {
+        // Go back to original input
+        setSelectedIndex(-1);
+        setEntry(originalEntry);
+      }
+    } else if (e.key === 'Escape') {
+      // Reset navigation and go back to original input
+      e.preventDefault();
+      setSelectedIndex(-1);
+      setEntry(originalEntry);
+      setOriginalEntry('');
+    }
+  };
+
+  // Reset navigation when entry changes (user types)
+  const handleEntryChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setEntry(e.target.value);
+    if (selectedIndex !== -1) {
+      // User is typing, reset navigation
+      setSelectedIndex(-1);
+      setOriginalEntry('');
     }
   };
 
@@ -238,7 +285,7 @@ export default function EntryHistory() {
           <textarea
             ref={inputRef}
             value={entry}
-            onChange={(e) => setEntry(e.target.value)}
+            onChange={handleEntryChange}
             onKeyDown={handleKeyPress}
             placeholder="Type entry, press Cmd+Enter to submit..."
             disabled={isSubmitting}
@@ -340,7 +387,7 @@ export default function EntryHistory() {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.2 }}
-                  className="group"
+                  className={`group ${selectedIndex === index ? 'bg-cyan-400/10 border-l-2 border-cyan-400 pl-2' : ''}`}
                 >
                   {editingId === entry.id ? (
                     <div className="space-y-1">
