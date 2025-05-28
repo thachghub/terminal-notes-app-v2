@@ -23,6 +23,10 @@ export default function TopNav({ fontColor, fontOpacity, bgColor, bgOpacity }: {
     router.push('/auth');
   };
 
+  const handleLogEntryClick = () => {
+    router.push('/entryterminal');
+  };
+
   return (
     <header aria-label="Top Navigation Bar">
       <div
@@ -35,7 +39,12 @@ export default function TopNav({ fontColor, fontOpacity, bgColor, bgOpacity }: {
         <button style={{ borderColor }} className="px-4 border text-cyan-300 hover:text-yellow-400 text-sm whitespace-normal py-2 h-auto min-h-[2.5rem]" aria-label="View notes">
           &gt; View Notes
         </button>
-        <button style={{ borderColor }} className="px-4 border text-cyan-300 hover:text-yellow-400 text-sm whitespace-normal py-2 h-auto min-h-[2.5rem]" aria-label="Log entry">
+        <button 
+          onClick={handleLogEntryClick}
+          style={{ borderColor }} 
+          className="px-4 border text-cyan-300 hover:text-yellow-400 text-sm whitespace-normal py-2 h-auto min-h-[2.5rem]" 
+          aria-label="Log entry"
+        >
           &gt; Log Entry
         </button>
         <button 

@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import TerminalTitle from './TerminalTitle';
 import TerminalDisplayWidgets from './TerminalDisplayWidgets';
+import EntryTerminal from './EntryTerminal';
 import { hexToRgba, darkenHex } from '@/lib/colorUtils';
 import { useUIStore } from '@/store/uiStore';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, signOut, sendPasswordResetEmail } from 'firebase/auth';
@@ -20,7 +21,8 @@ export default function TerminalDisplay({
   bgOpacity,
   children,
   title,
-  hideAuthPanel
+  hideAuthPanel,
+  showEntryTerminal
 }: {
   fontColor?: string;
   fontOpacity?: number;
@@ -29,6 +31,7 @@ export default function TerminalDisplay({
   children?: React.ReactNode;
   title?: string;
   hideAuthPanel?: boolean;
+  showEntryTerminal?: boolean;
 }) {
   const showSignIn = useUIStore((s) => s.showSignIn);
   const showSignUp = useUIStore((s) => s.showSignUp);
@@ -487,6 +490,12 @@ export default function TerminalDisplay({
             )}
           </AnimatePresence>
                 </section>
+      )}
+
+      {showEntryTerminal && (
+        <section className="mt-8" aria-label="Entry Terminal">
+          <EntryTerminal />
+        </section>
       )}
 
       {children && (

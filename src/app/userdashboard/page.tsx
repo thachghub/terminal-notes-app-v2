@@ -6,6 +6,7 @@ import { auth } from "../../firebase/firebase";
 import { useRouter } from "next/navigation";
 import DashboardLayout from "@/components/DashboardLayout";
 import TerminalDisplay from "@/components/TerminalDisplay";
+import EntryHistory from "@/components/EntryHistory";
 import { usePreferencesStore } from "@/store/preferencesStore";
 
 export default function UserDashboardPage() {
@@ -141,7 +142,7 @@ export default function UserDashboardPage() {
               </button>
 
               <button
-                onClick={() => router.push("/logs")}
+                onClick={() => router.push("/entryterminal")}
                 className="border border-yellow-500 text-yellow-500 hover:bg-yellow-500/10 transition-colors p-4 text-left"
               >
                 <div className="text-lg mb-2">&gt; Log Entry</div>
@@ -157,6 +158,9 @@ export default function UserDashboardPage() {
               </button>
             </div>
           </div>
+
+          {/* Entry History */}
+          <EntryHistory />
 
           {/* Terminal Commands Help */}
           <div className="border border-gray-600 text-gray-300 p-4 bg-black/10 rounded">
