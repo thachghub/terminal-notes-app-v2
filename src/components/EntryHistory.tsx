@@ -46,6 +46,7 @@ export default function EntryHistory() {
   // Navigation states
   const [selectedIndex, setSelectedIndex] = useState(-1); // -1 means no selection (input field)
   const [originalEntry, setOriginalEntry] = useState(''); // Store original input when navigating
+  const [accomplishedEntries, setAccomplishedEntries] = useState<Set<string>>(new Set()); // Track accomplished entry IDs
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -148,14 +149,12 @@ export default function EntryHistory() {
     } else if (e.key === 'ArrowDown') {
       e.preventDefault();
       if (selectedIndex === -1) {
-        // First time pressing down - store original entry and select first entry
         setOriginalEntry(entry);
         if (entries.length > 0) {
           setSelectedIndex(0);
           setEntry(entries[0].content);
         }
       } else if (selectedIndex < entries.length - 1) {
-        // Navigate to next entry
         const newIndex = selectedIndex + 1;
         setSelectedIndex(newIndex);
         setEntry(entries[newIndex].content);
@@ -163,17 +162,34 @@ export default function EntryHistory() {
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
       if (selectedIndex > 0) {
-        // Navigate to previous entry
         const newIndex = selectedIndex - 1;
         setSelectedIndex(newIndex);
         setEntry(entries[newIndex].content);
       } else if (selectedIndex === 0) {
-        // Go back to original input
         setSelectedIndex(-1);
         setEntry(originalEntry);
       }
+    } else if (e.key === 'Delete' && selectedIndex !== -1) {
+      e.preventDefault();
+      const currentEntry = entries[selectedIndex];
+      if (accomplishedEntries.has(currentEntry.id)) {
+        // Second delete: prompt for deletion
+        setDeleteConfirmId(currentEntry.id);
+      } else {
+        // First delete: mark as accomplished (strikethrough)
+        setAccomplishedEntries(prev => new Set([...prev, currentEntry.id]));
+      }
+    } else if (e.key === 'Backspace' && selectedIndex !== -1) {
+      e.preventDefault();
+      const currentEntry = entries[selectedIndex];
+      if (accomplishedEntries.has(currentEntry.id)) {
+        // Second backspace: prompt for deletion
+        setDeleteConfirmId(currentEntry.id);
+      } else {
+        // First backspace: mark as accomplished (strikethrough)
+        setAccomplishedEntries(prev => new Set([...prev, currentEntry.id]));
+      }
     } else if (e.key === 'Escape') {
-      // Reset navigation and go back to original input
       e.preventDefault();
       setSelectedIndex(-1);
       setEntry(originalEntry);
@@ -428,8 +444,9 @@ export default function EntryHistory() {
                           <div className="text-xs text-gray-500 shrink-0">
                             {formatTimestamp(entry.createdAt)}
                           </div>
-                          <div className="text-gray-300 flex-1 min-w-0 break-words">
+                          <div className={`text-gray-300 flex-1 min-w-0 break-words ${accomplishedEntries.has(entry.id) ? 'line-through text-gray-500 opacity-60' : ''}`}>
                             {entry.content}
+                            {accomplishedEntries.has(entry.id) && <span className="ml-2 text-green-400 text-xs">✓ accomplished</span>}
                           </div>
                           <div className="flex space-x-1 shrink-0">
                             <button
