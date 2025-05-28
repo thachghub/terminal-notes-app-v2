@@ -45,9 +45,10 @@ export default function EntryHistory() {
 
   // Navigation states
   const [selectedIndex, setSelectedIndex] = useState(-1); // -1 means no selection (input field)
-  const [originalEntry, setOriginalEntry] = useState(''); // Store original input when navigating
   const [accomplishedEntries, setAccomplishedEntries] = useState<Set<string>>(new Set()); // Track accomplished entry IDs
   const [timestampsCollapsed, setTimestampsCollapsed] = useState(false); // Global timestamp collapse state
+  const [hoveredIndex, setHoveredIndex] = useState(-1); // Track which entry is being hovered
+  const [isMouseActive, setIsMouseActive] = useState(false); // Track if mouse is actively being used
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -149,26 +150,29 @@ export default function EntryHistory() {
       handleSubmit(e);
     } else if (e.key === 'ArrowDown') {
       e.preventDefault();
+      // Reset mouse state when keyboard is used
+      setIsMouseActive(false);
+      setHoveredIndex(-1);
+      
       if (selectedIndex === -1) {
-        setOriginalEntry(entry);
         if (entries.length > 0) {
           setSelectedIndex(0);
-          setEntry(entries[0].content);
         }
       } else if (selectedIndex < entries.length - 1) {
         const newIndex = selectedIndex + 1;
         setSelectedIndex(newIndex);
-        setEntry(entries[newIndex].content);
       }
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
+      // Reset mouse state when keyboard is used
+      setIsMouseActive(false);
+      setHoveredIndex(-1);
+      
       if (selectedIndex > 0) {
         const newIndex = selectedIndex - 1;
         setSelectedIndex(newIndex);
-        setEntry(entries[newIndex].content);
       } else if (selectedIndex === 0) {
         setSelectedIndex(-1);
-        setEntry(originalEntry);
       }
     } else if (e.key === 'Delete' && selectedIndex !== -1) {
       e.preventDefault();
@@ -190,22 +194,27 @@ export default function EntryHistory() {
         // First backspace: mark as accomplished (strikethrough)
         setAccomplishedEntries(prev => new Set([...prev, currentEntry.id]));
       }
+    } else if (e.key === 'Enter' && selectedIndex !== -1) {
+      e.preventDefault();
+      // Start editing the selected entry
+      const currentEntry = entries[selectedIndex];
+      setEditingId(currentEntry.id);
+      setEditContent(currentEntry.content);
     } else if (e.key === 'Escape') {
       e.preventDefault();
       setSelectedIndex(-1);
-      setEntry(originalEntry);
-      setOriginalEntry('');
+      setIsMouseActive(false);
+      setHoveredIndex(-1);
     }
   };
 
   // Reset navigation when entry changes (user types)
   const handleEntryChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setEntry(e.target.value);
-    if (selectedIndex !== -1) {
-      // User is typing, reset navigation
-      setSelectedIndex(-1);
-      setOriginalEntry('');
-    }
+    // Reset navigation states when user starts typing
+    setSelectedIndex(-1);
+    setIsMouseActive(false);
+    setHoveredIndex(-1);
   };
 
   const handleEdit = (entry: Entry) => {
@@ -275,15 +284,41 @@ export default function EntryHistory() {
   };
 
   const handleEditKeyPress = (e: React.KeyboardEvent, entryId: string) => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+      e.preventDefault();
       handleSaveEdit(entryId);
     } else if (e.key === 'Escape') {
+      e.preventDefault();
       handleCancelEdit();
     }
   };
 
   const handleToggleTimestamps = () => {
     setTimestampsCollapsed(prev => !prev);
+  };
+
+  // Handle direct click on entry content to start inline editing
+  const handleContentClick = (e: React.MouseEvent, entry: Entry) => {
+    e.stopPropagation();
+    setEditingId(entry.id);
+    setEditContent(entry.content);
+    setIsMouseActive(true);
+  };
+
+  // Handle mouse enter with priority over keyboard
+  const handleMouseEnter = (index: number) => {
+    setHoveredIndex(index);
+    setIsMouseActive(true);
+    // Clear keyboard selection when mouse takes over
+    if (selectedIndex !== -1) {
+      setSelectedIndex(-1);
+    }
+  };
+
+  // Handle mouse leave
+  const handleMouseLeave = () => {
+    setHoveredIndex(-1);
+    // Don't immediately set isMouseActive to false, let keyboard take over naturally
   };
 
   if (!user || !user.emailVerified) {
@@ -310,7 +345,7 @@ export default function EntryHistory() {
             onKeyDown={handleKeyPress}
             placeholder="Type entry, press Cmd+Enter to submit..."
             disabled={isSubmitting}
-            className={`flex-1 bg-transparent border-none outline-none text-cyan-400 placeholder-cyan-600 font-mono resize-none min-h-[1.5rem] scrollbar-hide ${!entry ? 'animate-pulse' : ''} focus:animate-none`}
+            className={`flex-1 bg-transparent border-none outline-none text-cyan-400 placeholder-cyan-600 font-mono resize-none min-h-[1.5rem] scrollbar-hide ${!entry ? 'animate-pulse' : ''} focus:animate-none cursor-text`}
             rows={1}
             style={{ 
               height: 'auto',
@@ -420,7 +455,16 @@ export default function EntryHistory() {
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.2 }}
-                    className={`group ${selectedIndex === index ? 'bg-cyan-400/10 border-l-2 border-cyan-400 pl-2' : ''}`}
+                    className={`group transition-all duration-200 ${
+                      // Mouse hover takes priority over keyboard selection
+                      isMouseActive && hoveredIndex === index
+                        ? 'bg-cyan-400/5 shadow-lg shadow-cyan-400/10'
+                        : !isMouseActive && selectedIndex === index 
+                        ? 'bg-cyan-400/10 border-l-2 border-cyan-400 pl-2' 
+                        : ''
+                    }`}
+                    onMouseEnter={() => handleMouseEnter(index)}
+                    onMouseLeave={handleMouseLeave}
                   >
                     {editingId === entry.id ? (
                       <div className="space-y-1">
@@ -429,26 +473,38 @@ export default function EntryHistory() {
                         </div>
                         <div className="flex items-center">
                           <span className="text-cyan-400 mr-2">&gt;</span>
-                          <input
-                            type="text"
+                          <textarea
                             value={editContent}
                             onChange={(e) => setEditContent(e.target.value)}
-                            onKeyPress={(e) => handleEditKeyPress(e, entry.id)}
-                            className="flex-1 bg-transparent border-none outline-none text-cyan-400 font-mono"
+                            onKeyDown={(e) => handleEditKeyPress(e, entry.id)}
+                            className="flex-1 bg-transparent border-none outline-none text-cyan-400 font-mono cursor-text resize-none min-h-[1.5rem] scrollbar-hide"
                             autoFocus
+                            rows={1}
+                            style={{ 
+                              height: 'auto',
+                              minHeight: '1.5rem',
+                              backgroundColor: 'transparent',
+                              resize: 'none',
+                              overflow: 'hidden'
+                            }}
+                            onInput={(e) => {
+                              const target = e.target as HTMLTextAreaElement;
+                              target.style.height = 'auto';
+                              target.style.height = target.scrollHeight + 'px';
+                            }}
                           />
                         </div>
                         <div className="text-xs text-gray-500 ml-4">
-                          Press Enter to save • Press Escape to cancel • 
+                          Press Cmd+Enter to save • Press Escape to cancel • 
                           <button
                             onClick={() => handleSaveEdit(entry.id)}
-                            className="text-green-400 hover:text-green-300 ml-2 underline"
+                            className="text-green-400 hover:text-green-300 ml-2 underline cursor-pointer"
                           >
                             save
                           </button>
                           <button
                             onClick={handleCancelEdit}
-                            className="text-gray-400 hover:text-gray-300 ml-2 underline"
+                            className="text-gray-400 hover:text-gray-300 ml-2 underline cursor-pointer"
                           >
                             cancel
                           </button>
@@ -459,24 +515,38 @@ export default function EntryHistory() {
                         <div className="py-1">
                           <div className="flex flex-wrap items-start gap-2">
                             {!timestampsCollapsed && (
-                              <div className="font-mono text-base text-gray-500 shrink-0 mr-4 flex items-center">
+                              <div 
+                                className="font-mono text-base text-gray-500 shrink-0 mr-4 flex items-center cursor-pointer hover:text-yellow-400 transition-colors"
+                                onClick={handleToggleTimestamps}
+                                title={timestampsCollapsed ? "Show timestamps" : "Hide timestamps"}
+                              >
                                 {formatTimestamp(entry.createdAt)}
                               </div>
                             )}
-                            <div className={`font-mono text-base text-gray-300 flex-1 min-w-0 break-words ${accomplishedEntries.has(entry.id) ? 'line-through text-gray-500 opacity-60' : ''}`}>
+                            <div 
+                              className={`font-mono text-base text-gray-300 flex-1 min-w-0 break-words cursor-text hover:bg-cyan-400/5 hover:text-cyan-300 transition-all duration-200 rounded px-1 py-0.5 ${accomplishedEntries.has(entry.id) ? 'line-through text-gray-500 opacity-60' : ''}`}
+                              onClick={(e) => handleContentClick(e, entry)}
+                              title="Click to edit"
+                            >
                               {entry.content}
                               {accomplishedEntries.has(entry.id) && <span className="ml-2 text-green-400 text-xs">✓ accomplished</span>}
                             </div>
                             <div className="flex space-x-1 shrink-0">
                               <button
-                                onClick={() => handleEdit(entry)}
-                                className="text-cyan-400 hover:text-yellow-400 text-xs"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleContentClick(e, entry);
+                                }}
+                                className="text-cyan-400 hover:text-yellow-400 text-xs cursor-pointer transition-colors"
                               >
                                 [E]
                               </button>
                               <button
-                                onClick={() => handleDelete(entry.id)}
-                                className="text-cyan-400 hover:text-yellow-400 text-xs"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDelete(entry.id);
+                                }}
+                                className="text-cyan-400 hover:text-yellow-400 text-xs cursor-pointer transition-colors"
                               >
                                 [X]
                               </button>
