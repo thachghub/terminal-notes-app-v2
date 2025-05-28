@@ -234,7 +234,6 @@ export default function TerminalDisplay({
     setShowWelcome(false);
     setWelcomeStep(0);
     router.push('/userdashboard');
-    window.location.reload();
   };
 
   return (

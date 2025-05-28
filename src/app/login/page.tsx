@@ -39,7 +39,6 @@ export default function LoginPage() {
     setShowWelcome(false);
     setWelcomeStep(0);
     router.push("/userdashboard");
-    window.location.reload();
   };
 
   const handleLogin = async (e: React.FormEvent) => {
