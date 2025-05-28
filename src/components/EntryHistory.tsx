@@ -47,6 +47,7 @@ export default function EntryHistory() {
   const [selectedIndex, setSelectedIndex] = useState(-1); // -1 means no selection (input field)
   const [originalEntry, setOriginalEntry] = useState(''); // Store original input when navigating
   const [accomplishedEntries, setAccomplishedEntries] = useState<Set<string>>(new Set()); // Track accomplished entry IDs
+  const [timestampsCollapsed, setTimestampsCollapsed] = useState(false); // Global timestamp collapse state
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -281,6 +282,10 @@ export default function EntryHistory() {
     }
   };
 
+  const handleToggleTimestamps = () => {
+    setTimestampsCollapsed(prev => !prev);
+  };
+
   if (!user || !user.emailVerified) {
     return (
       <div className="text-gray-400 font-mono">
@@ -305,7 +310,7 @@ export default function EntryHistory() {
             onKeyDown={handleKeyPress}
             placeholder="Type entry, press Cmd+Enter to submit..."
             disabled={isSubmitting}
-            className="flex-1 bg-transparent border-none outline-none text-cyan-400 placeholder-cyan-600 font-mono resize-none min-h-[1.5rem] scrollbar-hide animate-pulse focus:animate-none"
+            className={`flex-1 bg-transparent border-none outline-none text-cyan-400 placeholder-cyan-600 font-mono resize-none min-h-[1.5rem] scrollbar-hide ${!entry ? 'animate-pulse' : ''} focus:animate-none`}
             rows={1}
             style={{ 
               height: 'auto',
@@ -395,80 +400,95 @@ export default function EntryHistory() {
               &gt; No entries yet. Start typing above!
             </div>
           ) : (
-            <AnimatePresence mode="popLayout">
-              {entries.map((entry, index) => (
-                <motion.div
-                  key={entry.id}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                  className={`group ${selectedIndex === index ? 'bg-cyan-400/10 border-l-2 border-cyan-400 pl-2' : ''}`}
+            <>
+              {/* Timestamp toggle control */}
+              <div className="flex justify-end mb-2">
+                <button
+                  onClick={handleToggleTimestamps}
+                  className="text-gray-400 hover:text-yellow-400 transition-colors text-sm focus:outline-none focus:ring-2 focus:ring-cyan-400/50 bg-transparent border-none p-1 font-mono"
+                  title={timestampsCollapsed ? "Show timestamps" : "Hide timestamps"}
                 >
-                  {editingId === entry.id ? (
-                    <div className="space-y-1">
-                      <div className="text-xs text-gray-500">
-                        {formatTimestamp(entry.createdAt)} (editing)
+                  --time
+                </button>
+              </div>
+              
+              <AnimatePresence mode="popLayout">
+                {entries.map((entry, index) => (
+                  <motion.div
+                    key={entry.id}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className={`group ${selectedIndex === index ? 'bg-cyan-400/10 border-l-2 border-cyan-400 pl-2' : ''}`}
+                  >
+                    {editingId === entry.id ? (
+                      <div className="space-y-1">
+                        <div className="text-xs text-gray-500">
+                          {formatTimestamp(entry.createdAt)} (editing)
+                        </div>
+                        <div className="flex items-center">
+                          <span className="text-cyan-400 mr-2">&gt;</span>
+                          <input
+                            type="text"
+                            value={editContent}
+                            onChange={(e) => setEditContent(e.target.value)}
+                            onKeyPress={(e) => handleEditKeyPress(e, entry.id)}
+                            className="flex-1 bg-transparent border-none outline-none text-cyan-400 font-mono"
+                            autoFocus
+                          />
+                        </div>
+                        <div className="text-xs text-gray-500 ml-4">
+                          Press Enter to save • Press Escape to cancel • 
+                          <button
+                            onClick={() => handleSaveEdit(entry.id)}
+                            className="text-green-400 hover:text-green-300 ml-2 underline"
+                          >
+                            save
+                          </button>
+                          <button
+                            onClick={handleCancelEdit}
+                            className="text-gray-400 hover:text-gray-300 ml-2 underline"
+                          >
+                            cancel
+                          </button>
+                        </div>
                       </div>
-                      <div className="flex items-center">
-                        <span className="text-cyan-400 mr-2">&gt;</span>
-                        <input
-                          type="text"
-                          value={editContent}
-                          onChange={(e) => setEditContent(e.target.value)}
-                          onKeyPress={(e) => handleEditKeyPress(e, entry.id)}
-                          className="flex-1 bg-transparent border-none outline-none text-cyan-400 font-mono"
-                          autoFocus
-                        />
-                      </div>
-                      <div className="text-xs text-gray-500 ml-4">
-                        Press Enter to save • Press Escape to cancel • 
-                        <button
-                          onClick={() => handleSaveEdit(entry.id)}
-                          className="text-green-400 hover:text-green-300 ml-2 underline"
-                        >
-                          save
-                        </button>
-                        <button
-                          onClick={handleCancelEdit}
-                          className="text-gray-400 hover:text-gray-300 ml-2 underline"
-                        >
-                          cancel
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div>
-                      <div className="py-1">
-                        <div className="flex flex-wrap items-start gap-2">
-                          <div className="text-xs text-gray-500 shrink-0">
-                            {formatTimestamp(entry.createdAt)}
-                          </div>
-                          <div className={`text-gray-300 flex-1 min-w-0 break-words ${accomplishedEntries.has(entry.id) ? 'line-through text-gray-500 opacity-60' : ''}`}>
-                            {entry.content}
-                            {accomplishedEntries.has(entry.id) && <span className="ml-2 text-green-400 text-xs">✓ accomplished</span>}
-                          </div>
-                          <div className="flex space-x-1 shrink-0">
-                            <button
-                              onClick={() => handleEdit(entry)}
-                              className="text-cyan-400 hover:text-cyan-300 text-xs"
-                            >
-                              [E]
-                            </button>
-                            <button
-                              onClick={() => handleDelete(entry.id)}
-                              className="text-cyan-400 hover:text-cyan-300 text-xs"
-                            >
-                              [X]
-                            </button>
+                    ) : (
+                      <div>
+                        <div className="py-1">
+                          <div className="flex flex-wrap items-start gap-2">
+                            {!timestampsCollapsed && (
+                              <div className="font-mono text-base text-gray-500 shrink-0 mr-4 flex items-center">
+                                {formatTimestamp(entry.createdAt)}
+                              </div>
+                            )}
+                            <div className={`font-mono text-base text-gray-300 flex-1 min-w-0 break-words ${accomplishedEntries.has(entry.id) ? 'line-through text-gray-500 opacity-60' : ''}`}>
+                              {entry.content}
+                              {accomplishedEntries.has(entry.id) && <span className="ml-2 text-green-400 text-xs">✓ accomplished</span>}
+                            </div>
+                            <div className="flex space-x-1 shrink-0">
+                              <button
+                                onClick={() => handleEdit(entry)}
+                                className="text-cyan-400 hover:text-yellow-400 text-xs"
+                              >
+                                [E]
+                              </button>
+                              <button
+                                onClick={() => handleDelete(entry.id)}
+                                className="text-cyan-400 hover:text-yellow-400 text-xs"
+                              >
+                                [X]
+                              </button>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  )}
-                </motion.div>
-              ))}
-            </AnimatePresence>
+                    )}
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </>
           )}
         </div>
       )}
