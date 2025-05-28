@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { signInWithEmailAndPassword, signOut, sendEmailVerification } from "firebase/auth";
+import { signInWithEmailAndPassword, signOut, sendEmailVerification, ActionCodeSettings } from "firebase/auth";
 import { auth } from "../../firebase/firebase";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from 'framer-motion';
@@ -78,7 +78,11 @@ export default function LoginPage() {
 
     if (auth.currentUser) {
       try {
-        await sendEmailVerification(auth.currentUser);
+        const actionCodeSettings: ActionCodeSettings = {
+          url: `${window.location.origin}/verify-email`,
+          handleCodeInApp: false,
+        };
+        await sendEmailVerification(auth.currentUser, actionCodeSettings);
         setInfo("Verification email resent.");
       } catch (err: any) {
         setError("Failed to resend verification email: " + err.message);

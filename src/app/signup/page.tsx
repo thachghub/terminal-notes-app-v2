@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { createUserWithEmailAndPassword, sendEmailVerification, onAuthStateChanged, signOut } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendEmailVerification, onAuthStateChanged, signOut, ActionCodeSettings } from "firebase/auth";
 import { auth } from "../../firebase/firebase";
 import { useRouter } from "next/navigation";
 
@@ -43,8 +43,12 @@ export default function SignUpPage() {
       const user = userCredential.user;
 
       if (user) {
-        // Send verification email
-        await sendEmailVerification(user);
+        // Send verification email with custom continue URL
+        const actionCodeSettings: ActionCodeSettings = {
+          url: `${window.location.origin}/verify-email`,
+          handleCodeInApp: false,
+        };
+        await sendEmailVerification(user, actionCodeSettings);
         
         // Sign out the user immediately after registration
         await signOut(auth);
@@ -74,7 +78,11 @@ export default function SignUpPage() {
       // Try to sign in temporarily to resend verification
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       if (userCredential.user) {
-        await sendEmailVerification(userCredential.user);
+        const actionCodeSettings: ActionCodeSettings = {
+          url: `${window.location.origin}/verify-email`,
+          handleCodeInApp: false,
+        };
+        await sendEmailVerification(userCredential.user, actionCodeSettings);
         await signOut(auth);
         setInfo("Verification email resent successfully.");
       }

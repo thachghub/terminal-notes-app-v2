@@ -8,7 +8,7 @@ import TerminalTitle from './TerminalTitle';
 import TerminalDisplayWidgets from './TerminalDisplayWidgets';
 import { hexToRgba, darkenHex } from '@/lib/colorUtils';
 import { useUIStore } from '@/store/uiStore';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, signOut, sendPasswordResetEmail } from 'firebase/auth';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, signOut, sendPasswordResetEmail, ActionCodeSettings } from 'firebase/auth';
 import { auth } from '@/firebase/firebase';
 import { useRouter } from 'next/navigation';
 
@@ -47,6 +47,7 @@ export default function TerminalDisplay({
   const [signInPassword, setSignInPassword] = useState('');
   const [signUpEmail, setSignUpEmail] = useState('');
   const [signUpPassword, setSignUpPassword] = useState('');
+  const [showResendSignUp, setShowResendSignUp] = useState(false);
 
   const handleSignInClick = () => {
     setShowSignIn(true);
@@ -60,6 +61,7 @@ export default function TerminalDisplay({
     setShowSignIn(false);
     setAuthError(null);
     setSuccessMessage('');
+    setShowResendSignUp(false);
   };
 
   const textColor = fontColor ? hexToRgba(fontColor, fontOpacity) : '#67e8f9';
@@ -113,13 +115,18 @@ export default function TerminalDisplay({
 
     setAuthLoading(true);
     setAuthError(null);
+    setShowResendSignUp(false);
     try {
       // Create user account
       const userCredential = await createUserWithEmailAndPassword(auth, signUpEmail, signUpPassword);
       
-      // Send verification email
+      // Send verification email with custom continue URL
       if (userCredential.user) {
-        await sendEmailVerification(userCredential.user);
+        const actionCodeSettings: ActionCodeSettings = {
+          url: `${window.location.origin}/verify-email`,
+          handleCodeInApp: false,
+        };
+        await sendEmailVerification(userCredential.user, actionCodeSettings);
         
         // Sign out the user immediately after registration
         await signOut(auth);
@@ -134,11 +141,53 @@ export default function TerminalDisplay({
         }, 2000);
       }
     } catch (err: any) {
-      setAuthError(err.message || 'Sign-up failed');
+      // Handle email already in use error
+      if (err.code === 'auth/email-already-in-use') {
+        setAuthError('Email already in use. If you haven\'t verified your email, you can resend the verification.');
+        setShowResendSignUp(true);
+      } else {
+        setAuthError(err.message || 'Sign-up failed');
+      }
     } finally {
       setAuthLoading(false);
     }
   }
+
+  const handleResendSignUpVerification = async () => {
+    if (!signUpEmail) {
+      setAuthError('Please enter your email address first');
+      return;
+    }
+
+    setAuthLoading(true);
+    setAuthError(null);
+    try {
+      // Try to sign in with the email to get the user object
+      const userCredential = await signInWithEmailAndPassword(auth, signUpEmail, signUpPassword);
+      if (userCredential.user && !userCredential.user.emailVerified) {
+        const actionCodeSettings: ActionCodeSettings = {
+          url: `${window.location.origin}/verify-email`,
+          handleCodeInApp: false,
+        };
+        await sendEmailVerification(userCredential.user, actionCodeSettings);
+        await signOut(auth); // Sign out immediately after sending verification
+        setSuccessMessage('Verification email resent! Please check your inbox.');
+        setShowResendSignUp(false);
+      } else if (userCredential.user && userCredential.user.emailVerified) {
+        await signOut(auth);
+        setAuthError('Email is already verified. You can sign in normally.');
+        setShowResendSignUp(false);
+      }
+    } catch (err: any) {
+      if (err.code === 'auth/wrong-password') {
+        setAuthError('Incorrect password. Please enter the correct password to resend verification.');
+      } else {
+        setAuthError('Failed to resend verification email: ' + err.message);
+      }
+    } finally {
+      setAuthLoading(false);
+    }
+  };
 
   const handleForgotPassword = async () => {
     if (!signInEmail) {
@@ -395,6 +444,15 @@ export default function TerminalDisplay({
                 >
                   {isAuthLoading ? 'Loading…' : '> sign up'}
                 </button>
+                {showResendSignUp && (
+                  <button 
+                    onClick={handleResendSignUpVerification}
+                    disabled={isAuthLoading}
+                    className="w-full mt-2 bg-orange-600 text-white p-2 hover:bg-orange-500 transition-colors disabled:opacity-50 border border-orange-400"
+                  >
+                    {isAuthLoading ? "Resending..." : "Resend Verification Email"}
+                  </button>
+                )}
               </motion.div>
             )}
           </AnimatePresence>
