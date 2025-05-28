@@ -98,14 +98,6 @@ export default function TerminalDisplay({
         setShowWelcome(true);
         setWelcomeStep(0);
       }, 1000);
-      
-      // Hide welcome and redirect
-      setTimeout(() => {
-        setShowWelcome(false);
-        setWelcomeStep(0);
-        router.push('/dashboard');
-        window.location.reload(); // Refresh to update auth state
-      }, 4000);
     } catch (err: any) {
       setAuthError(err.message || 'Sign-in failed');
     } finally {
@@ -186,11 +178,97 @@ export default function TerminalDisplay({
         setWelcomeStep(prev => prev + 1);
       }, 500);
       return () => clearTimeout(timer);
+    } else if (showWelcome && welcomeStep === 4) {
+      // After welcome message is complete, wait 20 seconds then auto-close
+      const timer = setTimeout(() => {
+        handleCloseWelcome();
+      }, 20000);
+      return () => clearTimeout(timer);
     }
   }, [showWelcome, welcomeStep]);
 
+  const handleCloseWelcome = () => {
+    setShowWelcome(false);
+    setWelcomeStep(0);
+    router.push('/dashboard');
+    window.location.reload();
+  };
+
   return (
     <main className="flex flex-col gap-8 p-4 h-full min-h-full bg-transparent" style={{ color: textColor }} aria-label="Terminal Main Content">
+      {/* Welcome Message - Fixed at Top */}
+      <AnimatePresence>
+        {showWelcome && (
+          <motion.div
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -50 }}
+            className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-2xl px-4"
+            aria-label="Welcome Message"
+          >
+            <div className="border border-green-400 bg-black/95 backdrop-blur-sm p-6 rounded-lg shadow-2xl">
+              <div className="space-y-2 font-mono">
+                <div className="flex justify-between items-center">
+                  <div className="text-green-400 text-lg">$ system --welcome</div>
+                  <button
+                    onClick={handleCloseWelcome}
+                    className="text-gray-400 hover:text-white transition-colors px-2 py-1 text-sm border border-gray-600 hover:border-gray-400 rounded"
+                    aria-label="Close welcome message"
+                  >
+                    close
+                  </button>
+                </div>
+                <div className="text-cyan-300">
+                  {welcomeStep >= 1 && (
+                    <motion.div 
+                      initial={{ opacity: 0 }} 
+                      animate={{ opacity: 1 }}
+                      className="flex items-center gap-2"
+                    >
+                      <span className="text-green-400">✓</span>
+                      <span>Authentication successful</span>
+                    </motion.div>
+                  )}
+                  {welcomeStep >= 2 && (
+                    <motion.div 
+                      initial={{ opacity: 0 }} 
+                      animate={{ opacity: 1 }}
+                      className="flex items-center gap-2 mt-1"
+                    >
+                      <span className="text-green-400">✓</span>
+                      <span>Session initialized</span>
+                    </motion.div>
+                  )}
+                  {welcomeStep >= 3 && (
+                    <motion.div 
+                      initial={{ opacity: 0 }} 
+                      animate={{ opacity: 1 }}
+                      className="flex items-center gap-2 mt-1"
+                    >
+                      <span className="text-green-400">✓</span>
+                      <span>Terminal access granted</span>
+                    </motion.div>
+                  )}
+                </div>
+                {welcomeStep >= 4 && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }} 
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mt-4 text-yellow-300 text-center"
+                  >
+                    <div className="text-lg">Welcome to the Terminal</div>
+                    <div className="text-sm mt-1">Have a nice day! 🚀</div>
+                                         <div className="mt-3 text-gray-400 text-xs">
+                       Auto-redirecting in 20 seconds...
+                     </div>
+                  </motion.div>
+                )}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <header className="flex flex-col gap-8">
         {title ? (
           <h1 className="text-cyan-400 text-4xl font-[VT323] tracking-tight">{title}</h1>
@@ -320,72 +398,8 @@ export default function TerminalDisplay({
               </motion.div>
             )}
           </AnimatePresence>
-        </section>
+                </section>
       )}
-
-      {/* Welcome Message After Login */}
-      <AnimatePresence>
-        {showWelcome && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="mt-8 bg-transparent"
-            aria-label="Welcome Message"
-          >
-                         <div className="border border-green-400 bg-black/20 p-6 rounded-none">
-               <div className="space-y-2 font-mono">
-                 <div className="text-green-400 text-lg">$ system --welcome</div>
-                 <div className="text-cyan-300">
-                   {welcomeStep >= 1 && (
-                     <motion.div 
-                       initial={{ opacity: 0 }} 
-                       animate={{ opacity: 1 }}
-                       className="flex items-center gap-2"
-                     >
-                       <span className="text-green-400">✓</span>
-                       <span>Authentication successful</span>
-                     </motion.div>
-                   )}
-                   {welcomeStep >= 2 && (
-                     <motion.div 
-                       initial={{ opacity: 0 }} 
-                       animate={{ opacity: 1 }}
-                       className="flex items-center gap-2 mt-1"
-                     >
-                       <span className="text-green-400">✓</span>
-                       <span>Session initialized</span>
-                     </motion.div>
-                   )}
-                   {welcomeStep >= 3 && (
-                     <motion.div 
-                       initial={{ opacity: 0 }} 
-                       animate={{ opacity: 1 }}
-                       className="flex items-center gap-2 mt-1"
-                     >
-                       <span className="text-green-400">✓</span>
-                       <span>Terminal access granted</span>
-                     </motion.div>
-                   )}
-                 </div>
-                 {welcomeStep >= 4 && (
-                   <motion.div 
-                     initial={{ opacity: 0, y: 10 }} 
-                     animate={{ opacity: 1, y: 0 }}
-                     className="mt-4 text-yellow-300 text-center"
-                   >
-                     <div className="text-lg">Welcome to the Terminal</div>
-                     <div className="text-sm mt-1">Have a nice day! 🚀</div>
-                     <div className="mt-3 text-gray-400 text-xs">
-                       Redirecting to dashboard...
-                     </div>
-                   </motion.div>
-                 )}
-               </div>
-             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {children && (
         <div className="flex-1 mt-8">
