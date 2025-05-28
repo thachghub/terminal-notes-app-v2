@@ -2,20 +2,32 @@
 
 import { useState } from "react";
 import { auth } from "../../firebase/firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import { useRouter } from "next/navigation";
 
 export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [info, setInfo] = useState("");
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
+    setInfo("");
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      router.push("/dashboard");
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      if (userCredential.user) {
+        try {
+          await sendEmailVerification(userCredential.user);
+          setInfo("Verification email sent! Please check your inbox.");
+        } catch (verifyErr: any) {
+          setError("Account created, but failed to send verification email: " + verifyErr.message);
+        }
+      }
+      // Optionally, redirect after a delay or after user confirms
+      // router.push("/dashboard");
     } catch (err: any) {
       setError(err.message);
     }
@@ -50,6 +62,7 @@ export default function RegisterPage() {
         </button>
 
         {error && <p className="text-red-400 font-mono">{error}</p>}
+        {info && <p className="text-green-400 font-mono">{info}</p>}
       </form>
     </main>
   );

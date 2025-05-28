@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { usePreferencesStore } from '@/store/preferencesStore';
+import { auth } from '@/firebase/firebase';
+import { onAuthStateChanged, User } from 'firebase/auth';
 
 export default function TerminalDisplayWidgets() {
   // Helper to get ISO week number
@@ -18,6 +20,7 @@ export default function TerminalDisplayWidgets() {
     return `${weekNo}/52`;
   }
   const [currentTime, setCurrentTime] = useState('');
+  const [user, setUser] = useState<User | null>(auth.currentUser);
 
   // Widget visibility preferences from Zustand (use individual selectors!)
   const showUserInfo = usePreferencesStore(s => s.showUserInfo);
@@ -143,12 +146,17 @@ export default function TerminalDisplayWidgets() {
     return () => clearInterval(timer);
   }, []);
 
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, setUser);
+    return () => unsubscribe();
+  }, []);
+
   return (
     <div className="space-y-1 pl-2 max-w-md">
       {showUserInfo && (
         <div className="flex gap-24 items-center">
           <span className="text-cyan-500">user:</span>
-          <span className="text-cyan-300">example@email.com</span>
+          <span className="text-cyan-300">{user?.email || 'Not signed in'}</span>
         </div>
       )}
       {showCurrentDate && (
