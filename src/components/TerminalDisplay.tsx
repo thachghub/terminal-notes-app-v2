@@ -8,8 +8,9 @@ import TerminalTitle from './TerminalTitle';
 import TerminalDisplayWidgets from './TerminalDisplayWidgets';
 import { hexToRgba, darkenHex } from '@/lib/colorUtils';
 import { useUIStore } from '@/store/uiStore';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, signOut, sendPasswordResetEmail, ActionCodeSettings } from 'firebase/auth';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, signOut, sendPasswordResetEmail } from 'firebase/auth';
 import { auth } from '@/firebase/firebase';
+import { emailVerificationSettings } from '@/firebase/config';
 import { useRouter } from 'next/navigation';
 
 export default function TerminalDisplay({ 
@@ -48,12 +49,14 @@ export default function TerminalDisplay({
   const [signUpEmail, setSignUpEmail] = useState('');
   const [signUpPassword, setSignUpPassword] = useState('');
   const [showResendSignUp, setShowResendSignUp] = useState(false);
+  const [showSignUpSuccess, setShowSignUpSuccess] = useState(false);
 
   const handleSignInClick = () => {
     setShowSignIn(true);
     setShowSignUp(false);
     setAuthError(null);
     setSuccessMessage('');
+    setShowSignUpSuccess(false);
   };
 
   const handleSignUpClick = () => {
@@ -62,6 +65,7 @@ export default function TerminalDisplay({
     setAuthError(null);
     setSuccessMessage('');
     setShowResendSignUp(false);
+    setShowSignUpSuccess(false);
   };
 
   const textColor = fontColor ? hexToRgba(fontColor, fontOpacity) : '#67e8f9';
@@ -120,25 +124,19 @@ export default function TerminalDisplay({
       // Create user account
       const userCredential = await createUserWithEmailAndPassword(auth, signUpEmail, signUpPassword);
       
-      // Send verification email with custom continue URL
-      if (userCredential.user) {
-        const actionCodeSettings: ActionCodeSettings = {
-          url: `${window.location.origin}/verify-email`,
-          handleCodeInApp: false,
-        };
-        await sendEmailVerification(userCredential.user, actionCodeSettings);
+              // Send verification email with custom continue URL
+        if (userCredential.user) {
+          await sendEmailVerification(userCredential.user, emailVerificationSettings);
         
         // Sign out the user immediately after registration
         await signOut(auth);
         
-        // Success message and redirect to signup page for better UX
-        setSuccessMessage('Account created! Verification email sent. Redirecting...');
+        // Success - show success panel instead of redirecting
+        setSuccessMessage('');
         setShowSignUp(false);
+        setShowSignUpSuccess(true);
         setSignUpEmail('');
         setSignUpPassword('');
-        setTimeout(() => {
-          router.push('/signup');
-        }, 2000);
       }
     } catch (err: any) {
       // Handle email already in use error
@@ -165,11 +163,7 @@ export default function TerminalDisplay({
       // Try to sign in with the email to get the user object
       const userCredential = await signInWithEmailAndPassword(auth, signUpEmail, signUpPassword);
       if (userCredential.user && !userCredential.user.emailVerified) {
-        const actionCodeSettings: ActionCodeSettings = {
-          url: `${window.location.origin}/verify-email`,
-          handleCodeInApp: false,
-        };
-        await sendEmailVerification(userCredential.user, actionCodeSettings);
+        await sendEmailVerification(userCredential.user, emailVerificationSettings);
         await signOut(auth); // Sign out immediately after sending verification
         setSuccessMessage('Verification email resent! Please check your inbox.');
         setShowResendSignUp(false);
@@ -453,6 +447,43 @@ export default function TerminalDisplay({
                     {isAuthLoading ? "Resending..." : "Resend Verification Email"}
                   </button>
                 )}
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Success Panel for Sign Up */}
+          <AnimatePresence>
+            {showSignUpSuccess && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="mt-4 border border-green-400 text-green-300 p-4 bg-black/20 rounded"
+              >
+                <div className="text-green-300 mb-2 text-lg">✓ Account Created Successfully</div>
+                <div className="text-sm mb-4">
+                  A verification email has been sent to your email address. Please check your inbox and click the verification link before signing in.
+                </div>
+                <div className="text-xs text-gray-400 mb-3">
+                  Don't see the email? Check your spam folder or try the resend option below.
+                </div>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => {
+                      setShowSignUpSuccess(false);
+                      setShowSignIn(true);
+                    }}
+                    className="border border-cyan-500 text-cyan-500 hover:bg-cyan-500/10 transition-colors px-3 py-1 text-sm"
+                  >
+                    Go to Sign In
+                  </button>
+                  <button
+                    onClick={() => setShowSignUpSuccess(false)}
+                    className="text-gray-400 hover:text-white transition-colors px-3 py-1 text-sm"
+                  >
+                    Dismiss
+                  </button>
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
