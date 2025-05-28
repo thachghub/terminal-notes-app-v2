@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { signInWithEmailAndPassword, signOut, sendEmailVerification } from "firebase/auth";
 import { auth } from "../../firebase/firebase";
 import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -13,7 +14,32 @@ export default function LoginPage() {
   const [info, setInfo] = useState("");
   const [showResend, setShowResend] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(false);
+  const [welcomeStep, setWelcomeStep] = useState(0);
   const router = useRouter();
+
+  // Welcome message typing effect
+  useEffect(() => {
+    if (showWelcome && welcomeStep < 4) {
+      const timer = setTimeout(() => {
+        setWelcomeStep(prev => prev + 1);
+      }, 500);
+      return () => clearTimeout(timer);
+    } else if (showWelcome && welcomeStep === 4) {
+      // After welcome message is complete, wait 20 seconds then auto-close
+      const timer = setTimeout(() => {
+        handleCloseWelcome();
+      }, 20000);
+      return () => clearTimeout(timer);
+    }
+  }, [showWelcome, welcomeStep]);
+
+  const handleCloseWelcome = () => {
+    setShowWelcome(false);
+    setWelcomeStep(0);
+    router.push("/dashboard");
+    window.location.reload();
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,8 +57,13 @@ export default function LoginPage() {
         return;
       }
       setSuccess(true);
-      router.push("/dashboard");
-      window.location.reload();
+      
+      // Show welcome message
+      setTimeout(() => {
+        setSuccess(false);
+        setShowWelcome(true);
+        setWelcomeStep(0);
+      }, 1000);
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -64,6 +95,79 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-black text-green-400 font-mono p-8">
+      {/* Welcome Message - Fixed at Top */}
+      <AnimatePresence>
+        {showWelcome && (
+          <motion.div
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -50 }}
+            className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-2xl px-4"
+            aria-label="Welcome Message"
+          >
+            <div className="border border-green-400 bg-black/95 backdrop-blur-sm p-6 rounded-lg shadow-2xl">
+              <div className="space-y-2 font-mono">
+                <div className="flex justify-between items-center">
+                  <div className="text-green-400 text-lg">$ system --welcome</div>
+                  <button
+                    onClick={handleCloseWelcome}
+                    className="text-gray-400 hover:text-white transition-colors px-2 py-1 text-sm border border-gray-600 hover:border-gray-400 rounded"
+                    aria-label="Close welcome message"
+                  >
+                    close
+                  </button>
+                </div>
+                <div className="text-cyan-300">
+                  {welcomeStep >= 1 && (
+                    <motion.div 
+                      initial={{ opacity: 0 }} 
+                      animate={{ opacity: 1 }}
+                      className="flex items-center gap-2"
+                    >
+                      <span className="text-green-400">✓</span>
+                      <span>Authentication successful</span>
+                    </motion.div>
+                  )}
+                  {welcomeStep >= 2 && (
+                    <motion.div 
+                      initial={{ opacity: 0 }} 
+                      animate={{ opacity: 1 }}
+                      className="flex items-center gap-2 mt-1"
+                    >
+                      <span className="text-green-400">✓</span>
+                      <span>Session initialized</span>
+                    </motion.div>
+                  )}
+                  {welcomeStep >= 3 && (
+                    <motion.div 
+                      initial={{ opacity: 0 }} 
+                      animate={{ opacity: 1 }}
+                      className="flex items-center gap-2 mt-1"
+                    >
+                      <span className="text-green-400">✓</span>
+                      <span>Terminal access granted</span>
+                    </motion.div>
+                  )}
+                </div>
+                {welcomeStep >= 4 && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }} 
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mt-4 text-yellow-300 text-center"
+                  >
+                    <div className="text-lg">Welcome to the Terminal</div>
+                    <div className="text-sm mt-1">Have a nice day! 🚀</div>
+                    <div className="mt-3 text-gray-400 text-xs">
+                      Auto-redirecting in 20 seconds...
+                    </div>
+                  </motion.div>
+                )}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <div className="max-w-md mx-auto">
         <h1 className="text-2xl mb-6 text-green-300">$ login --user</h1>
         
