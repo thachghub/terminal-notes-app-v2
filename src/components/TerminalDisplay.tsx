@@ -15,7 +15,8 @@ export default function TerminalDisplay({
   bgColor, 
   bgOpacity,
   children,
-  title
+  title,
+  hideAuthPanel
 }: {
   fontColor?: string;
   fontOpacity?: number;
@@ -23,6 +24,7 @@ export default function TerminalDisplay({
   bgOpacity?: number;
   children?: React.ReactNode;
   title?: string;
+  hideAuthPanel?: boolean;
 }) {
   const showSignIn = useUIStore((s) => s.showSignIn);
   const showSignUp = useUIStore((s) => s.showSignUp);
@@ -88,90 +90,92 @@ export default function TerminalDisplay({
         <TerminalDisplayWidgets />
       </header>
       
-      <section className="masterloginpanel mt-8 bg-transparent" aria-label="Authentication Panel">
-        <div className="flex gap-4 mb-4">
-          <button
-            onClick={handleSignInClick}
-            className="inline-block border border-cyan-500 text-cyan-500 hover:text-yellow-400 hover:bg-cyan-500/10 transition-colors px-3 py-1 text-sm w-32"
-            aria-label="Open sign in form"
-          >
-            / sign in
-          </button>
-          <button
-            onClick={handleSignUpClick}
-            className="inline-block border border-yellow-400 text-yellow-400 hover:bg-yellow-400/10 transition-colors px-3 py-1 text-sm w-32"
-            aria-label="Open create account form"
-          >
-            / create account
-          </button>
-        </div>
-
-        <AnimatePresence>
-          {showSignIn && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="panel mt-4 bg-transparent"
-              aria-label="Sign In Form"
+      {!hideAuthPanel && (
+        <section className="masterloginpanel mt-8 bg-transparent" aria-label="Authentication Panel">
+          <div className="flex gap-4 mb-4">
+            <button
+              onClick={handleSignInClick}
+              className="inline-block border border-cyan-500 text-cyan-500 hover:text-yellow-400 hover:bg-cyan-500/10 transition-colors px-3 py-1 text-sm w-32"
+              aria-label="Open sign in form"
             >
-              <div>/ sign in</div>
-              <label htmlFor="signin-email">email:</label>
-              <input type="email" id="signin-email" className="border-b border-cyan-500 text-cyan-500 bg-transparent" aria-label="Email address" />
-              <label htmlFor="signin-password">password:</label>
-              <input type="password" id="signin-password" className="border-b border-cyan-500 text-cyan-500 bg-transparent" aria-label="Password" />
-              {isAuthLoading && <p>Signing in...</p>}
-              {authError && <p className="text-red-500">{authError}</p>}
-              <div className="flex gap-3 mt-2">
-                <button 
-                  className="border border-cyan-500 text-cyan-500 hover:bg-cyan-500/10 hover:text-yellow-400 transition-colors"
-                  onClick={handleSignInSubmit}
-                  aria-label="Submit sign in"
-                  disabled={isAuthLoading}
-                >
-                  {isAuthLoading ? 'Loading…' : '> sign in'}
-                </button>
-                <button
-                  type="button"
-                  className="text-cyan-400 underline underline-offset-2 hover:text-yellow-400 transition-colors"
-                  onClick={() => alert('Forgot password flow coming soon!')}
-                  aria-label="Forgot password"
-                  disabled={isAuthLoading}
-                >
-                  forgot password
-                </button>
-              </div>
-            </motion.div>
-          )}
-
-          {showSignUp && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="panel mt-4 border-2 text-yellow-400 bg-transparent"
-              style={{ borderColor: '#FFD700' }}
-              aria-label="Create Account Form"
+              / sign in
+            </button>
+            <button
+              onClick={handleSignUpClick}
+              className="inline-block border border-yellow-400 text-yellow-400 hover:bg-yellow-400/10 transition-colors px-3 py-1 text-sm w-32"
+              aria-label="Open create account form"
             >
-              <div>/ create account</div>
-              <label htmlFor="signup-email" className="text-yellow-400" style={{ color: '#FFD700' }}>email:</label>
-              <input type="email" id="signup-email" className="border-b border-yellow-400 text-yellow-400 bg-transparent" aria-label="Email address" />
-              <label htmlFor="signup-password" className="text-yellow-400" style={{ color: '#FFD700' }}>password:</label>
-              <input type="password" id="signup-password" className="border-b border-yellow-400 text-yellow-400 bg-transparent" aria-label="Password" />
-              {isAuthLoading && <p>Signing up...</p>}
-              {authError && <p className="text-red-500">{authError}</p>}
-              <button 
-                className="border border-yellow-400 text-yellow-400 hover:bg-yellow-400/10 transition-colors mt-2"
-                onClick={handleSignUpSubmit}
-                aria-label="Submit create account"
-                disabled={isAuthLoading}
+              / create account
+            </button>
+          </div>
+
+          <AnimatePresence>
+            {showSignIn && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="panel mt-4 bg-transparent"
+                aria-label="Sign In Form"
               >
-                {isAuthLoading ? 'Loading…' : '> sign up'}
-              </button>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </section>
+                <div>/ sign in</div>
+                <label htmlFor="signin-email">email:</label>
+                <input type="email" id="signin-email" className="border-b border-cyan-500 text-cyan-500 bg-transparent" aria-label="Email address" />
+                <label htmlFor="signin-password">password:</label>
+                <input type="password" id="signin-password" className="border-b border-cyan-500 text-cyan-500 bg-transparent" aria-label="Password" />
+                {isAuthLoading && <p>Signing in...</p>}
+                {authError && <p className="text-red-500">{authError}</p>}
+                <div className="flex gap-3 mt-2">
+                  <button 
+                    className="border border-cyan-500 text-cyan-500 hover:bg-cyan-500/10 hover:text-yellow-400 transition-colors"
+                    onClick={handleSignInSubmit}
+                    aria-label="Submit sign in"
+                    disabled={isAuthLoading}
+                  >
+                    {isAuthLoading ? 'Loading…' : '> sign in'}
+                  </button>
+                  <button
+                    type="button"
+                    className="text-cyan-400 underline underline-offset-2 hover:text-yellow-400 transition-colors"
+                    onClick={() => alert('Forgot password flow coming soon!')}
+                    aria-label="Forgot password"
+                    disabled={isAuthLoading}
+                  >
+                    forgot password
+                  </button>
+                </div>
+              </motion.div>
+            )}
+
+            {showSignUp && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="panel mt-4 border-2 text-yellow-400 bg-transparent"
+                style={{ borderColor: '#FFD700' }}
+                aria-label="Create Account Form"
+              >
+                <div>/ create account</div>
+                <label htmlFor="signup-email" className="text-yellow-400" style={{ color: '#FFD700' }}>email:</label>
+                <input type="email" id="signup-email" className="border-b border-yellow-400 text-yellow-400 bg-transparent" aria-label="Email address" />
+                <label htmlFor="signup-password" className="text-yellow-400" style={{ color: '#FFD700' }}>password:</label>
+                <input type="password" id="signup-password" className="border-b border-yellow-400 text-yellow-400 bg-transparent" aria-label="Password" />
+                {isAuthLoading && <p>Signing up...</p>}
+                {authError && <p className="text-red-500">{authError}</p>}
+                <button 
+                  className="border border-yellow-400 text-yellow-400 hover:bg-yellow-400/10 transition-colors mt-2"
+                  onClick={handleSignUpSubmit}
+                  aria-label="Submit create account"
+                  disabled={isAuthLoading}
+                >
+                  {isAuthLoading ? 'Loading…' : '> sign up'}
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </section>
+      )}
 
       {children && (
         <div className="flex-1 mt-8">
