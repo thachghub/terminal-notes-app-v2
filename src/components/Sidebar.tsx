@@ -1,6 +1,9 @@
 'use client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { onAuthStateChanged, User } from 'firebase/auth';
+import { auth } from '@/firebase/firebase';
+import { useRouter } from 'next/navigation';
 import { hexToRgba, darkenHex } from '@/lib/colorUtils';
 
 export default function Sidebar({ fontColor, fontOpacity, bgColor, bgOpacity }: {
@@ -10,9 +13,27 @@ export default function Sidebar({ fontColor, fontOpacity, bgColor, bgOpacity }: 
   bgOpacity?: number;
 }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+    });
+    return () => unsubscribe();
+  }, []);
 
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);
+  };
+
+  const handleDashboardClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (user && user.emailVerified) {
+      router.push('/userdashboard');
+    } else {
+      router.push('/dashboard');
+    }
   };
 
   const textColor = fontColor ? hexToRgba(fontColor, fontOpacity) : '#22d3ee';
@@ -61,7 +82,7 @@ export default function Sidebar({ fontColor, fontOpacity, bgColor, bgOpacity }: 
             className="flex flex-col items-center"
           >
             <nav className="flex flex-col space-y-3 pt-16 text-lg w-full items-center" aria-label="Main Sidebar">
-              <a href="/" style={{ color: textColor }}
+              <a href="#" onClick={handleDashboardClick} style={{ color: textColor }}
                 className="relative py-2 my-1 text-cyan-300 hover:text-cyan-100 transition-colors cursor-pointer group block text-center w-full"
                 aria-label="Go to Dashboard"
               >

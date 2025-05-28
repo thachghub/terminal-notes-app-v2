@@ -11,6 +11,7 @@ import { usePreferencesStore } from "@/store/preferencesStore";
 export default function UserDashboardPage() {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [showWelcome, setShowWelcome] = useState(true);
   const router = useRouter();
 
   // Get preferences for styling
@@ -21,6 +22,9 @@ export default function UserDashboardPage() {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user && user.emailVerified) {
         setUser(user);
+        // Check if user has previously closed the welcome message
+        const welcomeClosed = localStorage.getItem(`welcomeClosed_${user.uid}`);
+        setShowWelcome(!welcomeClosed);
       } else if (user && !user.emailVerified) {
         // Redirect to verification page if email not verified
         router.push("/verify-email");
@@ -35,6 +39,14 @@ export default function UserDashboardPage() {
 
     return () => unsubscribe();
   }, [router]);
+
+  const handleCloseWelcome = () => {
+    if (user) {
+      // Store in localStorage that this user has closed the welcome message
+      localStorage.setItem(`welcomeClosed_${user.uid}`, 'true');
+    }
+    setShowWelcome(false);
+  };
 
   if (isLoading) {
     return (
@@ -53,7 +65,6 @@ export default function UserDashboardPage() {
           fontOpacity={fontOpacity}
           bgColor="#062c33"
           bgOpacity={1}
-          title="$ loading --user-session"
           hideAuthPanel={true}
         >
           <div className="text-cyan-400">
@@ -85,20 +96,28 @@ export default function UserDashboardPage() {
         fontOpacity={fontOpacity}
         bgColor="#062c33"
         bgOpacity={1}
-        title="$ user --dashboard"
         hideAuthPanel={true}
       >
         <div className="space-y-6">
           {/* Welcome Section */}
-          <div className="border border-green-400 text-green-300 p-6 bg-black/20 rounded">
-            <div className="text-green-300 mb-4 text-xl">✓ Welcome to Hyper Terminal</div>
-            <div className="text-sm space-y-2">
-              <div><span className="text-gray-400">User:</span> {user.email}</div>
-              <div><span className="text-gray-400">Status:</span> <span className="text-green-400">Authenticated</span></div>
-              <div><span className="text-gray-400">Session:</span> <span className="text-green-400">Active</span></div>
-              <div><span className="text-gray-400">Last Login:</span> {user.metadata.lastSignInTime}</div>
+          {showWelcome && (
+            <div className="border border-green-400 text-green-300 p-6 bg-black/20 rounded relative">
+              <button
+                onClick={handleCloseWelcome}
+                className="absolute top-2 left-1/2 transform -translate-x-1/2 text-gray-400 hover:text-white transition-colors px-2 py-1 text-sm border border-gray-600 hover:border-gray-400 rounded"
+                aria-label="Close welcome message"
+              >
+                close
+              </button>
+              <div className="text-green-300 mb-4 text-xl mt-6">✓ Welcome to Hyper Terminal</div>
+              <div className="text-sm space-y-2">
+                <div><span className="text-gray-400">User:</span> {user.email}</div>
+                <div><span className="text-gray-400">Status:</span> <span className="text-green-400">Authenticated</span></div>
+                <div><span className="text-gray-400">Session:</span> <span className="text-green-400">Active</span></div>
+                <div><span className="text-gray-400">Last Login:</span> {user.metadata.lastSignInTime}</div>
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Quick Actions */}
           <div className="space-y-4">
