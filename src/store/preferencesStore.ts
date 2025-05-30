@@ -5,6 +5,7 @@ export type Preferences = {
   fontOpacity: number;
   timezone: string;
   showSeconds: boolean;
+  language: string;
   // Widget visibility
   showUserInfo: boolean;
   showCurrentTime: boolean;
@@ -18,6 +19,7 @@ export const DEFAULT_PREFERENCES: Preferences = {
   fontOpacity: 1,
   timezone: 'America/New_York',
   showSeconds: false,
+  language: 'en',
   showUserInfo: true,
   showCurrentTime: true,
   showCurrentDate: true,
@@ -34,6 +36,8 @@ export type PreferencesStore = {
   setTimezone: (tz: string) => void;
   showSeconds: boolean;
   setShowSeconds: (v: boolean) => void;
+  language: string;
+  setLanguage: (lang: string) => void;
   savedLoadOuts: Record<string, Preferences>;
   saveLoadOut: (key: string) => void;
   loadLoadOut: (key: string) => void;
@@ -60,13 +64,14 @@ export const usePreferencesStore = create<PreferencesStore>((set, get) => ({
   setFontOpacity: (opacity) => set({ fontOpacity: opacity }),
   setTimezone: (tz) => set({ timezone: tz }),
   setShowSeconds: (v) => set({ showSeconds: v }),
+  setLanguage: (lang) => set({ language: lang }),
   savedLoadOuts: {},
   saveLoadOut: (key) => {
-    const { fontColor, fontOpacity, timezone, showSeconds, showUserInfo, showCurrentTime, showCurrentDate, showSunriseSunset, showWeekNumber } = get();
+    const { fontColor, fontOpacity, timezone, showSeconds, language, showUserInfo, showCurrentTime, showCurrentDate, showSunriseSunset, showWeekNumber } = get();
     set((state) => ({
       savedLoadOuts: {
         ...state.savedLoadOuts,
-        [key]: { fontColor, fontOpacity, timezone, showSeconds, showUserInfo, showCurrentTime, showCurrentDate, showSunriseSunset, showWeekNumber },
+        [key]: { fontColor, fontOpacity, timezone, showSeconds, language, showUserInfo, showCurrentTime, showCurrentDate, showSunriseSunset, showWeekNumber },
       },
     }));
   },

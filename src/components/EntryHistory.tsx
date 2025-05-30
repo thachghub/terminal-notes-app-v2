@@ -191,7 +191,7 @@ export default function EntryHistory() {
       handleSubmit(e);
     } else if (e.key === 'ArrowDown') {
       e.preventDefault();
-      // Reset mouse state when keyboard is used
+      // Completely clear mouse state when keyboard is used
       setIsMouseActive(false);
       setHoveredIndex(-1);
       
@@ -205,7 +205,7 @@ export default function EntryHistory() {
       }
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
-      // Reset mouse state when keyboard is used
+      // Completely clear mouse state when keyboard is used
       setIsMouseActive(false);
       setHoveredIndex(-1);
       
@@ -214,6 +214,14 @@ export default function EntryHistory() {
         setSelectedIndex(newIndex);
       } else if (selectedIndex === 0) {
         setSelectedIndex(-1);
+        // Scroll input area into view when navigating back to input
+        if (inputRef.current) {
+          inputRef.current.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+            inline: 'nearest'
+          });
+        }
       }
     } else if (e.key === 'Delete' && selectedIndex !== -1) {
       e.preventDefault();
@@ -382,10 +390,10 @@ export default function EntryHistory() {
       setEditingId(entry.id);
       setEditContent(entry.content);
     } else {
-      // First click: select the entry just like keyboard navigation
-      setSelectedIndex(index);
-      setIsMouseActive(false); // Use keyboard-style highlighting, not mouse hover
+      // First click: clear any existing states and select the entry
       setHoveredIndex(-1); // Clear any hover state
+      setIsMouseActive(false); // Use keyboard-style highlighting initially
+      setSelectedIndex(index);
       
       // Ensure input field has focus so Delete key works
       if (inputRef.current) {
@@ -396,18 +404,22 @@ export default function EntryHistory() {
 
   // Handle mouse enter with priority over keyboard
   const handleMouseEnter = (index: number) => {
+    // Completely ignore mouse hover when keyboard selection is active
+    // Mouse can only take control via explicit clicks, not hover
+    if (selectedIndex !== -1) {
+      return;
+    }
+    
     setHoveredIndex(index);
     setIsMouseActive(true);
-    // Clear keyboard selection when mouse takes over
-    if (selectedIndex !== -1) {
-      setSelectedIndex(-1);
-    }
   };
 
   // Handle mouse leave
   const handleMouseLeave = () => {
-    setHoveredIndex(-1);
-    // Don't immediately set isMouseActive to false, let keyboard take over naturally
+    // Only clear hover if keyboard selection is not active
+    if (selectedIndex === -1) {
+      setHoveredIndex(-1);
+    }
   };
 
   // Handle click on input area to clear entry highlighting
@@ -536,11 +548,11 @@ export default function EntryHistory() {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
-            className="mb-4 p-4 border border-red-400 bg-black/80 rounded font-mono text-red-400"
+            className="mb-4 p-4 border border-green-400 bg-black/80 rounded font-mono text-green-400"
           >
             <div className="flex items-center space-x-2">
-              <div className="text-orange-400 animate-spin">▼</div>
-              <div className="text-red-400 animate-pulse">deleting entry</div>
+              <div className="text-green-400 animate-spin">▼</div>
+              <div className="text-green-400 animate-pulse">deleting entry</div>
               <div className="flex space-x-1">
                 <motion.span
                   animate={{ opacity: [0, 1, 0] }}
@@ -577,7 +589,7 @@ export default function EntryHistory() {
                       initial={{ opacity: 1 }}
                       animate={{ opacity: 0 }}
                       transition={{ delay: i * 0.08, duration: 0.1 }}
-                      className="text-red-400"
+                      className="text-green-400"
                     >
                       ▓
                     </motion.span>
@@ -585,7 +597,7 @@ export default function EntryHistory() {
                 </motion.div>
                 <span>]</span>
               </div>
-              <div className="mt-1 text-red-600">
+              <div className="mt-1 text-green-600">
                 ► termination protocol: CONFIRMED
               </div>
             </div>
@@ -614,33 +626,79 @@ export default function EntryHistory() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black flex items-center justify-center z-50"
+            className="fixed inset-0 bg-black/80 flex items-center justify-center z-50"
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-black border border-cyan-400 p-6 max-w-md w-full mx-4 font-mono"
+              transition={{ type: "spring", damping: 20 }}
+              className="bg-black border border-green-400 shadow-lg shadow-green-400/20 p-6 max-w-md w-full mx-4 font-mono relative"
             >
-              <div className="text-cyan-400 mb-4">
-                $ rm --confirm entry
-              </div>
-              <div className="text-gray-300 mb-6">
-                &gt; Are you sure you want to delete this entry?
-              </div>
-              <div className="flex space-x-4">
-                <button
-                  onClick={confirmDelete}
-                  className="text-red-400 hover:text-red-300 border border-red-400 hover:border-red-300 px-4 py-2 transition-colors"
-                >
-                  [Y] Delete
-                </button>
-                <button
-                  onClick={cancelDelete}
-                  className="text-cyan-400 hover:text-cyan-300 border border-cyan-400 hover:border-cyan-300 px-4 py-2 transition-colors"
-                >
-                  [N] Cancel
-                </button>
+              {/* Simple scanning line */}
+              <motion.div
+                className="absolute top-0 left-0 w-full h-0.5 bg-green-400"
+                animate={{ 
+                  opacity: [0, 1, 0]
+                }}
+                transition={{ 
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+              />
+
+              <div className="relative z-10">
+                {/* Header */}
+                <div className="text-green-400 mb-4 text-center">
+                  <div className="text-sm font-bold">DELETION PROTOCOL</div>
+                </div>
+
+                {/* Main content */}
+                <div className="text-center mb-6">
+                  <motion.div 
+                    className="text-yellow-400 text-xs mb-3"
+                    animate={{ opacity: [0.7, 1, 0.7] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  >
+                    ⚠️ WARNING: IRREVERSIBLE OPERATION
+                  </motion.div>
+                  
+                  <div className="text-gray-300 mb-4 text-sm">
+                    <div className="text-green-400 mb-2">$ rm --confirm entry</div>
+                    <div className="text-cyan-400">
+                      Are you sure you want to{" "}
+                      <span className="text-green-400 font-bold">delete</span>
+                      {" "}this entry?
+                    </div>
+                  </div>
+                </div>
+
+                {/* Buttons */}
+                <div className="flex space-x-3 justify-center">
+                  <motion.button
+                    onClick={confirmDelete}
+                    className="bg-green-900/30 text-green-400 border border-green-400 hover:bg-green-400 hover:text-black px-4 py-2 transition-all duration-200 font-bold"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    [Y] DELETE
+                  </motion.button>
+                  
+                  <motion.button
+                    onClick={cancelDelete}
+                    className="bg-gray-900/30 text-cyan-400 border border-cyan-400 hover:bg-cyan-400 hover:text-black px-4 py-2 transition-all duration-200 font-bold"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    [N] CANCEL
+                  </motion.button>
+                </div>
+
+                {/* Minimal footer */}
+                <div className="text-xs text-gray-500 mt-4 text-center opacity-60">
+                  SECURITY LEVEL: HIGH
+                </div>
               </div>
             </motion.div>
           </motion.div>
@@ -683,10 +741,10 @@ export default function EntryHistory() {
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.2 }}
                     className={`group transition-all duration-200 entry-container ${
-                      // Mouse hover takes priority over keyboard selection
-                      isMouseActive && hoveredIndex === index
+                      // Only show mouse hover if no keyboard selection is active
+                      selectedIndex === -1 && isMouseActive && hoveredIndex === index
                         ? 'bg-cyan-400/5 shadow-lg shadow-cyan-400/10'
-                        : !isMouseActive && selectedIndex === index 
+                        : selectedIndex === index 
                         ? 'bg-cyan-400/10 border-l-2 border-cyan-400 pl-2' 
                         : ''
                     }`}
@@ -746,7 +804,7 @@ export default function EntryHistory() {
                           <div className="flex flex-wrap items-start gap-2">
                             {!timestampsCollapsed && (
                               <div 
-                                className="font-mono text-base text-gray-500 shrink-0 mr-4 flex items-center cursor-pointer hover:text-yellow-400 transition-colors"
+                                className={`font-mono text-base text-gray-500 shrink-0 mr-4 flex items-center cursor-pointer transition-colors ${selectedIndex === -1 ? 'hover:text-yellow-400' : ''}`}
                                 onClick={handleTimestampToggleClick}
                                 title={timestampsCollapsed ? "Show timestamps" : "Hide timestamps"}
                               >

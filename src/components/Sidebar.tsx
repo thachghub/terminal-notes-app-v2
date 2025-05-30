@@ -5,6 +5,8 @@ import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth } from '@/firebase/firebase';
 import { useRouter } from 'next/navigation';
 import { hexToRgba, darkenHex } from '@/lib/colorUtils';
+import LanguageSelector from './LanguageSelector';
+import { useTranslation } from '@/hooks/useTranslation';
 
 export default function Sidebar({ fontColor, fontOpacity, bgColor, bgOpacity }: {
   fontColor?: string;
@@ -15,6 +17,7 @@ export default function Sidebar({ fontColor, fontOpacity, bgColor, bgOpacity }: 
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -84,42 +87,50 @@ export default function Sidebar({ fontColor, fontOpacity, bgColor, bgOpacity }: 
             <nav className="flex flex-col space-y-3 pt-16 text-lg w-full items-center" aria-label="Main Sidebar">
               <a href="#" onClick={handleDashboardClick} style={{ color: textColor }}
                 className="relative py-2 my-1 text-cyan-300 hover:text-cyan-100 transition-colors cursor-pointer group block text-center w-full"
-                aria-label="Go to Dashboard"
+                aria-label={t('dashboard')}
               >
-                Dashboard
+                {t('dashboard')}
                 <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-cyan-400 transition-all duration-300 group-hover:w-full"></span>
               </a>
               {/* TODO: Replace with real route when implemented */}
               <a href="#" onClick={e => e.preventDefault()} style={{ color: textColor }}
                 className="relative py-2 my-1 text-cyan-300 hover:text-cyan-100 transition-colors cursor-pointer group block text-center w-full"
-                aria-label="View List (coming soon)"
+                aria-label={`${t('list')} (coming soon)`}
               >
-                List
+                {t('list')}
                 <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-cyan-400 transition-all duration-300 group-hover:w-full"></span>
               </a>
               {/* TODO: Replace with real route when implemented */}
               <a href="#" onClick={e => e.preventDefault()} style={{ color: textColor }}
                 className="relative py-2 my-1 text-cyan-300 hover:text-cyan-100 transition-colors cursor-pointer group block text-center w-full"
-                aria-label="View Dates (coming soon)"
+                aria-label={`${t('dates')} (coming soon)`}
               >
-                Dates
+                {t('dates')}
                 <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-cyan-400 transition-all duration-300 group-hover:w-full"></span>
               </a>
               {/* TODO: Replace with real route when implemented */}
               <a href="#" onClick={e => e.preventDefault()} style={{ color: textColor }}
                 className="relative py-2 my-1 text-cyan-300 hover:text-cyan-100 transition-colors cursor-pointer group block text-center w-full"
-                aria-label="View Timer (coming soon)"
+                aria-label={`${t('timer')} (coming soon)`}
               >
-                Timer
+                {t('timer')}
                 <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-cyan-400 transition-all duration-300 group-hover:w-full"></span>
               </a>
               <a href="/settings" style={{ color: textColor }}
                 className="relative py-2 my-1 text-cyan-300 hover:text-cyan-100 transition-colors cursor-pointer group block text-center w-full"
-                aria-label="Go to Settings"
+                aria-label={t('settings')}
               >
-                Settings
+                {t('settings')}
                 <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-cyan-400 transition-all duration-300 group-hover:w-full"></span>
               </a>
+              
+              {/* Language Selector */}
+              <div className="w-full px-2 mt-2">
+                <LanguageSelector 
+                  fontColor={fontColor} 
+                  fontOpacity={fontOpacity}
+                />
+              </div>
             </nav>
           </motion.div>
         )}

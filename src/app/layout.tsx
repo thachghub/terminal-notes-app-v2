@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { VT323 } from "next/font/google";
 import "./globals.css";
 import ClientHydratePreferences from '@/components/ClientHydratePreferences';
+import UserPreferencesSync from '@/components/UserPreferencesSync';
 
 const vt323 = VT323({
   variable: "--font-vt323",
@@ -25,6 +26,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${vt323.variable} antialiased`}>
         <ClientHydratePreferences />
+        <UserPreferencesSync />
         {children}
       </body>
     </html>

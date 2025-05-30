@@ -45,6 +45,7 @@ export default function ClientHydratePreferences() {
             timezone: state.timezone,
             showSeconds: state.showSeconds,
             fontOpacity: state.fontOpacity,
+            language: state.language,
           })
         );
       } catch (e) {
