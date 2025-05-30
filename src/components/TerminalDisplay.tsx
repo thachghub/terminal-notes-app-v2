@@ -657,13 +657,13 @@ export default function TerminalDisplay({
                       setShowSignUpSuccess(false);
                       setShowSignIn(true);
                     }}
-                    className="border border-cyan-500 text-cyan-500 hover:bg-cyan-500/10 transition-colors px-3 py-1 text-sm"
+                    className="border border-cyan-400 text-cyan-300 font-mono px-3 py-1 text-sm bg-transparent hover:bg-cyan-400/10 hover:text-yellow-200 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all shadow-cyan-400/10 shadow"
                   >
                     {t('goToSignIn')}
                   </button>
                   <button
                     onClick={() => setShowSignUpSuccess(false)}
-                    className="text-gray-400 hover:text-white transition-colors px-3 py-1 text-sm"
+                    className="border border-gray-500 text-gray-400 font-mono px-3 py-1 text-sm bg-transparent hover:bg-gray-700/30 hover:text-white focus:outline-none focus:ring-2 focus:ring-gray-400 transition-all shadow"
                   >
                     {t('dismiss')}
                   </button>
