@@ -30,6 +30,7 @@ export default function EntryHistory() {
   const [user, setUser] = useState<User | null>(null);
   const [entries, setEntries] = useState<Entry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editContent, setEditContent] = useState('');
   
@@ -97,8 +98,12 @@ export default function EntryHistory() {
     if (!user || !user.emailVerified) {
       setEntries([]);
       setLoading(false);
+      setError(null);
       return;
     }
+
+    setLoading(true);
+    setError(null);
 
     // Set up real-time listener for user's entries
     // Order by createdAt DESC to get most recent first (terminal-style)
@@ -109,22 +114,46 @@ export default function EntryHistory() {
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const entriesData: Entry[] = [];
-      snapshot.forEach((doc) => {
-        entriesData.push({
-          id: doc.id,
-          ...doc.data()
-        } as Entry);
-      });
-      // Entries are already ordered by createdAt DESC from Firestore
-      setEntries(entriesData);
-      setLoading(false);
+      try {
+        const entriesData: Entry[] = [];
+        snapshot.forEach((doc) => {
+          entriesData.push({
+            id: doc.id,
+            ...doc.data()
+          } as Entry);
+        });
+        // Entries are already ordered by createdAt DESC from Firestore
+        setEntries(entriesData);
+        setLoading(false);
+        setError(null);
+      } catch (error) {
+        console.error('Error processing snapshot:', error);
+        setError('Error processing entries data');
+        setLoading(false);
+      }
     }, (error) => {
       console.error('Error fetching entries:', error);
       setLoading(false);
+      
+      // Handle specific Firebase errors
+      if (error.code === 'permission-denied') {
+        setError('Permission denied. Please check Firestore security rules or try signing out and back in.');
+        console.error('Permission denied - check Firestore security rules');
+      } else if (error.code === 'unauthenticated') {
+        setError('Authentication required. Please sign in again.');
+        console.error('User not authenticated');
+      } else if (error.code === 'unavailable') {
+        setError('Firebase service unavailable. Please check your internet connection.');
+      } else {
+        setError(`Firebase error: ${error.message || 'Unknown error'}`);
+      }
     });
 
-    return () => unsubscribe();
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
   }, [user]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -712,8 +741,18 @@ export default function EntryHistory() {
         </div>
       )}
 
+      {/* Error state */}
+      {error && (
+        <div className="text-sm mb-2 text-yellow-400 bg-yellow-400/10 border border-yellow-400/20 p-2 rounded">
+          &gt; ERROR: {error}
+          <div className="text-xs text-gray-400 mt-1">
+            Tip: Try refreshing the page or check the console for more details.
+          </div>
+        </div>
+      )}
+
       {/* Entries - Pure terminal output style */}
-      {!loading && (
+      {!loading && !error && (
         <div className="space-y-1">
           {entries.length === 0 ? (
             <div className="text-gray-500 text-sm">
