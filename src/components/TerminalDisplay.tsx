@@ -50,6 +50,50 @@ export default function TerminalDisplay({
   const [welcomeStep, setWelcomeStep] = useState(0);
   const { t } = useTranslation();
 
+  // Random welcome messages
+  const welcomeMessages = [
+    "Your presence is now logged.",
+    "Awaiting your first entry...",
+    "All signals are clear. Begin transmission.",
+    "The void listens.",
+    "Now entering... resonance mode.",
+    "What will echo today?",
+    "A thought placed is never lost.",
+    "Leave a trace, not a noise.",
+    "You never know which word matters most."
+  ];
+
+  // Get random welcome message
+  const getRandomWelcomeMessage = () => {
+    return welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
+  };
+
+  // State for current welcome message
+  const [currentWelcomeMessage, setCurrentWelcomeMessage] = useState('');
+  const [displayedMessage, setDisplayedMessage] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
+
+  // Typewriter effect for welcome message
+  useEffect(() => {
+    if (currentWelcomeMessage && welcomeStep >= 4 && !isTyping) {
+      setIsTyping(true);
+      setDisplayedMessage('');
+      
+      let index = 0;
+      const typeInterval = setInterval(() => {
+        if (index < currentWelcomeMessage.length) {
+          setDisplayedMessage(currentWelcomeMessage.slice(0, index + 1));
+          index++;
+        } else {
+          clearInterval(typeInterval);
+          setIsTyping(false);
+        }
+      }, 75); // Slowed down from 50ms to 75ms (50% slower)
+
+      return () => clearInterval(typeInterval);
+    }
+  }, [currentWelcomeMessage, welcomeStep]);
+
   // State for form inputs
   const [signInEmail, setSignInEmail] = useState('');
   const [signInPassword, setSignInPassword] = useState('');
@@ -108,6 +152,7 @@ export default function TerminalDisplay({
       // Show welcome message
       setTimeout(() => {
         setSuccessMessage('');
+        setCurrentWelcomeMessage(getRandomWelcomeMessage());
         setShowWelcome(true);
         setWelcomeStep(0);
       }, 1000);
@@ -249,69 +294,202 @@ export default function TerminalDisplay({
       <AnimatePresence>
         {showWelcome && (
           <motion.div
-            initial={{ opacity: 0, y: -50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -50 }}
+            initial={{ opacity: 0, y: -50, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -50, scale: 0.9 }}
             className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-2xl px-4"
             aria-label="Welcome Message"
           >
-            <div className="border border-green-400 bg-black/95 backdrop-blur-sm p-6 rounded-lg shadow-2xl">
-              <div className="space-y-2 font-mono">
-                <div className="flex justify-between items-center">
-                  <div className="text-green-400 text-lg">$ system --welcome</div>
-                  <button
-                    onClick={handleCloseWelcome}
-                    className="text-gray-400 hover:text-white transition-colors px-2 py-1 text-sm border border-gray-600 hover:border-gray-400 rounded"
-                    aria-label="Close welcome message"
-                  >
-                    close
-                  </button>
+            <div className="relative">
+              {/* Cyber glow effect background */}
+              <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 via-green-400/20 to-cyan-500/20 rounded-lg blur-xl"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-transparent via-cyan-400/5 to-transparent rounded-lg"></div>
+              
+              {/* Main terminal panel */}
+              <div className="relative border-2 border-cyan-400/80 bg-black/95 backdrop-blur-md p-6 rounded-lg shadow-2xl shadow-cyan-400/25" 
+                   style={{
+                     background: 'linear-gradient(135deg, rgba(0,0,0,0.95) 0%, rgba(6,44,51,0.95) 50%, rgba(0,0,0,0.95) 100%)',
+                     boxShadow: '0 0 30px rgba(34, 211, 238, 0.3), inset 0 0 20px rgba(34, 211, 238, 0.1)'
+                   }}>
+                
+                {/* Terminal scan lines effect */}
+                <div className="absolute inset-0 pointer-events-none opacity-20">
+                  <div className="h-full w-full bg-gradient-to-b from-transparent via-cyan-400/10 to-transparent" 
+                       style={{
+                         backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(34, 211, 238, 0.1) 2px, rgba(34, 211, 238, 0.1) 4px)',
+                       }}></div>
                 </div>
-                <div className="text-cyan-300">
-                  {welcomeStep >= 1 && (
+
+                <div className="relative space-y-3 font-mono">
+                  {/* Header with enhanced cyber styling */}
+                  <div className="flex justify-between items-center pb-3">
                     <motion.div 
-                      initial={{ opacity: 0 }} 
-                      animate={{ opacity: 1 }}
-                      className="flex items-center gap-2"
+                      className="text-cyan-400 text-lg font-bold tracking-wider"
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      style={{
+                        textShadow: '0 0 10px rgba(34, 211, 238, 0.8), 0 0 20px rgba(34, 211, 238, 0.4)'
+                      }}
                     >
-                      <span className="text-green-400">✓</span>
-                      <span>Authentication successful</span>
+                      $ system --welcome
                     </motion.div>
-                  )}
-                  {welcomeStep >= 2 && (
-                    <motion.div 
-                      initial={{ opacity: 0 }} 
-                      animate={{ opacity: 1 }}
-                      className="flex items-center gap-2 mt-1"
+                    <button
+                      onClick={handleCloseWelcome}
+                      className="text-gray-400 hover:text-cyan-400 transition-all duration-300 px-3 py-1 text-sm border border-gray-600 hover:border-cyan-400/60 rounded bg-gray-900/50 hover:bg-cyan-400/10 hover:shadow-lg hover:shadow-cyan-400/20"
+                      aria-label="Close welcome message"
+                      style={{
+                        textShadow: '0 0 5px rgba(156, 163, 175, 0.5)'
+                      }}
                     >
-                      <span className="text-green-400">✓</span>
-                      <span>Session initialized</span>
-                    </motion.div>
-                  )}
-                  {welcomeStep >= 3 && (
+                      close
+                    </button>
+                  </div>
+
+                  {/* Status messages with enhanced effects */}
+                  <div className="text-cyan-300 space-y-2">
+                    {welcomeStep >= 1 && (
+                      <motion.div 
+                        initial={{ opacity: 0, x: -20 }} 
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.1 }}
+                        className="flex items-center gap-3 group"
+                      >
+                        <motion.span 
+                          className="text-green-400 font-bold text-lg"
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+                          style={{
+                            textShadow: '0 0 15px rgba(34, 197, 94, 0.8), 0 0 30px rgba(34, 197, 94, 0.4)'
+                          }}
+                        >
+                          ✓
+                        </motion.span>
+                        <span className="tracking-wide" style={{
+                          textShadow: '0 0 8px rgba(103, 232, 249, 0.6)'
+                        }}>
+                          Authentication successful
+                        </span>
+                      </motion.div>
+                    )}
+                    {welcomeStep >= 2 && (
+                      <motion.div 
+                        initial={{ opacity: 0, x: -20 }} 
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.3 }}
+                        className="flex items-center gap-3 group"
+                      >
+                        <motion.span 
+                          className="text-green-400 font-bold text-lg"
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          transition={{ delay: 0.4, type: "spring", stiffness: 200 }}
+                          style={{
+                            textShadow: '0 0 15px rgba(34, 197, 94, 0.8), 0 0 30px rgba(34, 197, 94, 0.4)'
+                          }}
+                        >
+                          ✓
+                        </motion.span>
+                        <span className="tracking-wide" style={{
+                          textShadow: '0 0 8px rgba(103, 232, 249, 0.6)'
+                        }}>
+                          Session initialized
+                        </span>
+                      </motion.div>
+                    )}
+                    {welcomeStep >= 3 && (
+                      <motion.div 
+                        initial={{ opacity: 0, x: -20 }} 
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.5 }}
+                        className="flex items-center gap-3 group"
+                      >
+                        <motion.span 
+                          className="text-green-400 font-bold text-lg"
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          transition={{ delay: 0.6, type: "spring", stiffness: 200 }}
+                          style={{
+                            textShadow: '0 0 15px rgba(34, 197, 94, 0.8), 0 0 30px rgba(34, 197, 94, 0.4)'
+                          }}
+                        >
+                          ✓
+                        </motion.span>
+                        <span className="tracking-wide" style={{
+                          textShadow: '0 0 8px rgba(103, 232, 249, 0.6)'
+                        }}>
+                          Terminal access granted
+                        </span>
+                      </motion.div>
+                    )}
+                  </div>
+
+                  {/* Welcome message with enhanced cyber styling */}
+                  {welcomeStep >= 4 && (
                     <motion.div 
-                      initial={{ opacity: 0 }} 
-                      animate={{ opacity: 1 }}
-                      className="flex items-center gap-2 mt-1"
+                      initial={{ opacity: 0, y: 20, scale: 0.9 }} 
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      transition={{ delay: 0.7, type: "spring", stiffness: 100 }}
+                      className="mt-6 pt-4"
                     >
-                      <span className="text-green-400">✓</span>
-                      <span>Terminal access granted</span>
+                      <motion.div 
+                        className="text-xl font-bold tracking-wider mb-2"
+                        style={{
+                          background: 'linear-gradient(45deg, #fde047, #22d3ee, #fde047)',
+                          backgroundSize: '200% 200%',
+                          WebkitBackgroundClip: 'text',
+                          WebkitTextFillColor: 'transparent',
+                          backgroundClip: 'text',
+                          textShadow: '0 0 20px rgba(253, 224, 71, 0.5)'
+                        }}
+                        animate={{
+                          backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
+                        }}
+                        transition={{
+                          duration: 3,
+                          repeat: Infinity,
+                          ease: "linear"
+                        }}
+                      >
+                        Welcome to the Hyper Skye Terminal
+                      </motion.div>
+                      <motion.div 
+                        className="text-sm text-cyan-300 mb-4 tracking-wide"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 1 }}
+                        style={{
+                          textShadow: '0 0 10px rgba(103, 232, 249, 0.6)'
+                        }}
+                      >
+                        {displayedMessage}
+                        {isTyping && (
+                          <motion.span
+                            className="text-cyan-400"
+                            animate={{ opacity: [1, 0, 1] }}
+                            transition={{ duration: 0.8, repeat: Infinity }}
+                            style={{
+                              textShadow: '0 0 10px rgba(34, 211, 238, 0.8)'
+                            }}
+                          >
+                            _
+                          </motion.span>
+                        )}
+                      </motion.div>
+                      <motion.div 
+                        className="text-gray-400 text-xs tracking-wider"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: [0.5, 1, 0.5] }}
+                        transition={{ delay: 1.2, duration: 2, repeat: Infinity }}
+                        style={{
+                          textShadow: '0 0 5px rgba(156, 163, 175, 0.5)'
+                        }}
+                      >
+                        Auto-redirecting in 20 seconds...
+                      </motion.div>
                     </motion.div>
                   )}
                 </div>
-                {welcomeStep >= 4 && (
-                  <motion.div 
-                    initial={{ opacity: 0, y: 10 }} 
-                    animate={{ opacity: 1, y: 0 }}
-                    className="mt-4 text-yellow-300 text-center"
-                  >
-                    <div className="text-lg">Welcome to the Terminal</div>
-                    <div className="text-sm mt-1">Have a nice day! 🚀</div>
-                                         <div className="mt-3 text-gray-400 text-xs">
-                       Auto-redirecting in 20 seconds...
-                     </div>
-                  </motion.div>
-                )}
               </div>
             </div>
           </motion.div>
