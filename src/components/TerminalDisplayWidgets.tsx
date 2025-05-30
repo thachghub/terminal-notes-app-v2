@@ -156,33 +156,33 @@ export default function TerminalDisplayWidgets() {
   return (
     <div className="space-y-1 pl-2 max-w-md">
       {showUserInfo && (
-        <div className="flex gap-24 items-center">
-          <span className="text-cyan-500">{t('userLabel')}</span>
-          <span className="text-cyan-300">{user?.email || t('notSignedIn')}</span>
+        <div className="flex gap-2 items-center">
+          <span className="text-cyan-500 shrink-0">{t('userLabel')}</span>
+          <span className="text-cyan-300 break-all">{user?.email || t('notSignedIn')}</span>
         </div>
       )}
       {showCurrentDate && (
-        <div className="flex gap-24 items-center">
-          <span className="text-cyan-500">{t('dateLabel')}</span>
+        <div className="flex gap-2 items-center">
+          <span className="text-cyan-500 shrink-0">{t('dateLabel')}</span>
           <span className="text-cyan-300">May 23, 2025</span>
         </div>
       )}
       {showCurrentTime && (
-        <div className="flex gap-24 items-center">
-          <span className="text-cyan-500">{t('timeLabel')}</span>
+        <div className="flex gap-2 items-center">
+          <span className="text-cyan-500 shrink-0">{t('timeLabel')}</span>
           <span className="text-cyan-300">{currentTime || t('loading')}</span>
         </div>
       )}
       {showWeekNumber && (
-        <div className="flex gap-24 items-center">
-          <span className="text-cyan-500">{t('weekLabel')}</span>
+        <div className="flex gap-2 items-center">
+          <span className="text-cyan-500 shrink-0">{t('weekLabel')}</span>
           <span className="text-cyan-300">{getWeekString()}</span>
         </div>
       )}
       {showSunriseSunset && (
-        <div className="flex gap-24 items-center relative" ref={dropdownRef}>
+        <div className="flex gap-2 items-center relative" ref={dropdownRef}>
           <button
-            className="text-cyan-500 cursor-pointer select-none hover:text-yellow-400 transition-colors"
+            className="text-cyan-500 cursor-pointer select-none hover:text-yellow-400 transition-colors shrink-0 text-left"
             title="Click to change time zone"
             aria-haspopup="listbox"
             aria-expanded={showTimezoneDropdown}
