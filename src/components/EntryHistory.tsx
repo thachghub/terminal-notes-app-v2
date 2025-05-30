@@ -38,6 +38,8 @@ export default function EntryHistory() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [feedback, setFeedback] = useState('');
   const [showFeedback, setShowFeedback] = useState(false);
+  const [showCyberAnimation, setShowCyberAnimation] = useState(false);
+  const [showDeleteAnimation, setShowDeleteAnimation] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   // Delete confirmation states
@@ -77,11 +79,8 @@ export default function EntryHistory() {
                            target.closest('textarea') ||
                            target.closest('input');
       
-      console.log('Global click:', target, 'Inside entry:', !!isInsideEntry);
-      
       // If clicked outside any entry-related element, clear states
       if (!isInsideEntry) {
-        console.log('Clearing edit state - clicked outside entry');
         setSelectedIndex(-1);
         setHoveredIndex(-1);
         setIsMouseActive(false);
@@ -158,6 +157,16 @@ export default function EntryHistory() {
       setShowFeedback(true);
       setEntry(''); // Clear the input field
       
+      // Trigger cyber animation
+      setShowCyberAnimation(true);
+      setTimeout(() => {
+        setShowCyberAnimation(false);
+        // Ensure input is focused after animation ends
+        if (inputRef.current) {
+          inputRef.current.focus();
+        }
+      }, 2000);
+      
       // Auto-hide feedback after 2 seconds
       setTimeout(() => setShowFeedback(false), 2000);
     } catch (error) {
@@ -167,10 +176,12 @@ export default function EntryHistory() {
       setTimeout(() => setShowFeedback(false), 3000);
     } finally {
       setIsSubmitting(false);
-      // Refocus input after submission
-      if (inputRef.current) {
-        inputRef.current.focus();
-      }
+      // Refocus input after submission with a small delay to ensure proper focus
+      setTimeout(() => {
+        if (inputRef.current) {
+          inputRef.current.focus();
+        }
+      }, 100);
     }
   };
 
@@ -280,11 +291,22 @@ export default function EntryHistory() {
     if (!deleteConfirmId) return;
 
     try {
-      await deleteDoc(doc(db, 'entryterminalentries', deleteConfirmId));
+      // Store the entry ID for deletion
+      const entryToDelete = deleteConfirmId;
+      
+      // Clear modal immediately and trigger delete animation
       setDeleteConfirmId(null);
+      setShowDeleteAnimation(true);
+      
+      // Wait for animation to play for a bit, then delete
+      setTimeout(async () => {
+        await deleteDoc(doc(db, 'entryterminalentries', entryToDelete));
+        setShowDeleteAnimation(false);
+      }, 1500);
     } catch (error) {
       console.error('Error deleting entry:', error);
       setDeleteConfirmId(null);
+      setShowDeleteAnimation(false);
     }
   };
 
@@ -298,8 +320,12 @@ export default function EntryHistory() {
 
     const handleKeyPress = (e: KeyboardEvent) => {
       if (e.key.toLowerCase() === 'y') {
+        e.preventDefault();
+        e.stopPropagation();
         confirmDelete();
       } else if (e.key.toLowerCase() === 'n' || e.key === 'Escape') {
+        e.preventDefault();
+        e.stopPropagation();
         cancelDelete();
       }
     };
@@ -307,6 +333,21 @@ export default function EntryHistory() {
     document.addEventListener('keydown', handleKeyPress);
     return () => document.removeEventListener('keydown', handleKeyPress);
   }, [deleteConfirmId]);
+
+  // Auto-scroll to keep selected entry in view
+  useEffect(() => {
+    if (selectedIndex >= 0 && selectedIndex < entries.length) {
+      // Find the selected entry element and scroll it into view
+      const selectedEntry = document.querySelector(`[data-entry-index="${selectedIndex}"]`);
+      if (selectedEntry) {
+        selectedEntry.scrollIntoView({
+          behavior: 'smooth',
+          block: 'nearest',
+          inline: 'nearest'
+        });
+      }
+    }
+  }, [selectedIndex, entries.length]);
 
   const formatTimestamp = (timestamp: Timestamp) => {
     if (!timestamp) return 'Unknown time';
@@ -333,13 +374,24 @@ export default function EntryHistory() {
   };
 
   // Handle direct click on entry content to start inline editing
-  const handleContentClick = (e: React.MouseEvent, entry: Entry) => {
-    console.log('Content clicked:', entry.id);
+  const handleContentClick = (e: React.MouseEvent, entry: Entry, index: number) => {
     e.stopPropagation();
-    setEditingId(entry.id);
-    setEditContent(entry.content);
-    setIsMouseActive(true);
-    console.log('Edit state set:', entry.id);
+    
+    // If this entry is already selected, enter edit mode
+    if (selectedIndex === index) {
+      setEditingId(entry.id);
+      setEditContent(entry.content);
+    } else {
+      // First click: select the entry just like keyboard navigation
+      setSelectedIndex(index);
+      setIsMouseActive(false); // Use keyboard-style highlighting, not mouse hover
+      setHoveredIndex(-1); // Clear any hover state
+      
+      // Ensure input field has focus so Delete key works
+      if (inputRef.current) {
+        inputRef.current.focus();
+      }
+    }
   };
 
   // Handle mouse enter with priority over keyboard
@@ -412,6 +464,134 @@ export default function EntryHistory() {
           )}
         </div>
       </form>
+
+      {/* Cyber Animation */}
+      <AnimatePresence>
+        {showCyberAnimation && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            className="mb-4 p-4 border border-cyan-400 bg-black/80 rounded font-mono text-cyan-400"
+          >
+            <div className="flex items-center space-x-2">
+              <div className="text-green-400 animate-spin">▲</div>
+              <div className="text-cyan-400 animate-pulse">sending entry</div>
+              <div className="flex space-x-1">
+                <motion.span
+                  animate={{ opacity: [0, 1, 0] }}
+                  transition={{ duration: 0.5, repeat: Infinity, delay: 0 }}
+                >
+                  .
+                </motion.span>
+                <motion.span
+                  animate={{ opacity: [0, 1, 0] }}
+                  transition={{ duration: 0.5, repeat: Infinity, delay: 0.2 }}
+                >
+                  .
+                </motion.span>
+                <motion.span
+                  animate={{ opacity: [0, 1, 0] }}
+                  transition={{ duration: 0.5, repeat: Infinity, delay: 0.4 }}
+                >
+                  .
+                </motion.span>
+              </div>
+            </div>
+            <div className="mt-2 text-xs text-gray-500 font-mono">
+              <div className="flex items-center space-x-1">
+                <span>[</span>
+                <motion.div
+                  className="flex space-x-0"
+                  initial={{ width: 0 }}
+                  animate={{ width: "100%" }}
+                  transition={{ duration: 1.5 }}
+                >
+                  {Array.from({ length: 20 }).map((_, i) => (
+                    <motion.span
+                      key={i}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: i * 0.075, duration: 0.1 }}
+                      className="text-cyan-400"
+                    >
+                      ▓
+                    </motion.span>
+                  ))}
+                </motion.div>
+                <span>]</span>
+              </div>
+              <div className="mt-1 text-cyan-600">
+                ► transmission protocol: SECURE
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Delete Cyber Animation */}
+      <AnimatePresence>
+        {showDeleteAnimation && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            className="mb-4 p-4 border border-red-400 bg-black/80 rounded font-mono text-red-400"
+          >
+            <div className="flex items-center space-x-2">
+              <div className="text-orange-400 animate-spin">▼</div>
+              <div className="text-red-400 animate-pulse">deleting entry</div>
+              <div className="flex space-x-1">
+                <motion.span
+                  animate={{ opacity: [0, 1, 0] }}
+                  transition={{ duration: 0.4, repeat: Infinity, delay: 0 }}
+                >
+                  .
+                </motion.span>
+                <motion.span
+                  animate={{ opacity: [0, 1, 0] }}
+                  transition={{ duration: 0.4, repeat: Infinity, delay: 0.15 }}
+                >
+                  .
+                </motion.span>
+                <motion.span
+                  animate={{ opacity: [0, 1, 0] }}
+                  transition={{ duration: 0.4, repeat: Infinity, delay: 0.3 }}
+                >
+                  .
+                </motion.span>
+              </div>
+            </div>
+            <div className="mt-2 text-xs text-gray-500 font-mono">
+              <div className="flex items-center space-x-1">
+                <span>[</span>
+                <motion.div
+                  className="flex space-x-0"
+                  initial={{ width: "100%" }}
+                  animate={{ width: 0 }}
+                  transition={{ duration: 1.2 }}
+                >
+                  {Array.from({ length: 15 }).map((_, i) => (
+                    <motion.span
+                      key={i}
+                      initial={{ opacity: 1 }}
+                      animate={{ opacity: 0 }}
+                      transition={{ delay: i * 0.08, duration: 0.1 }}
+                      className="text-red-400"
+                    >
+                      ▓
+                    </motion.span>
+                  ))}
+                </motion.div>
+                <span>]</span>
+              </div>
+              <div className="mt-1 text-red-600">
+                ► termination protocol: CONFIRMED
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Feedback messages */}
       <AnimatePresence>
@@ -513,6 +693,7 @@ export default function EntryHistory() {
                     onMouseEnter={() => handleMouseEnter(index)}
                     onMouseLeave={handleMouseLeave}
                     onClick={(e) => e.stopPropagation()}
+                    data-entry-index={index}
                   >
                     {editingId === entry.id ? (
                       <div className="space-y-1">
@@ -573,8 +754,8 @@ export default function EntryHistory() {
                               </div>
                             )}
                             <div 
-                              className={`font-mono text-base text-gray-300 flex-1 min-w-0 break-words cursor-text hover:bg-cyan-400/5 hover:text-cyan-300 transition-all duration-200 rounded px-1 py-0.5 ${accomplishedEntries.has(entry.id) ? 'line-through text-gray-500 opacity-60' : ''}`}
-                              onClick={(e) => handleContentClick(e, entry)}
+                              className={`font-mono text-base text-cyan-400 flex-1 min-w-0 break-words cursor-text hover:bg-cyan-400/5 hover:text-cyan-300 transition-all duration-200 rounded px-1 py-0.5 ${accomplishedEntries.has(entry.id) ? 'line-through text-gray-500 opacity-60' : ''}`}
+                              onClick={(e) => handleContentClick(e, entry, index)}
                               title="Click to edit"
                               data-entry-content="true"
                             >
@@ -585,7 +766,7 @@ export default function EntryHistory() {
                               <button
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  handleContentClick(e, entry);
+                                  handleContentClick(e, entry, index);
                                 }}
                                 className="text-cyan-400 hover:text-yellow-400 text-xs cursor-pointer transition-colors"
                               >
