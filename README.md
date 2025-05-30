@@ -168,3 +168,33 @@ The EntryTerminal feature provides a sophisticated, dual-input interface where u
 - Enjoy smooth transitions and visual feedback throughout all interactions
 
 The implementation successfully creates a powerful, efficient note-taking tool that maintains authentic terminal aesthetics while providing modern UX conveniences including comprehensive mouse support, intuitive click-away behavior, and seamless editing workflows.
+
+## Roadmap
+
+## 🧭 Hyper Terminal – Web App Feature Roadmap (Q2–Q3 2025)
+
+### ✅ Phase 0 – Infrastructure (COMPLETE)
+- TypeScript + Next.js 15 App Router
+- Firebase Auth + Firestore
+- Zustand state management
+- Translation system
+- Component architecture refactor
+
+### 🔧 Phase 1 – Core Logging Features (IN PROGRESS)
+- Entry Terminal (short-form UI, timestamps)
+- Deep Terminal (markdown editing)
+- Personas (sub-accounts, context switching)
+- Ambience Toggle (visual only)
+
+### 🧪 Phase 2 – Social Features (Planned)
+- Transmission Terminals (broadcast + ephemeral chat)
+- Entry Echo (animated replays of past notes)
+
+### 🧼 Phase 3 – Quality + Extras (Future)
+- Timer Terminal
+- AI daily prompts
+- Visual search
+- Image sharing (linked)
+- Offline/PWA support
+
+Mark each item as ✅, 🔧, 🧪, or 🧼 to denote status. Keep it markdown-friendly and clean.
