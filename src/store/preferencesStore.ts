@@ -12,6 +12,8 @@ export type Preferences = {
   showCurrentDate: boolean;
   showSunriseSunset: boolean;
   showWeekNumber: boolean;
+  // UI preferences
+  showKeyTutorial: boolean;
 };
 
 export const DEFAULT_PREFERENCES: Preferences = {
@@ -25,6 +27,7 @@ export const DEFAULT_PREFERENCES: Preferences = {
   showCurrentDate: true,
   showSunriseSunset: true,
   showWeekNumber: true,
+  showKeyTutorial: true,
 };
 
 export type PreferencesStore = {
@@ -56,6 +59,9 @@ export type PreferencesStore = {
   setShowSunriseSunset: (v: boolean) => void;
   showWeekNumber: boolean;
   setShowWeekNumber: (v: boolean) => void;
+  // UI preferences
+  showKeyTutorial: boolean;
+  setShowKeyTutorial: (v: boolean) => void;
 };
 
 export const usePreferencesStore = create<PreferencesStore>((set, get) => ({
@@ -67,11 +73,11 @@ export const usePreferencesStore = create<PreferencesStore>((set, get) => ({
   setLanguage: (lang) => set({ language: lang }),
   savedLoadOuts: {},
   saveLoadOut: (key) => {
-    const { fontColor, fontOpacity, timezone, showSeconds, language, showUserInfo, showCurrentTime, showCurrentDate, showSunriseSunset, showWeekNumber } = get();
+    const { fontColor, fontOpacity, timezone, showSeconds, language, showUserInfo, showCurrentTime, showCurrentDate, showSunriseSunset, showWeekNumber, showKeyTutorial } = get();
     set((state) => ({
       savedLoadOuts: {
         ...state.savedLoadOuts,
-        [key]: { fontColor, fontOpacity, timezone, showSeconds, language, showUserInfo, showCurrentTime, showCurrentDate, showSunriseSunset, showWeekNumber },
+        [key]: { fontColor, fontOpacity, timezone, showSeconds, language, showUserInfo, showCurrentTime, showCurrentDate, showSunriseSunset, showWeekNumber, showKeyTutorial },
       },
     }));
   },
@@ -107,4 +113,7 @@ export const usePreferencesStore = create<PreferencesStore>((set, get) => ({
   setShowSunriseSunset: (v) => set({ showSunriseSunset: v }),
   showWeekNumber: true,
   setShowWeekNumber: (v) => set({ showWeekNumber: v }),
+  // UI preferences
+  showKeyTutorial: true,
+  setShowKeyTutorial: (v) => set({ showKeyTutorial: v }),
 })); 

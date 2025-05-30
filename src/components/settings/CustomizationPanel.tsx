@@ -3,6 +3,7 @@ import FontColorPicker from './FontColorPicker';
 import FontOpacitySlider from './FontOpacitySlider';
 import TimezoneSelector from './TimezoneSelector';
 import ShowSecondsToggle from './ShowSecondsToggle';
+import ShowKeyTutorialToggle from './ShowKeyTutorialToggle';
 import LoadOutManager from './LoadOutManager';
 import ResetToDefaultButton from './ResetToDefaultButton';
 import WidgetVisibilityToggle from './WidgetVisibilityToggle';
@@ -23,6 +24,7 @@ export default function CustomizationPanel() {
         <div className="space-y-4">
           <FontColorPicker />
           <FontOpacitySlider />
+          <ShowKeyTutorialToggle />
         </div>
       </div>
 

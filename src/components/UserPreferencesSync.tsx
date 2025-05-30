@@ -58,6 +58,7 @@ export default function UserPreferencesSync() {
             showCurrentDate: state.showCurrentDate,
             showSunriseSunset: state.showSunriseSunset,
             showWeekNumber: state.showWeekNumber,
+            showKeyTutorial: state.showKeyTutorial,
           };
 
           await preferencesService.saveUserPreferences(user, preferences);

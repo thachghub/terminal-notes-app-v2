@@ -18,6 +18,7 @@ import {
 import { auth, db } from '@/firebase/firebase';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '@/hooks/useTranslation';
+import { usePreferencesStore } from '@/store/preferencesStore';
 
 interface Entry {
   id: string;
@@ -29,6 +30,7 @@ interface Entry {
 
 export default function EntryHistory() {
   const { t } = useTranslation();
+  const showKeyTutorial = usePreferencesStore(s => s.showKeyTutorial);
   const [user, setUser] = useState<User | null>(null);
   const [entries, setEntries] = useState<Entry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -51,6 +53,7 @@ export default function EntryHistory() {
   // Navigation states
   const [selectedIndex, setSelectedIndex] = useState(-1); // -1 means no selection (input field)
   const [accomplishedEntries, setAccomplishedEntries] = useState<Set<string>>(new Set()); // Track accomplished entry IDs
+  const [markedForDeletion, setMarkedForDeletion] = useState<Set<string>>(new Set()); // Track entries marked for mass deletion
   const [timestampsCollapsed, setTimestampsCollapsed] = useState(false); // Global timestamp collapse state
   const [hoveredIndex, setHoveredIndex] = useState(-1); // Track which entry is being hovered
   const [isMouseActive, setIsMouseActive] = useState(false); // Track if mouse is actively being used
@@ -254,6 +257,19 @@ export default function EntryHistory() {
           });
         }
       }
+    } else if (e.key === 'ArrowLeft' && selectedIndex !== -1) {
+      e.preventDefault();
+      // Mark/unmark the current entry for mass deletion
+      const currentEntry = entries[selectedIndex];
+      setMarkedForDeletion(prev => {
+        const newSet = new Set(prev);
+        if (newSet.has(currentEntry.id)) {
+          newSet.delete(currentEntry.id);
+        } else {
+          newSet.add(currentEntry.id);
+        }
+        return newSet;
+      });
     } else if (e.key === 'Delete' && selectedIndex !== -1) {
       e.preventDefault();
       const currentEntry = entries[selectedIndex];
@@ -285,6 +301,16 @@ export default function EntryHistory() {
       setSelectedIndex(-1);
       setIsMouseActive(false);
       setHoveredIndex(-1);
+      // Clear marked entries when escaping
+      setMarkedForDeletion(new Set());
+    } else if (e.key.toLowerCase() === 'd' && (e.metaKey || e.ctrlKey) && markedForDeletion.size > 0) {
+      e.preventDefault();
+      // Mass delete marked entries
+      setDeleteConfirmId('MASS_DELETE');
+    } else if (e.key.toLowerCase() === 'c' && (e.metaKey || e.ctrlKey) && markedForDeletion.size > 0) {
+      e.preventDefault();
+      // Clear all marks
+      setMarkedForDeletion(new Set());
     }
   };
 
@@ -330,22 +356,41 @@ export default function EntryHistory() {
     if (!deleteConfirmId) return;
 
     try {
-      // Store the entry ID for deletion
-      const entryToDelete = deleteConfirmId;
-      
-      // Clear modal immediately and trigger delete animation
-      setDeleteConfirmId(null);
-      setShowDeleteAnimation(true);
-      
-      // Wait for animation to play for a bit, then delete
-      setTimeout(async () => {
-        await deleteDoc(doc(db, 'entryterminalentries', entryToDelete));
-        setShowDeleteAnimation(false);
-      }, 1500);
+      if (deleteConfirmId === 'MASS_DELETE') {
+        // Mass delete all marked entries
+        const entriesToDelete = Array.from(markedForDeletion);
+        
+        // Clear modal immediately and trigger delete animation
+        setDeleteConfirmId(null);
+        setShowDeleteAnimation(true);
+        
+        // Wait for animation to play for a bit, then delete all marked entries
+        setTimeout(async () => {
+          for (const entryId of entriesToDelete) {
+            await deleteDoc(doc(db, 'entryterminalentries', entryId));
+          }
+          setMarkedForDeletion(new Set()); // Clear marked entries
+          setShowDeleteAnimation(false);
+        }, 1500);
+      } else {
+        // Single delete
+        const entryToDelete = deleteConfirmId;
+        
+        // Clear modal immediately and trigger delete animation
+        setDeleteConfirmId(null);
+        setShowDeleteAnimation(true);
+        
+        // Wait for animation to play for a bit, then delete
+        setTimeout(async () => {
+          await deleteDoc(doc(db, 'entryterminalentries', entryToDelete));
+          setShowDeleteAnimation(false);
+        }, 1500);
+      }
     } catch (error) {
       console.error('Error deleting entry:', error);
       setDeleteConfirmId(null);
       setShowDeleteAnimation(false);
+      setMarkedForDeletion(new Set()); // Clear marked entries on error
     }
   };
 
@@ -583,7 +628,9 @@ export default function EntryHistory() {
           >
             <div className="flex items-center space-x-2">
               <div className="text-green-400 animate-spin">▼</div>
-              <div className="text-green-400 animate-pulse">deleting entry</div>
+              <div className="text-green-400 animate-pulse">
+                {markedForDeletion.size > 1 ? `deleting ${markedForDeletion.size} entries` : 'deleting entry'}
+              </div>
               <div className="flex space-x-1">
                 <motion.span
                   animate={{ opacity: [0, 1, 0] }}
@@ -650,6 +697,20 @@ export default function EntryHistory() {
         )}
       </AnimatePresence>
 
+      {/* Help indicators for marking feature */}
+      {showKeyTutorial && !loading && !error && entries.length > 0 && !entry.trim() && markedForDeletion.size === 0 && (
+        <div className="mb-2 text-xs text-gray-500 opacity-60">
+          Navigation: ↑↓ • Mark for deletion: ← • Edit: Enter • Delete: Del/Backspace
+        </div>
+      )}
+
+      {/* Mass delete status */}
+      {markedForDeletion.size > 0 && (
+        <div className="mb-2 text-xs text-green-400 bg-green-400/10 border border-green-400/20 p-2 rounded">
+          ► {markedForDeletion.size} entries marked for deletion • Press Cmd+D to delete all • Press Cmd+C to clear marks • Press Esc to clear
+        </div>
+      )}
+
       {/* Delete Confirmation Modal */}
       <AnimatePresence>
         {deleteConfirmId && (
@@ -696,12 +757,28 @@ export default function EntryHistory() {
                   </motion.div>
                   
                   <div className="text-gray-300 mb-4 text-sm">
-                    <div className="text-green-400 mb-2">$ rm --confirm entry</div>
-                    <div className="text-cyan-400">
-                      Are you sure you want to{" "}
-                      <span className="text-green-400 font-bold">delete</span>
-                      {" "}this entry?
-                    </div>
+                    {deleteConfirmId === 'MASS_DELETE' ? (
+                      <>
+                        <div className="text-green-400 mb-2">$ rm --confirm --mass</div>
+                        <div className="text-cyan-400">
+                          Are you sure you want to{" "}
+                          <span className="text-green-400 font-bold">delete</span>
+                          {" "}{markedForDeletion.size} marked entries?
+                        </div>
+                        <div className="text-xs text-gray-400 mt-2">
+                          This will permanently delete all entries marked with ←
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="text-green-400 mb-2">$ rm --confirm entry</div>
+                        <div className="text-cyan-400">
+                          Are you sure you want to{" "}
+                          <span className="text-green-400 font-bold">delete</span>
+                          {" "}this entry?
+                        </div>
+                      </>
+                    )}
                   </div>
                 </div>
 
@@ -782,8 +859,11 @@ export default function EntryHistory() {
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.2 }}
                     className={`group transition-all duration-200 entry-container ${
-                      // Only show mouse hover if no keyboard selection is active
-                      selectedIndex === -1 && isMouseActive && hoveredIndex === index
+                      // Show marking visual style
+                      markedForDeletion.has(entry.id)
+                        ? 'bg-green-400/10 border-l-4 border-green-400 pl-2'
+                        : // Only show mouse hover if no keyboard selection is active
+                        selectedIndex === -1 && isMouseActive && hoveredIndex === index
                         ? 'bg-cyan-400/5 shadow-lg shadow-cyan-400/10'
                         : selectedIndex === index 
                         ? 'bg-cyan-400/10 border-l-2 border-cyan-400 pl-2' 
@@ -858,6 +938,9 @@ export default function EntryHistory() {
                               title="Click to edit"
                               data-entry-content="true"
                             >
+                              {markedForDeletion.has(entry.id) && (
+                                <span className="text-green-400 mr-2 animate-pulse">← MARKED</span>
+                              )}
                               {entry.content}
                               {accomplishedEntries.has(entry.id) && <span className="ml-2 text-green-400 text-xs">✓ accomplished</span>}
                             </div>

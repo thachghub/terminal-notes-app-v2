@@ -46,6 +46,7 @@ export default function ClientHydratePreferences() {
             showSeconds: state.showSeconds,
             fontOpacity: state.fontOpacity,
             language: state.language,
+            showKeyTutorial: state.showKeyTutorial,
           })
         );
       } catch (e) {
