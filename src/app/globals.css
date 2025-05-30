@@ -35,6 +35,66 @@
   font-style: normal;
 }
 
+/* TipTap Editor Heading Styles */
+.tiptap-editor .ProseMirror h1,
+.tiptap-editor h1,
+.ProseMirror h1 {
+  font-size: 1.875rem !important; /* 30px / text-3xl */
+  font-weight: 700 !important; /* font-bold */
+  line-height: 2.25rem !important; /* leading-9 */
+  margin: 0 0 0.75rem 0 !important;
+  color: #22d3ee !important; /* text-cyan-400 */
+  letter-spacing: -0.025em !important; /* tracking-tight */
+  font-family: 'TerminalFont', monospace !important;
+}
+
+.tiptap-editor .ProseMirror h2,
+.tiptap-editor h2,
+.ProseMirror h2 {
+  font-size: 1.5rem !important; /* 24px / text-2xl */
+  font-weight: 600 !important; /* font-semibold */
+  line-height: 2rem !important; /* leading-8 */
+  margin: 0.75rem 0 0.5rem 0 !important;
+  color: #67e8f9 !important; /* text-cyan-300 */
+  font-family: 'TerminalFont', monospace !important;
+}
+
+.tiptap-editor .ProseMirror h3,
+.tiptap-editor h3,
+.ProseMirror h3 {
+  font-size: 1.25rem !important; /* 20px / text-xl */
+  font-weight: 600 !important; /* font-semibold */
+  line-height: 1.75rem !important; /* leading-7 */
+  margin: 0.5rem 0 0.375rem 0 !important;
+  color: #a5f3fc !important; /* text-cyan-200 */
+  font-family: 'TerminalFont', monospace !important;
+}
+
+.tiptap-editor .ProseMirror p,
+.tiptap-editor p,
+.ProseMirror p {
+  margin: 0 0 0.5rem 0 !important;
+  line-height: 1.5rem !important;
+  color: #a5f3fc !important; /* text-cyan-200 */
+  font-family: 'TerminalFont', monospace !important;
+}
+
+.tiptap-editor .ProseMirror {
+  outline: none !important;
+}
+
+/* Enhanced placeholder styling for empty H1 */
+.tiptap-editor .ProseMirror .is-editor-empty:first-child::before,
+.ProseMirror .is-editor-empty:first-child::before {
+  color: #64748b !important; /* text-slate-500 */
+  content: attr(data-placeholder) !important;
+  float: left !important;
+  height: 0 !important;
+  pointer-events: none !important;
+  font-size: 1.875rem !important; /* Match H1 size */
+  font-weight: 700 !important; /* Match H1 weight */
+}
+
 /* Custom Scrollbar Styles */
 .scrollbar-thin {
   scrollbar-width: thin;
