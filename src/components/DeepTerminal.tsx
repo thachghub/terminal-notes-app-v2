@@ -6,6 +6,7 @@ import { collection, addDoc, serverTimestamp, query, where, orderBy, onSnapshot,
 import { auth, db } from '@/firebase/firebase';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '@/hooks/useTranslation';
+import dynamic from 'next/dynamic';
 
 interface Entry {
   id: string;
@@ -15,7 +16,10 @@ interface Entry {
   updatedAt?: Timestamp;
 }
 
+const TiptapEditor = dynamic(() => import('./TiptapEditor'), { ssr: false });
+
 export default function DeepTerminal({ inputPlaceholder }: { inputPlaceholder?: string }) {
+  const { t } = useTranslation();
   const [user, setUser] = useState<User | null>(null);
   const [entry, setEntry] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -23,8 +27,6 @@ export default function DeepTerminal({ inputPlaceholder }: { inputPlaceholder?: 
   const [showFeedback, setShowFeedback] = useState(false);
   const [entries, setEntries] = useState<Entry[]>([]);
   const [loading, setLoading] = useState(true);
-  const inputRef = useRef<HTMLTextAreaElement>(null);
-  const { t } = useTranslation();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -60,13 +62,6 @@ export default function DeepTerminal({ inputPlaceholder }: { inputPlaceholder?: 
     );
 
     return () => unsubscribe();
-  }, [user]);
-
-  useEffect(() => {
-    // Auto-focus on load and when user becomes available
-    if (inputRef.current && user && user.emailVerified) {
-      inputRef.current.focus();
-    }
   }, [user]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -107,35 +102,6 @@ export default function DeepTerminal({ inputPlaceholder }: { inputPlaceholder?: 
       setTimeout(() => setShowFeedback(false), 3000);
     } finally {
       setIsSubmitting(false);
-      // Refocus input after submission with a small delay to ensure proper focus
-      setTimeout(() => {
-        if (inputRef.current) {
-          inputRef.current.focus();
-        }
-      }, 100);
-    }
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
-      e.preventDefault();
-      handleSubmit(e);
-    }
-  };
-
-  // Handle entry change with auto-resize
-  const handleEntryChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setEntry(e.target.value);
-    // Auto-resize textarea
-    const target = e.target;
-    target.style.height = 'auto';
-    target.style.height = target.scrollHeight + 'px';
-  };
-
-  // Handle click on input area to ensure focus
-  const handleInputClick = () => {
-    if (inputRef.current) {
-      inputRef.current.focus();
     }
   };
 
@@ -150,34 +116,14 @@ export default function DeepTerminal({ inputPlaceholder }: { inputPlaceholder?: 
       <div className="text-cyan-400">
         {/* TODO: Add markdown toolbar here */}
         <form onSubmit={handleSubmit} className="space-y-2" onClick={(e) => e.stopPropagation()}>
-          <div className="flex items-start space-x-2">
-            <textarea
-              ref={inputRef}
-              value={entry}
-              onChange={handleEntryChange}
-              onKeyDown={handleKeyPress}
-              placeholder={user && user.emailVerified ? (inputPlaceholder || t('typeEntry')) : t('entry_field_disabled')}
-              disabled={!user || !user.emailVerified || isSubmitting}
-              className={`w-full bg-transparent border-none outline-none text-cyan-400 placeholder-cyan-600 font-mono resize-none min-h-[6rem] max-h-64 scrollbar-hide ${!entry ? 'animate-pulse' : ''} focus:animate-none cursor-text`}
-              rows={6}
-              style={{ 
-                height: 'auto',
-                minHeight: '6rem',
-                backgroundColor: 'transparent',
-                resize: 'none',
-                overflow: 'hidden'
-              }}
-              onInput={(e) => {
-                const target = e.target as HTMLTextAreaElement;
-                target.style.height = 'auto';
-                target.style.height = target.scrollHeight + 'px';
-              }}
-              onClick={handleInputClick}
-            />
-            {isSubmitting && (
-              <span className="text-yellow-400 text-sm pt-2">{t('saving')}</span>
-            )}
-          </div>
+          <TiptapEditor
+            content={entry}
+            placeholder={user && user.emailVerified ? (inputPlaceholder || t('typeEntry')) : t('entry_field_disabled')}
+            onChange={setEntry}
+          />
+          {isSubmitting && (
+            <span className="text-yellow-400 text-sm pt-2">{t('saving')}</span>
+          )}
         </form>
 
         {/* Authentication message for non-authenticated users */}
