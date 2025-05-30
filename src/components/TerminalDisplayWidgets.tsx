@@ -4,8 +4,10 @@ import { useState, useEffect, useRef } from 'react';
 import { usePreferencesStore } from '@/store/preferencesStore';
 import { auth } from '@/firebase/firebase';
 import { onAuthStateChanged, User } from 'firebase/auth';
+import { useTranslation } from '@/hooks/useTranslation';
 
 export default function TerminalDisplayWidgets() {
+  const { t } = useTranslation();
   // Helper to get ISO week number
   function getWeekString() {
     const now = new Date();
@@ -155,25 +157,25 @@ export default function TerminalDisplayWidgets() {
     <div className="space-y-1 pl-2 max-w-md">
       {showUserInfo && (
         <div className="flex gap-24 items-center">
-          <span className="text-cyan-500">user:</span>
-          <span className="text-cyan-300">{user?.email || 'Not signed in'}</span>
+          <span className="text-cyan-500">{t('userLabel')}</span>
+          <span className="text-cyan-300">{user?.email || t('notSignedIn')}</span>
         </div>
       )}
       {showCurrentDate && (
         <div className="flex gap-24 items-center">
-          <span className="text-cyan-500">Date:</span>
+          <span className="text-cyan-500">{t('dateLabel')}</span>
           <span className="text-cyan-300">May 23, 2025</span>
         </div>
       )}
       {showCurrentTime && (
         <div className="flex gap-24 items-center">
-          <span className="text-cyan-500">Time:</span>
-          <span className="text-cyan-300">{currentTime || 'Loading...'}</span>
+          <span className="text-cyan-500">{t('timeLabel')}</span>
+          <span className="text-cyan-300">{currentTime || t('loading')}</span>
         </div>
       )}
       {showWeekNumber && (
         <div className="flex gap-24 items-center">
-          <span className="text-cyan-500">Week:</span>
+          <span className="text-cyan-500">{t('weekLabel')}</span>
           <span className="text-cyan-300">{getWeekString()}</span>
         </div>
       )}
@@ -189,7 +191,7 @@ export default function TerminalDisplayWidgets() {
             onClick={() => setShowTimezoneDropdown((v: boolean) => !v)}
             type="button"
           >
-            {label}
+            {label === '*Sunrise:' ? t('sunriseLabel') : t('sunsetLabel')}
           </button>
           <span className="text-cyan-300">{displayTime}</span>
           {showTimezoneDropdown && (

@@ -8,6 +8,7 @@ import DashboardLayout from "@/components/DashboardLayout";
 import TerminalDisplay from "@/components/TerminalDisplay";
 import EntryHistory from "@/components/EntryHistory";
 import { usePreferencesStore } from "@/store/preferencesStore";
+import { useTranslation } from '@/hooks/useTranslation';
 
 export default function EntryTerminalPage() {
   const [user, setUser] = useState<User | null>(null);
@@ -17,6 +18,8 @@ export default function EntryTerminalPage() {
   // Get preferences for styling
   const fontColor = usePreferencesStore((s) => s.fontColor);
   const fontOpacity = usePreferencesStore((s) => s.fontOpacity);
+
+  const { t } = useTranslation();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -54,13 +57,13 @@ export default function EntryTerminalPage() {
           fontOpacity={fontOpacity}
           bgColor="#062c33"
           bgOpacity={1}
-          title="Entry Terminal"
-          subtitle="// enter a note, reminder, or thought"
+          title={t('entryTerminalTitle')}
+          subtitle={t('entryTerminalSubtitle')}
           hideAuthPanel={true}
         >
           <div className="text-cyan-400">
-            <div className="mb-4">Initializing entry terminal...</div>
-            <div className="animate-pulse">Loading interface...</div>
+            <div className="mb-4">{t('initializing_entry_terminal')}</div>
+            <div className="animate-pulse">{t('loading_interface')}</div>
           </div>
         </TerminalDisplay>
       </DashboardLayout>
@@ -87,8 +90,8 @@ export default function EntryTerminalPage() {
         fontOpacity={fontOpacity}
         bgColor="#062c33"
         bgOpacity={1}
-        title="Entry Terminal"
-        subtitle="// enter a note, reminder, or thought"
+        title={t('entryTerminalTitle')}
+        subtitle={t('entryTerminalSubtitle')}
         hideAuthPanel={true}
       >
         {/* Pure Terminal Interface */}

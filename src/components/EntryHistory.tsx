@@ -17,6 +17,7 @@ import {
 } from 'firebase/firestore';
 import { auth, db } from '@/firebase/firebase';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from '@/hooks/useTranslation';
 
 interface Entry {
   id: string;
@@ -27,6 +28,7 @@ interface Entry {
 }
 
 export default function EntryHistory() {
+  const { t } = useTranslation();
   const [user, setUser] = useState<User | null>(null);
   const [entries, setEntries] = useState<Entry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -482,7 +484,7 @@ export default function EntryHistory() {
             value={entry}
             onChange={handleEntryChange}
             onKeyDown={handleKeyPress}
-            placeholder="Type entry, press Cmd+Enter to submit..."
+            placeholder={t('typeEntry')}
             disabled={isSubmitting}
             className={`flex-1 bg-transparent border-none outline-none text-cyan-400 placeholder-cyan-600 font-mono resize-none min-h-[1.5rem] scrollbar-hide ${!entry ? 'animate-pulse' : ''} focus:animate-none cursor-text`}
             rows={1}

@@ -92,6 +92,53 @@ export const translations = {
     remove: '[X]',
     close: 'close',
     return: 'Return',
+    
+    // Additional translations
+    signInLoading: 'Signing in...',
+    signUpLoading: 'Signing up...',
+    resending: 'Resending...',
+    resendVerification: 'Resend Verification Email',
+    signUpSuccess: '✓ Account Created Successfully',
+    signUpSuccessMessage: 'A verification email has been sent to your email address. Please check your inbox and click the verification link before signing in.',
+    signUpSuccessResend: "Don't see the email? Check your spam folder or try the resend option below.",
+    goToSignIn: 'Go to Sign In',
+    dismiss: 'Dismiss',
+    please_sign_in_to_make_entries: '> Please sign in to make entries.',
+    entry_cannot_be_empty: '> Entry cannot be empty.',
+    entry_saved: '> Entry saved: "{{entry}}"',
+    error_saving_entry: '> Error saving entry. Please try again.',
+    quick_entry_terminal: 'Quick Entry Terminal',
+    type_your_entry_and_press_enter: 'Type your entry and press Enter...',
+    press_enter_to_submit: 'Press Enter to submit',
+    type_quick_notes_thoughts_or_reminders: 'Type quick notes, thoughts, or reminders',
+    entryTerminalTitle: 'Entry Terminal',
+    entryTerminalSubtitle: '// enter a note, reminder, or thought',
+    
+    // Password reset and verification
+    password_reset_email_sent: 'Password reset email sent to {{email}}',
+    email_already_verified: 'Email is already verified. You can sign in normally.',
+    incorrect_password_resend_verification: 'Incorrect password. Please enter the correct password to resend verification.',
+    failed_to_resend_verification: 'Failed to resend verification email: {{error}}',
+    entry_submitted_successfully: 'Entry submitted successfully',
+    entry_submission_failed: 'Entry submission failed',
+    entry_field_placeholder: 'Type your entry here...',
+    entry_field_disabled: 'Please sign in to make entries',
+    entry_field_enabled: 'Ready to accept entries',
+    initializing_entry_terminal: 'Initializing entry terminal...',
+    loading_interface: 'Loading interface...',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Please enter your email address first',
+    verification_email_resent: 'Verification email resent! Please check your inbox.',
+    failed_to_send_password_reset: 'Failed to send password reset email',
+    userLabel: 'user:',
+    dateLabel: 'Date:',
+    timeLabel: 'Time:',
+    weekLabel: 'Week:',
+    sunriseLabel: '*Sunrise:',
+    sunsetLabel: '*Sunset:',
+    notSignedIn: 'Not signed in',
+    loading: 'Loading...'
   },
   
   es: {
@@ -187,6 +234,49 @@ export const translations = {
     remove: '[X]',
     close: 'cerrar',
     return: 'Volver',
+    
+    // Password reset and verification
+    password_reset_email_sent: 'Correo de restablecimiento de contraseña enviado a {{email}}',
+    email_already_verified: 'El correo ya está verificado. Puedes iniciar sesión normalmente.',
+    incorrect_password_resend_verification: 'Contraseña incorrecta. Por favor, ingresa la contraseña correcta para reenviar la verificación.',
+    failed_to_resend_verification: 'Error al reenviar el correo de verificación: {{error}}',
+    entry_submitted_successfully: 'Entrada enviada con éxito',
+    entry_submission_failed: 'Error al enviar la entrada',
+    entry_field_placeholder: 'Escribe tu entrada aquí...',
+    entry_field_disabled: 'Por favor, inicia sesión para hacer entradas',
+    entry_field_enabled: 'Listo para aceptar entradas',
+    initializing_entry_terminal: 'Inicializando terminal de entrada...',
+    loading_interface: 'Cargando interfaz...',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Por favor, ingresa tu dirección de correo electrónico primero',
+    verification_email_resent: '¡Correo de verificación reenviado! Por favor, revisa tu bandeja de entrada.',
+    failed_to_send_password_reset: 'Error al enviar el correo de restablecimiento de contraseña',
+    userLabel: 'usuario:',
+    dateLabel: 'Fecha:',
+    timeLabel: 'Hora:',
+    weekLabel: 'Semana:',
+    sunriseLabel: '*Amanecer:',
+    sunsetLabel: '*Atardecer:',
+    notSignedIn: 'No ha iniciado sesión',
+    loading: 'Cargando...',
+    
+    // Entry Terminal specific
+    entryTerminalTitle: 'Terminal de Entrada',
+    entryTerminalSubtitle: '// ingresa una nota, recordatorio o pensamiento',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Por favor, ingresa tu dirección de correo electrónico primero',
+    verification_email_resent: '¡Correo de verificación reenviado! Por favor, revisa tu bandeja de entrada.',
+    failed_to_send_password_reset: 'Error al enviar el correo de restablecimiento de contraseña',
+    userLabel: 'usuario:',
+    dateLabel: 'Fecha:',
+    timeLabel: 'Hora:',
+    weekLabel: 'Semana:',
+    sunriseLabel: '*Amanecer:',
+    sunsetLabel: '*Atardecer:',
+    notSignedIn: 'No ha iniciado sesión',
+    loading: 'Cargando...'
   },
   
   fr: {
@@ -282,6 +372,49 @@ export const translations = {
     remove: '[X]',
     close: 'fermer',
     return: 'Retour',
+    
+    // Password reset and verification
+    password_reset_email_sent: 'Email de réinitialisation du mot de passe envoyé à {{email}}',
+    email_already_verified: 'L\'email est déjà vérifié. Vous pouvez vous connecter normalement.',
+    incorrect_password_resend_verification: 'Mot de passe incorrect. Veuillez entrer le bon mot de passe pour renvoyer la vérification.',
+    failed_to_resend_verification: 'Échec de l\'envoi de l\'email de vérification: {{error}}',
+    entry_submitted_successfully: 'Entrée soumise avec succès',
+    entry_submission_failed: 'Échec de la soumission de l\'entrée',
+    entry_field_placeholder: 'Tapez votre entrée ici...',
+    entry_field_disabled: 'Veuillez vous connecter pour faire des entrées',
+    entry_field_enabled: 'Prêt à accepter les entrées',
+    initializing_entry_terminal: 'Initialisation du terminal d\'entrée...',
+    loading_interface: 'Chargement de l\'interface...',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Veuillez d\'abord entrer votre adresse e-mail',
+    verification_email_resent: 'E-mail de vérification renvoyé ! Veuillez vérifier votre boîte de réception.',
+    failed_to_send_password_reset: 'Échec de l\'envoi de l\'e-mail de réinitialisation du mot de passe',
+    userLabel: 'utilisateur:',
+    dateLabel: 'Date:',
+    timeLabel: 'Heure:',
+    weekLabel: 'Semaine:',
+    sunriseLabel: '*Lever du soleil:',
+    sunsetLabel: '*Coucher du soleil:',
+    notSignedIn: 'Non connecté',
+    loading: 'Chargement...',
+    
+    // Entry Terminal specific
+    entryTerminalTitle: 'Terminal d\'Entrée',
+    entryTerminalSubtitle: '// entrez une note, un rappel ou une pensée',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Veuillez d\'abord entrer votre adresse e-mail',
+    verification_email_resent: 'E-mail de vérification renvoyé ! Veuillez vérifier votre boîte de réception.',
+    failed_to_send_password_reset: 'Échec de l\'envoi de l\'e-mail de réinitialisation du mot de passe',
+    userLabel: 'utilisateur:',
+    dateLabel: 'Date:',
+    timeLabel: 'Heure:',
+    weekLabel: 'Semaine:',
+    sunriseLabel: '*Lever du soleil:',
+    sunsetLabel: '*Coucher du soleil:',
+    notSignedIn: 'Non connecté',
+    loading: 'Chargement...'
   },
   
   de: {
@@ -377,6 +510,49 @@ export const translations = {
     remove: '[X]',
     close: 'schließen',
     return: 'Zurück',
+    
+    // Password reset and verification
+    password_reset_email_sent: 'Password reset email sent to {{email}}',
+    email_already_verified: 'Email is already verified. You can sign in normally.',
+    incorrect_password_resend_verification: 'Incorrect password. Please enter the correct password to resend verification.',
+    failed_to_resend_verification: 'Failed to resend verification email: {{error}}',
+    entry_submitted_successfully: 'Entry submitted successfully',
+    entry_submission_failed: 'Entry submission failed',
+    entry_field_placeholder: 'Type your entry here...',
+    entry_field_disabled: 'Please sign in to make entries',
+    entry_field_enabled: 'Ready to accept entries',
+    initializing_entry_terminal: 'Initializing entry terminal...',
+    loading_interface: 'Schnittstelle wird geladen...',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Bitte geben Sie zuerst Ihre E-Mail-Adresse ein',
+    verification_email_resent: 'Verification email resent! Please check your inbox.',
+    failed_to_send_password_reset: 'Failed to send password reset email',
+    userLabel: 'user:',
+    dateLabel: 'Date:',
+    timeLabel: 'Time:',
+    weekLabel: 'Week:',
+    sunriseLabel: '*Sunrise:',
+    sunsetLabel: '*Sunset:',
+    notSignedIn: 'Not signed in',
+    loading: 'Loading...',
+    
+    // Entry Terminal specific
+    entryTerminalTitle: 'Eingabe Terminal',
+    entryTerminalSubtitle: '// Notiz, Erinnerung oder Gedanken eingeben',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Bitte geben Sie zuerst Ihre E-Mail-Adresse ein',
+    verification_email_resent: 'Verification email resent! Please check your inbox.',
+    failed_to_send_password_reset: 'Failed to send password reset email',
+    userLabel: 'user:',
+    dateLabel: 'Date:',
+    timeLabel: 'Time:',
+    weekLabel: 'Week:',
+    sunriseLabel: '*Sunrise:',
+    sunsetLabel: '*Sunset:',
+    notSignedIn: 'Not signed in',
+    loading: 'Loading...'
   },
   
   pt: {
@@ -408,9 +584,9 @@ export const translations = {
     
     // Delete confirmation
     deletionProtocol: 'PROTOCOLO DE EXCLUSÃO',
-    warningIrreversible: '⚠️ AVISO: OPERAÇÃO IRREVERSÍVEL',
+    warningIrreversible: '⚠️ AVISO: OPERAÇÃO IRREVERSIBLE',
     confirmEntry: '$ rm --confirm entrada',
-    areYouSure: 'Tem certeza de que quer {{action}} esta entrada?',
+    areYouSure: 'Tem certeza de que quer {{action}} sta entrada?',
     delete: 'excluir',
     yesDelete: '[S] EXCLUIR',
     noCancel: '[N] CANCELAR',
@@ -472,6 +648,49 @@ export const translations = {
     remove: '[删]',
     close: '关闭',
     return: '返回',
+    
+    // Password reset and verification
+    password_reset_email_sent: 'Password reset email sent to {{email}}',
+    email_already_verified: 'Email is already verified. You can sign in normally.',
+    incorrect_password_resend_verification: 'Incorrect password. Please enter the correct password to resend verification.',
+    failed_to_resend_verification: 'Failed to resend verification email: {{error}}',
+    entry_submitted_successfully: 'Entry submitted successfully',
+    entry_submission_failed: 'Entry submission failed',
+    entry_field_placeholder: 'Type your entry here...',
+    entry_field_disabled: 'Please sign in to make entries',
+    entry_field_enabled: 'Ready to accept entries',
+    initializing_entry_terminal: 'Initializing entry terminal...',
+    loading_interface: 'Loading interface...',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Please enter your email address first',
+    verification_email_resent: 'Verification email resent! Please check your inbox.',
+    failed_to_send_password_reset: 'Failed to send password reset email',
+    userLabel: 'user:',
+    dateLabel: 'Date:',
+    timeLabel: 'Time:',
+    weekLabel: 'Week:',
+    sunriseLabel: '*Sunrise:',
+    sunsetLabel: '*Sunset:',
+    notSignedIn: 'Not signed in',
+    loading: 'Loading...',
+    
+    // Entry Terminal specific
+    entryTerminalTitle: 'Terminal de Entrada',
+    entryTerminalSubtitle: '// ingresa una nota, recordatorio o pensamiento',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Please enter your email address first',
+    verification_email_resent: 'Verification email resent! Please check your inbox.',
+    failed_to_send_password_reset: 'Failed to send password reset email',
+    userLabel: 'user:',
+    dateLabel: 'Date:',
+    timeLabel: 'Time:',
+    weekLabel: 'Week:',
+    sunriseLabel: '*Sunrise:',
+    sunsetLabel: '*Sunset:',
+    notSignedIn: 'Not signed in',
+    loading: 'Loading...'
   },
   
   it: {
@@ -567,6 +786,49 @@ export const translations = {
     remove: '[X]',
     close: 'chiudi',
     return: 'Indietro',
+    
+    // Password reset and verification
+    password_reset_email_sent: 'Password reset email sent to {{email}}',
+    email_already_verified: 'Email is already verified. You can sign in normally.',
+    incorrect_password_resend_verification: 'Incorrect password. Please enter the correct password to resend verification.',
+    failed_to_resend_verification: 'Failed to resend verification email: {{error}}',
+    entry_submitted_successfully: 'Entry submitted successfully',
+    entry_submission_failed: 'Entry submission failed',
+    entry_field_placeholder: 'Type your entry here...',
+    entry_field_disabled: 'Please sign in to make entries',
+    entry_field_enabled: 'Ready to accept entries',
+    initializing_entry_terminal: 'Initializing entry terminal...',
+    loading_interface: 'Loading interface...',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Please enter your email address first',
+    verification_email_resent: 'Verification email resent! Please check your inbox.',
+    failed_to_send_password_reset: 'Failed to send password reset email',
+    userLabel: 'user:',
+    dateLabel: 'Date:',
+    timeLabel: 'Time:',
+    weekLabel: 'Week:',
+    sunriseLabel: '*Sunrise:',
+    sunsetLabel: '*Sunset:',
+    notSignedIn: 'Not signed in',
+    loading: 'Loading...',
+    
+    // Entry Terminal specific
+    entryTerminalTitle: 'Terminal de Entrada',
+    entryTerminalSubtitle: '// ingresa una nota, recordatorio o pensamiento',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Please enter your email address first',
+    verification_email_resent: 'Verification email resent! Please check your inbox.',
+    failed_to_send_password_reset: 'Failed to send password reset email',
+    userLabel: 'user:',
+    dateLabel: 'Date:',
+    timeLabel: 'Time:',
+    weekLabel: 'Week:',
+    sunriseLabel: '*Sunrise:',
+    sunsetLabel: '*Sunset:',
+    notSignedIn: 'Not signed in',
+    loading: 'Loading...'
   },
   
   ru: {
@@ -662,6 +924,49 @@ export const translations = {
     remove: '[X]',
     close: 'закрыть',
     return: 'Назад',
+    
+    // Password reset and verification
+    password_reset_email_sent: 'Password reset email sent to {{email}}',
+    email_already_verified: 'Email is already verified. You can sign in normally.',
+    incorrect_password_resend_verification: 'Incorrect password. Please enter the correct password to resend verification.',
+    failed_to_resend_verification: 'Failed to resend verification email: {{error}}',
+    entry_submitted_successfully: 'Entry submitted successfully',
+    entry_submission_failed: 'Entry submission failed',
+    entry_field_placeholder: 'Type your entry here...',
+    entry_field_disabled: 'Please sign in to make entries',
+    entry_field_enabled: 'Ready to accept entries',
+    initializing_entry_terminal: 'Initializing entry terminal...',
+    loading_interface: 'Loading interface...',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Please enter your email address first',
+    verification_email_resent: 'Verification email resent! Please check your inbox.',
+    failed_to_send_password_reset: 'Failed to send password reset email',
+    userLabel: 'user:',
+    dateLabel: 'Date:',
+    timeLabel: 'Time:',
+    weekLabel: 'Week:',
+    sunriseLabel: '*Sunrise:',
+    sunsetLabel: '*Sunset:',
+    notSignedIn: 'Not signed in',
+    loading: 'Loading...',
+    
+    // Entry Terminal specific
+    entryTerminalTitle: 'Terminal de Entrada',
+    entryTerminalSubtitle: '// ingresa una nota, recordatorio o pensamiento',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Please enter your email address first',
+    verification_email_resent: 'Verification email resent! Please check your inbox.',
+    failed_to_send_password_reset: 'Failed to send password reset email',
+    userLabel: 'user:',
+    dateLabel: 'Date:',
+    timeLabel: 'Time:',
+    weekLabel: 'Week:',
+    sunriseLabel: '*Sunrise:',
+    sunsetLabel: '*Sunset:',
+    notSignedIn: 'Not signed in',
+    loading: 'Loading...'
   },
   
   zh: {
@@ -757,6 +1062,49 @@ export const translations = {
     remove: '[删]',
     close: '关闭',
     return: '返回',
+    
+    // Password reset and verification
+    password_reset_email_sent: 'Password reset email sent to {{email}}',
+    email_already_verified: 'Email is already verified. You can sign in normally.',
+    incorrect_password_resend_verification: 'Incorrect password. Please enter the correct password to resend verification.',
+    failed_to_resend_verification: 'Failed to resend verification email: {{error}}',
+    entry_submitted_successfully: 'Entry submitted successfully',
+    entry_submission_failed: 'Entry submission failed',
+    entry_field_placeholder: 'Type your entry here...',
+    entry_field_disabled: 'Please sign in to make entries',
+    entry_field_enabled: 'Ready to accept entries',
+    initializing_entry_terminal: 'Initializing entry terminal...',
+    loading_interface: 'Loading interface...',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Please enter your email address first',
+    verification_email_resent: 'Verification email resent! Please check your inbox.',
+    failed_to_send_password_reset: 'Failed to send password reset email',
+    userLabel: 'user:',
+    dateLabel: 'Date:',
+    timeLabel: 'Time:',
+    weekLabel: 'Week:',
+    sunriseLabel: '*Sunrise:',
+    sunsetLabel: '*Sunset:',
+    notSignedIn: 'Not signed in',
+    loading: 'Loading...',
+    
+    // Entry Terminal specific
+    entryTerminalTitle: 'Terminal de Entrada',
+    entryTerminalSubtitle: '// ingresa una nota, recordatorio o pensamiento',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Please enter your email address first',
+    verification_email_resent: 'Verification email resent! Please check your inbox.',
+    failed_to_send_password_reset: 'Failed to send password reset email',
+    userLabel: 'user:',
+    dateLabel: 'Date:',
+    timeLabel: 'Time:',
+    weekLabel: 'Week:',
+    sunriseLabel: '*Sunrise:',
+    sunsetLabel: '*Sunset:',
+    notSignedIn: 'Not signed in',
+    loading: 'Loading...'
   },
   
   ja: {
@@ -852,6 +1200,62 @@ export const translations = {
     remove: '[削]',
     close: '閉じる',
     return: '戻る',
+    
+    // Password reset and verification
+    password_reset_email_sent: 'Password reset email sent to {{email}}',
+    email_already_verified: 'Email is already verified. You can sign in normally.',
+    incorrect_password_resend_verification: 'Incorrect password. Please enter the correct password to resend verification.',
+    failed_to_resend_verification: 'Failed to resend verification email: {{error}}',
+    entry_submitted_successfully: 'Entry submitted successfully',
+    entry_submission_failed: 'Entry submission failed',
+    entry_field_placeholder: 'Type your entry here...',
+    entry_field_disabled: 'Please sign in to make entries',
+    entry_field_enabled: 'Ready to accept entries',
+    initializing_entry_terminal: 'Initializing entry terminal...',
+    loading_interface: 'Loading interface...',
+    
+    // Email verification and password reset
+    please_enter_email_first: '最初にメールアドレスを入力してください',
+    verification_email_resent: '確認メールを再送信しました！受信箱をご確認ください。',
+    failed_to_send_password_reset: 'パスワードリセットメールの送信に失敗しました',
+    userLabel: 'ユーザー:',
+    dateLabel: '日付:',
+    timeLabel: '時刻:',
+    weekLabel: '週:',
+    sunriseLabel: '*日の出:',
+    sunsetLabel: '*日の入り:',
+    notSignedIn: 'サインインしていません',
+    loading: '読み込み中...',
+    
+    // Entry Terminal specific
+    entryTerminalTitle: 'エントリーターミナル',
+    entryTerminalSubtitle: '// ノート、リマインダー、または思考を入力',
+    
+    // Email verification and password reset
+    please_enter_email_first: '最初にメールアドレスを入力してください',
+    verification_email_resent: '確認メールを再送信しました！受信箱をご確認ください。',
+    failed_to_send_password_reset: 'パスワードリセットメールの送信に失敗しました',
+    userLabel: 'ユーザー:',
+    dateLabel: '日付:',
+    timeLabel: '時刻:',
+    weekLabel: '週:',
+    sunriseLabel: '*日の出:',
+    sunsetLabel: '*日の入り:',
+    notSignedIn: 'サインインしていません',
+    loading: '読み込み中...',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Please enter your email address first',
+    verification_email_resent: 'Verification email resent! Please check your inbox.',
+    failed_to_send_password_reset: 'Failed to send password reset email',
+    userLabel: 'user:',
+    dateLabel: 'Date:',
+    timeLabel: 'Time:',
+    weekLabel: 'Week:',
+    sunriseLabel: '*Sunrise:',
+    sunsetLabel: '*Sunset:',
+    notSignedIn: 'Not signed in',
+    loading: 'Loading...'
   },
   
   ko: {
@@ -947,6 +1351,49 @@ export const translations = {
     remove: '[삭]',
     close: '닫기',
     return: '돌아가기',
+    
+    // Password reset and verification
+    password_reset_email_sent: 'Password reset email sent to {{email}}',
+    email_already_verified: 'Email is already verified. You can sign in normally.',
+    incorrect_password_resend_verification: 'Incorrect password. Please enter the correct password to resend verification.',
+    failed_to_resend_verification: 'Failed to resend verification email: {{error}}',
+    entry_submitted_successfully: 'Entry submitted successfully',
+    entry_submission_failed: 'Entry submission failed',
+    entry_field_placeholder: 'Type your entry here...',
+    entry_field_disabled: 'Please sign in to make entries',
+    entry_field_enabled: 'Ready to accept entries',
+    initializing_entry_terminal: 'Initializing entry terminal...',
+    loading_interface: 'Loading interface...',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Please enter your email address first',
+    verification_email_resent: 'Verification email resent! Please check your inbox.',
+    failed_to_send_password_reset: 'Failed to send password reset email',
+    userLabel: 'user:',
+    dateLabel: 'Date:',
+    timeLabel: 'Time:',
+    weekLabel: 'Week:',
+    sunriseLabel: '*Sunrise:',
+    sunsetLabel: '*Sunset:',
+    notSignedIn: 'Not signed in',
+    loading: 'Loading...',
+    
+    // Entry Terminal specific
+    entryTerminalTitle: 'Terminal de Entrada',
+    entryTerminalSubtitle: '// ingresa una nota, recordatorio o pensamiento',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Please enter your email address first',
+    verification_email_resent: 'Verification email resent! Please check your inbox.',
+    failed_to_send_password_reset: 'Failed to send password reset email',
+    userLabel: 'user:',
+    dateLabel: 'Date:',
+    timeLabel: 'Time:',
+    weekLabel: 'Week:',
+    sunriseLabel: '*Sunrise:',
+    sunsetLabel: '*Sunset:',
+    notSignedIn: 'Not signed in',
+    loading: 'Loading...'
   },
   
   ar: {
@@ -1042,6 +1489,49 @@ export const translations = {
     remove: '[ح]',
     close: 'إغلاق',
     return: 'عودة',
+    
+    // Password reset and verification
+    password_reset_email_sent: 'Password reset email sent to {{email}}',
+    email_already_verified: 'Email is already verified. You can sign in normally.',
+    incorrect_password_resend_verification: 'Incorrect password. Please enter the correct password to resend verification.',
+    failed_to_resend_verification: 'Failed to resend verification email: {{error}}',
+    entry_submitted_successfully: 'Entry submitted successfully',
+    entry_submission_failed: 'Entry submission failed',
+    entry_field_placeholder: 'Type your entry here...',
+    entry_field_disabled: 'Please sign in to make entries',
+    entry_field_enabled: 'Ready to accept entries',
+    initializing_entry_terminal: 'Initializing entry terminal...',
+    loading_interface: 'Loading interface...',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Please enter your email address first',
+    verification_email_resent: 'Verification email resent! Please check your inbox.',
+    failed_to_send_password_reset: 'Failed to send password reset email',
+    userLabel: 'user:',
+    dateLabel: 'Date:',
+    timeLabel: 'Time:',
+    weekLabel: 'Week:',
+    sunriseLabel: '*Sunrise:',
+    sunsetLabel: '*Sunset:',
+    notSignedIn: 'Not signed in',
+    loading: 'Loading...',
+    
+    // Entry Terminal specific
+    entryTerminalTitle: 'Terminal de Entrada',
+    entryTerminalSubtitle: '// ingresa una nota, recordatorio o pensamiento',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Please enter your email address first',
+    verification_email_resent: 'Verification email resent! Please check your inbox.',
+    failed_to_send_password_reset: 'Failed to send password reset email',
+    userLabel: 'user:',
+    dateLabel: 'Date:',
+    timeLabel: 'Time:',
+    weekLabel: 'Week:',
+    sunriseLabel: '*Sunrise:',
+    sunsetLabel: '*Sunset:',
+    notSignedIn: 'Not signed in',
+    loading: 'Loading...'
   },
   
   hi: {
@@ -1137,6 +1627,49 @@ export const translations = {
     remove: '[हटाएं]',
     close: 'बंद करें',
     return: 'वापस',
+    
+    // Password reset and verification
+    password_reset_email_sent: 'Password reset email sent to {{email}}',
+    email_already_verified: 'Email is already verified. You can sign in normally.',
+    incorrect_password_resend_verification: 'Incorrect password. Please enter the correct password to resend verification.',
+    failed_to_resend_verification: 'Failed to resend verification email: {{error}}',
+    entry_submitted_successfully: 'Entry submitted successfully',
+    entry_submission_failed: 'Entry submission failed',
+    entry_field_placeholder: 'Type your entry here...',
+    entry_field_disabled: 'Please sign in to make entries',
+    entry_field_enabled: 'Ready to accept entries',
+    initializing_entry_terminal: 'Initializing entry terminal...',
+    loading_interface: 'Loading interface...',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Please enter your email address first',
+    verification_email_resent: 'Verification email resent! Please check your inbox.',
+    failed_to_send_password_reset: 'Failed to send password reset email',
+    userLabel: 'user:',
+    dateLabel: 'Date:',
+    timeLabel: 'Time:',
+    weekLabel: 'Week:',
+    sunriseLabel: '*Sunrise:',
+    sunsetLabel: '*Sunset:',
+    notSignedIn: 'Not signed in',
+    loading: 'Loading...',
+    
+    // Entry Terminal specific
+    entryTerminalTitle: 'Terminal de Entrada',
+    entryTerminalSubtitle: '// ingresa una nota, recordatorio o pensamiento',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Please enter your email address first',
+    verification_email_resent: 'Verification email resent! Please check your inbox.',
+    failed_to_send_password_reset: 'Failed to send password reset email',
+    userLabel: 'user:',
+    dateLabel: 'Date:',
+    timeLabel: 'Time:',
+    weekLabel: 'Week:',
+    sunriseLabel: '*Sunrise:',
+    sunsetLabel: '*Sunset:',
+    notSignedIn: 'Not signed in',
+    loading: 'Loading...'
   },
   
   nl: {
@@ -1232,6 +1765,49 @@ export const translations = {
     remove: '[V]',
     close: 'sluiten',
     return: 'Terug',
+    
+    // Password reset and verification
+    password_reset_email_sent: 'Password reset email sent to {{email}}',
+    email_already_verified: 'Email is already verified. You can sign in normally.',
+    incorrect_password_resend_verification: 'Incorrect password. Please enter the correct password to resend verification.',
+    failed_to_resend_verification: 'Failed to resend verification email: {{error}}',
+    entry_submitted_successfully: 'Entry submitted successfully',
+    entry_submission_failed: 'Entry submission failed',
+    entry_field_placeholder: 'Type your entry here...',
+    entry_field_disabled: 'Please sign in to make entries',
+    entry_field_enabled: 'Ready to accept entries',
+    initializing_entry_terminal: 'Initializing entry terminal...',
+    loading_interface: 'Loading interface...',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Please enter your email address first',
+    verification_email_resent: 'Verification email resent! Please check your inbox.',
+    failed_to_send_password_reset: 'Failed to send password reset email',
+    userLabel: 'user:',
+    dateLabel: 'Date:',
+    timeLabel: 'Time:',
+    weekLabel: 'Week:',
+    sunriseLabel: '*Sunrise:',
+    sunsetLabel: '*Sunset:',
+    notSignedIn: 'Not signed in',
+    loading: 'Loading...',
+    
+    // Entry Terminal specific
+    entryTerminalTitle: 'Terminal de Entrada',
+    entryTerminalSubtitle: '// ingresa una nota, recordatorio o pensamiento',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Please enter your email address first',
+    verification_email_resent: 'Verification email resent! Please check your inbox.',
+    failed_to_send_password_reset: 'Failed to send password reset email',
+    userLabel: 'user:',
+    dateLabel: 'Date:',
+    timeLabel: 'Time:',
+    weekLabel: 'Week:',
+    sunriseLabel: '*Sunrise:',
+    sunsetLabel: '*Sunset:',
+    notSignedIn: 'Not signed in',
+    loading: 'Loading...'
   },
   
   sv: {
@@ -1327,6 +1903,49 @@ export const translations = {
     remove: '[T]',
     close: 'stäng',
     return: 'Tillbaka',
+    
+    // Password reset and verification
+    password_reset_email_sent: 'Password reset email sent to {{email}}',
+    email_already_verified: 'Email is already verified. You can sign in normally.',
+    incorrect_password_resend_verification: 'Incorrect password. Please enter the correct password to resend verification.',
+    failed_to_resend_verification: 'Failed to resend verification email: {{error}}',
+    entry_submitted_successfully: 'Entry submitted successfully',
+    entry_submission_failed: 'Entry submission failed',
+    entry_field_placeholder: 'Type your entry here...',
+    entry_field_disabled: 'Please sign in to make entries',
+    entry_field_enabled: 'Ready to accept entries',
+    initializing_entry_terminal: 'Initializing entry terminal...',
+    loading_interface: 'Loading interface...',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Please enter your email address first',
+    verification_email_resent: 'Verification email resent! Please check your inbox.',
+    failed_to_send_password_reset: 'Failed to send password reset email',
+    userLabel: 'user:',
+    dateLabel: 'Date:',
+    timeLabel: 'Time:',
+    weekLabel: 'Week:',
+    sunriseLabel: '*Sunrise:',
+    sunsetLabel: '*Sunset:',
+    notSignedIn: 'Not signed in',
+    loading: 'Loading...',
+    
+    // Entry Terminal specific
+    entryTerminalTitle: 'Terminal de Entrada',
+    entryTerminalSubtitle: '// ingresa una nota, recordatorio o pensamiento',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Please enter your email address first',
+    verification_email_resent: 'Verification email resent! Please check your inbox.',
+    failed_to_send_password_reset: 'Failed to send password reset email',
+    userLabel: 'user:',
+    dateLabel: 'Date:',
+    timeLabel: 'Time:',
+    weekLabel: 'Week:',
+    sunriseLabel: '*Sunrise:',
+    sunsetLabel: '*Sunset:',
+    notSignedIn: 'Not signed in',
+    loading: 'Loading...'
   },
   
   no: {
@@ -1422,6 +2041,49 @@ export const translations = {
     remove: '[S]',
     close: 'lukk',
     return: 'Tilbake',
+    
+    // Password reset and verification
+    password_reset_email_sent: 'Password reset email sent to {{email}}',
+    email_already_verified: 'Email is already verified. You can sign in normally.',
+    incorrect_password_resend_verification: 'Incorrect password. Please enter the correct password to resend verification.',
+    failed_to_resend_verification: 'Failed to resend verification email: {{error}}',
+    entry_submitted_successfully: 'Entry submitted successfully',
+    entry_submission_failed: 'Entry submission failed',
+    entry_field_placeholder: 'Type your entry here...',
+    entry_field_disabled: 'Please sign in to make entries',
+    entry_field_enabled: 'Ready to accept entries',
+    initializing_entry_terminal: 'Initializing entry terminal...',
+    loading_interface: 'Loading interface...',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Please enter your email address first',
+    verification_email_resent: 'Verification email resent! Please check your inbox.',
+    failed_to_send_password_reset: 'Failed to send password reset email',
+    userLabel: 'user:',
+    dateLabel: 'Date:',
+    timeLabel: 'Time:',
+    weekLabel: 'Week:',
+    sunriseLabel: '*Sunrise:',
+    sunsetLabel: '*Sunset:',
+    notSignedIn: 'Not signed in',
+    loading: 'Loading...',
+    
+    // Entry Terminal specific
+    entryTerminalTitle: 'Terminal de Entrada',
+    entryTerminalSubtitle: '// ingresa una nota, recordatorio o pensamiento',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Please enter your email address first',
+    verification_email_resent: 'Verification email resent! Please check your inbox.',
+    failed_to_send_password_reset: 'Failed to send password reset email',
+    userLabel: 'user:',
+    dateLabel: 'Date:',
+    timeLabel: 'Time:',
+    weekLabel: 'Week:',
+    sunriseLabel: '*Sunrise:',
+    sunsetLabel: '*Sunset:',
+    notSignedIn: 'Not signed in',
+    loading: 'Loading...'
   },
   
   da: {
@@ -1517,6 +2179,49 @@ export const translations = {
     remove: '[S]',
     close: 'luk',
     return: 'Tilbage',
+    
+    // Password reset and verification
+    password_reset_email_sent: 'Password reset email sent to {{email}}',
+    email_already_verified: 'Email is already verified. You can sign in normally.',
+    incorrect_password_resend_verification: 'Incorrect password. Please enter the correct password to resend verification.',
+    failed_to_resend_verification: 'Failed to resend verification email: {{error}}',
+    entry_submitted_successfully: 'Entry submitted successfully',
+    entry_submission_failed: 'Entry submission failed',
+    entry_field_placeholder: 'Type your entry here...',
+    entry_field_disabled: 'Please sign in to make entries',
+    entry_field_enabled: 'Ready to accept entries',
+    initializing_entry_terminal: 'Initializing entry terminal...',
+    loading_interface: 'Loading interface...',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Please enter your email address first',
+    verification_email_resent: 'Verification email resent! Please check your inbox.',
+    failed_to_send_password_reset: 'Failed to send password reset email',
+    userLabel: 'user:',
+    dateLabel: 'Date:',
+    timeLabel: 'Time:',
+    weekLabel: 'Week:',
+    sunriseLabel: '*Sunrise:',
+    sunsetLabel: '*Sunset:',
+    notSignedIn: 'Not signed in',
+    loading: 'Loading...',
+    
+    // Entry Terminal specific
+    entryTerminalTitle: 'Terminal de Entrada',
+    entryTerminalSubtitle: '// ingresa una nota, recordatorio o pensamiento',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Please enter your email address first',
+    verification_email_resent: 'Verification email resent! Please check your inbox.',
+    failed_to_send_password_reset: 'Failed to send password reset email',
+    userLabel: 'user:',
+    dateLabel: 'Date:',
+    timeLabel: 'Time:',
+    weekLabel: 'Week:',
+    sunriseLabel: '*Sunrise:',
+    sunsetLabel: '*Sunset:',
+    notSignedIn: 'Not signed in',
+    loading: 'Loading...'
   },
   
   fi: {
@@ -1612,6 +2317,49 @@ export const translations = {
     remove: '[P]',
     close: 'sulje',
     return: 'Takaisin',
+    
+    // Password reset and verification
+    password_reset_email_sent: 'Password reset email sent to {{email}}',
+    email_already_verified: 'Email is already verified. You can sign in normally.',
+    incorrect_password_resend_verification: 'Incorrect password. Please enter the correct password to resend verification.',
+    failed_to_resend_verification: 'Failed to resend verification email: {{error}}',
+    entry_submitted_successfully: 'Entry submitted successfully',
+    entry_submission_failed: 'Entry submission failed',
+    entry_field_placeholder: 'Type your entry here...',
+    entry_field_disabled: 'Please sign in to make entries',
+    entry_field_enabled: 'Ready to accept entries',
+    initializing_entry_terminal: 'Initializing entry terminal...',
+    loading_interface: 'Loading interface...',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Please enter your email address first',
+    verification_email_resent: 'Verification email resent! Please check your inbox.',
+    failed_to_send_password_reset: 'Failed to send password reset email',
+    userLabel: 'user:',
+    dateLabel: 'Date:',
+    timeLabel: 'Time:',
+    weekLabel: 'Week:',
+    sunriseLabel: '*Sunrise:',
+    sunsetLabel: '*Sunset:',
+    notSignedIn: 'Not signed in',
+    loading: 'Loading...',
+    
+    // Entry Terminal specific
+    entryTerminalTitle: 'Terminal de Entrada',
+    entryTerminalSubtitle: '// ingresa una nota, recordatorio o pensamiento',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Please enter your email address first',
+    verification_email_resent: 'Verification email resent! Please check your inbox.',
+    failed_to_send_password_reset: 'Failed to send password reset email',
+    userLabel: 'user:',
+    dateLabel: 'Date:',
+    timeLabel: 'Time:',
+    weekLabel: 'Week:',
+    sunriseLabel: '*Sunrise:',
+    sunsetLabel: '*Sunset:',
+    notSignedIn: 'Not signed in',
+    loading: 'Loading...'
   },
   
   pl: {
@@ -1707,6 +2455,49 @@ export const translations = {
     remove: '[U]',
     close: 'sulje',
     return: 'Indietro',
+    
+    // Password reset and verification
+    password_reset_email_sent: 'Password reset email sent to {{email}}',
+    email_already_verified: 'Email is already verified. You can sign in normally.',
+    incorrect_password_resend_verification: 'Incorrect password. Please enter the correct password to resend verification.',
+    failed_to_resend_verification: 'Failed to resend verification email: {{error}}',
+    entry_submitted_successfully: 'Entry submitted successfully',
+    entry_submission_failed: 'Entry submission failed',
+    entry_field_placeholder: 'Type your entry here...',
+    entry_field_disabled: 'Please sign in to make entries',
+    entry_field_enabled: 'Ready to accept entries',
+    initializing_entry_terminal: 'Initializing entry terminal...',
+    loading_interface: 'Loading interface...',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Please enter your email address first',
+    verification_email_resent: 'Verification email resent! Please check your inbox.',
+    failed_to_send_password_reset: 'Failed to send password reset email',
+    userLabel: 'user:',
+    dateLabel: 'Date:',
+    timeLabel: 'Time:',
+    weekLabel: 'Week:',
+    sunriseLabel: '*Sunrise:',
+    sunsetLabel: '*Sunset:',
+    notSignedIn: 'Not signed in',
+    loading: 'Loading...',
+    
+    // Entry Terminal specific
+    entryTerminalTitle: 'Terminal de Entrada',
+    entryTerminalSubtitle: '// ingresa una nota, recordatorio o pensamiento',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Please enter your email address first',
+    verification_email_resent: 'Verification email resent! Please check your inbox.',
+    failed_to_send_password_reset: 'Failed to send password reset email',
+    userLabel: 'user:',
+    dateLabel: 'Date:',
+    timeLabel: 'Time:',
+    weekLabel: 'Week:',
+    sunriseLabel: '*Sunrise:',
+    sunsetLabel: '*Sunset:',
+    notSignedIn: 'Not signed in',
+    loading: 'Loading...'
   },
   
   tr: {
@@ -1802,6 +2593,49 @@ export const translations = {
     remove: '[U]',
     close: 'zatvori',
     return: 'Natrag',
+    
+    // Password reset and verification
+    password_reset_email_sent: 'Password reset email sent to {{email}}',
+    email_already_verified: 'Email is already verified. You can sign in normally.',
+    incorrect_password_resend_verification: 'Incorrect password. Please enter the correct password to resend verification.',
+    failed_to_resend_verification: 'Failed to resend verification email: {{error}}',
+    entry_submitted_successfully: 'Entry submitted successfully',
+    entry_submission_failed: 'Entry submission failed',
+    entry_field_placeholder: 'Type your entry here...',
+    entry_field_disabled: 'Please sign in to make entries',
+    entry_field_enabled: 'Ready to accept entries',
+    initializing_entry_terminal: 'Initializing entry terminal...',
+    loading_interface: 'Loading interface...',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Please enter your email address first',
+    verification_email_resent: 'Verification email resent! Please check your inbox.',
+    failed_to_send_password_reset: 'Failed to send password reset email',
+    userLabel: 'user:',
+    dateLabel: 'Date:',
+    timeLabel: 'Time:',
+    weekLabel: 'Week:',
+    sunriseLabel: '*Sunrise:',
+    sunsetLabel: '*Sunset:',
+    notSignedIn: 'Not signed in',
+    loading: 'Loading...',
+    
+    // Entry Terminal specific
+    entryTerminalTitle: 'Terminal de Entrada',
+    entryTerminalSubtitle: '// ingresa una nota, recordatorio o pensamiento',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Please enter your email address first',
+    verification_email_resent: 'Verification email resent! Please check your inbox.',
+    failed_to_send_password_reset: 'Failed to send password reset email',
+    userLabel: 'user:',
+    dateLabel: 'Date:',
+    timeLabel: 'Time:',
+    weekLabel: 'Week:',
+    sunriseLabel: '*Sunrise:',
+    sunsetLabel: '*Sunset:',
+    notSignedIn: 'Not signed in',
+    loading: 'Loading...'
   },
   
   // Additional European and World Languages
@@ -1898,6 +2732,49 @@ export const translations = {
     remove: '[Δ]',
     close: 'κλείσιμο',
     return: 'Επιστροφή',
+    
+    // Password reset and verification
+    password_reset_email_sent: 'Password reset email sent to {{email}}',
+    email_already_verified: 'Email is already verified. You can sign in normally.',
+    incorrect_password_resend_verification: 'Incorrect password. Please enter the correct password to resend verification.',
+    failed_to_resend_verification: 'Failed to resend verification email: {{error}}',
+    entry_submitted_successfully: 'Entry submitted successfully',
+    entry_submission_failed: 'Entry submission failed',
+    entry_field_placeholder: 'Type your entry here...',
+    entry_field_disabled: 'Please sign in to make entries',
+    entry_field_enabled: 'Ready to accept entries',
+    initializing_entry_terminal: 'Initializing entry terminal...',
+    loading_interface: 'Loading interface...',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Please enter your email address first',
+    verification_email_resent: 'Verification email resent! Please check your inbox.',
+    failed_to_send_password_reset: 'Failed to send password reset email',
+    userLabel: 'user:',
+    dateLabel: 'Date:',
+    timeLabel: 'Time:',
+    weekLabel: 'Week:',
+    sunriseLabel: '*Sunrise:',
+    sunsetLabel: '*Sunset:',
+    notSignedIn: 'Not signed in',
+    loading: 'Loading...',
+    
+    // Entry Terminal specific
+    entryTerminalTitle: 'Terminal de Entrada',
+    entryTerminalSubtitle: '// ingresa una nota, recordatorio o pensamiento',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Please enter your email address first',
+    verification_email_resent: 'Verification email resent! Please check your inbox.',
+    failed_to_send_password_reset: 'Failed to send password reset email',
+    userLabel: 'user:',
+    dateLabel: 'Date:',
+    timeLabel: 'Time:',
+    weekLabel: 'Week:',
+    sunriseLabel: '*Sunrise:',
+    sunsetLabel: '*Sunset:',
+    notSignedIn: 'Not signed in',
+    loading: 'Loading...'
   },
   
   he: {
@@ -1993,6 +2870,49 @@ export const translations = {
     remove: '[ה]',
     close: 'סגור',
     return: 'חזור',
+    
+    // Password reset and verification
+    password_reset_email_sent: 'Password reset email sent to {{email}}',
+    email_already_verified: 'Email is already verified. You can sign in normally.',
+    incorrect_password_resend_verification: 'Incorrect password. Please enter the correct password to resend verification.',
+    failed_to_resend_verification: 'Failed to resend verification email: {{error}}',
+    entry_submitted_successfully: 'Entry submitted successfully',
+    entry_submission_failed: 'Entry submission failed',
+    entry_field_placeholder: 'Type your entry here...',
+    entry_field_disabled: 'Please sign in to make entries',
+    entry_field_enabled: 'Ready to accept entries',
+    initializing_entry_terminal: 'Initializing entry terminal...',
+    loading_interface: 'Loading interface...',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Please enter your email address first',
+    verification_email_resent: 'Verification email resent! Please check your inbox.',
+    failed_to_send_password_reset: 'Failed to send password reset email',
+    userLabel: 'user:',
+    dateLabel: 'Date:',
+    timeLabel: 'Time:',
+    weekLabel: 'Week:',
+    sunriseLabel: '*Sunrise:',
+    sunsetLabel: '*Sunset:',
+    notSignedIn: 'Not signed in',
+    loading: 'Loading...',
+    
+    // Entry Terminal specific
+    entryTerminalTitle: 'Terminal de Entrada',
+    entryTerminalSubtitle: '// ingresa una nota, recordatorio o pensamiento',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Please enter your email address first',
+    verification_email_resent: 'Verification email resent! Please check your inbox.',
+    failed_to_send_password_reset: 'Failed to send password reset email',
+    userLabel: 'user:',
+    dateLabel: 'Date:',
+    timeLabel: 'Time:',
+    weekLabel: 'Week:',
+    sunriseLabel: '*Sunrise:',
+    sunsetLabel: '*Sunset:',
+    notSignedIn: 'Not signed in',
+    loading: 'Loading...'
   },
   
   th: {
@@ -2088,6 +3008,49 @@ export const translations = {
     remove: '[ล]',
     close: 'ปิด',
     return: 'กลับ',
+    
+    // Password reset and verification
+    password_reset_email_sent: 'Password reset email sent to {{email}}',
+    email_already_verified: 'Email is already verified. You can sign in normally.',
+    incorrect_password_resend_verification: 'Incorrect password. Please enter the correct password to resend verification.',
+    failed_to_resend_verification: 'Failed to resend verification email: {{error}}',
+    entry_submitted_successfully: 'Entry submitted successfully',
+    entry_submission_failed: 'Entry submission failed',
+    entry_field_placeholder: 'Type your entry here...',
+    entry_field_disabled: 'Please sign in to make entries',
+    entry_field_enabled: 'Ready to accept entries',
+    initializing_entry_terminal: 'Initializing entry terminal...',
+    loading_interface: 'Loading interface...',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Please enter your email address first',
+    verification_email_resent: 'Verification email resent! Please check your inbox.',
+    failed_to_send_password_reset: 'Failed to send password reset email',
+    userLabel: 'user:',
+    dateLabel: 'Date:',
+    timeLabel: 'Time:',
+    weekLabel: 'Week:',
+    sunriseLabel: '*Sunrise:',
+    sunsetLabel: '*Sunset:',
+    notSignedIn: 'Not signed in',
+    loading: 'Loading...',
+    
+    // Entry Terminal specific
+    entryTerminalTitle: 'Terminal de Entrada',
+    entryTerminalSubtitle: '// ingresa una nota, recordatorio o pensamiento',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Please enter your email address first',
+    verification_email_resent: 'Verification email resent! Please check your inbox.',
+    failed_to_send_password_reset: 'Failed to send password reset email',
+    userLabel: 'user:',
+    dateLabel: 'Date:',
+    timeLabel: 'Time:',
+    weekLabel: 'Week:',
+    sunriseLabel: '*Sunrise:',
+    sunsetLabel: '*Sunset:',
+    notSignedIn: 'Not signed in',
+    loading: 'Loading...'
   },
   
   vi: {
@@ -2183,6 +3146,49 @@ export const translations = {
     remove: '[X]',
     close: 'đóng',
     return: 'Quay lại',
+    
+    // Password reset and verification
+    password_reset_email_sent: 'Password reset email sent to {{email}}',
+    email_already_verified: 'Email is already verified. You can sign in normally.',
+    incorrect_password_resend_verification: 'Incorrect password. Please enter the correct password to resend verification.',
+    failed_to_resend_verification: 'Failed to resend verification email: {{error}}',
+    entry_submitted_successfully: 'Entry submitted successfully',
+    entry_submission_failed: 'Entry submission failed',
+    entry_field_placeholder: 'Type your entry here...',
+    entry_field_disabled: 'Please sign in to make entries',
+    entry_field_enabled: 'Ready to accept entries',
+    initializing_entry_terminal: 'Initializing entry terminal...',
+    loading_interface: 'Loading interface...',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Please enter your email address first',
+    verification_email_resent: 'Verification email resent! Please check your inbox.',
+    failed_to_send_password_reset: 'Failed to send password reset email',
+    userLabel: 'user:',
+    dateLabel: 'Date:',
+    timeLabel: 'Time:',
+    weekLabel: 'Week:',
+    sunriseLabel: '*Sunrise:',
+    sunsetLabel: '*Sunset:',
+    notSignedIn: 'Not signed in',
+    loading: 'Loading...',
+    
+    // Entry Terminal specific
+    entryTerminalTitle: 'Terminal de Entrada',
+    entryTerminalSubtitle: '// ingresa una nota, recordatorio o pensamiento',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Please enter your email address first',
+    verification_email_resent: 'Verification email resent! Please check your inbox.',
+    failed_to_send_password_reset: 'Failed to send password reset email',
+    userLabel: 'user:',
+    dateLabel: 'Date:',
+    timeLabel: 'Time:',
+    weekLabel: 'Week:',
+    sunriseLabel: '*Sunrise:',
+    sunsetLabel: '*Sunset:',
+    notSignedIn: 'Not signed in',
+    loading: 'Loading...'
   },
   
   cs: {
@@ -2278,6 +3284,49 @@ export const translations = {
     remove: '[S]',
     close: 'zavřít',
     return: 'Zpět',
+    
+    // Password reset and verification
+    password_reset_email_sent: 'Password reset email sent to {{email}}',
+    email_already_verified: 'Email is already verified. You can sign in normally.',
+    incorrect_password_resend_verification: 'Incorrect password. Please enter the correct password to resend verification.',
+    failed_to_resend_verification: 'Failed to resend verification email: {{error}}',
+    entry_submitted_successfully: 'Entry submitted successfully',
+    entry_submission_failed: 'Entry submission failed',
+    entry_field_placeholder: 'Type your entry here...',
+    entry_field_disabled: 'Please sign in to make entries',
+    entry_field_enabled: 'Ready to accept entries',
+    initializing_entry_terminal: 'Initializing entry terminal...',
+    loading_interface: 'Loading interface...',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Please enter your email address first',
+    verification_email_resent: 'Verification email resent! Please check your inbox.',
+    failed_to_send_password_reset: 'Failed to send password reset email',
+    userLabel: 'user:',
+    dateLabel: 'Date:',
+    timeLabel: 'Time:',
+    weekLabel: 'Week:',
+    sunriseLabel: '*Sunrise:',
+    sunsetLabel: '*Sunset:',
+    notSignedIn: 'Not signed in',
+    loading: 'Loading...',
+    
+    // Entry Terminal specific
+    entryTerminalTitle: 'Terminal de Entrada',
+    entryTerminalSubtitle: '// ingresa una nota, recordatorio o pensamiento',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Please enter your email address first',
+    verification_email_resent: 'Verification email resent! Please check your inbox.',
+    failed_to_send_password_reset: 'Failed to send password reset email',
+    userLabel: 'user:',
+    dateLabel: 'Date:',
+    timeLabel: 'Time:',
+    weekLabel: 'Week:',
+    sunriseLabel: '*Sunrise:',
+    sunsetLabel: '*Sunset:',
+    notSignedIn: 'Not signed in',
+    loading: 'Loading...'
   },
   
   hu: {
@@ -2373,11 +3422,173 @@ export const translations = {
     remove: '[T]',
     close: 'bezárás',
     return: 'Vissza',
+    
+    // Password reset and verification
+    password_reset_email_sent: 'Password reset email sent to {{email}}',
+    email_already_verified: 'Email is already verified. You can sign in normally.',
+    incorrect_password_resend_verification: 'Incorrect password. Please enter the correct password to resend verification.',
+    failed_to_resend_verification: 'Failed to resend verification email: {{error}}',
+    entry_submitted_successfully: 'Entry submitted successfully',
+    entry_submission_failed: 'Entry submission failed',
+    entry_field_placeholder: 'Type your entry here...',
+    entry_field_disabled: 'Please sign in to make entries',
+    entry_field_enabled: 'Ready to accept entries',
+    initializing_entry_terminal: 'Initializing entry terminal...',
+    loading_interface: 'Loading interface...',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Please enter your email address first',
+    verification_email_resent: 'Verification email resent! Please check your inbox.',
+    failed_to_send_password_reset: 'Failed to send password reset email',
+    userLabel: 'user:',
+    dateLabel: 'Date:',
+    timeLabel: 'Time:',
+    weekLabel: 'Week:',
+    sunriseLabel: '*Sunrise:',
+    sunsetLabel: '*Sunset:',
+    notSignedIn: 'Not signed in',
+    loading: 'Loading...',
+    
+    // Entry Terminal specific
+    entryTerminalTitle: 'Terminal de Entrada',
+    entryTerminalSubtitle: '// ingresa una nota, recordatorio o pensamiento',
+    
+    // Email verification and password reset
+    please_enter_email_first: 'Please enter your email address first',
+    verification_email_resent: 'Verification email resent! Please check your inbox.',
+    failed_to_send_password_reset: 'Failed to send password reset email',
+    userLabel: 'user:',
+    dateLabel: 'Date:',
+    timeLabel: 'Time:',
+    weekLabel: 'Week:',
+    sunriseLabel: '*Sunrise:',
+    sunsetLabel: '*Sunset:',
+    notSignedIn: 'Not signed in',
+    loading: 'Loading...'
   },
 } as const;
 
 export type Language = 'en' | 'es' | 'fr' | 'de' | 'pt' | 'it' | 'ru' | 'zh' | 'ja' | 'ko' | 'ar' | 'hi' | 'nl' | 'sv' | 'no' | 'da' | 'fi' | 'pl' | 'tr' | 'el' | 'he' | 'th' | 'vi' | 'cs' | 'hu';
-export type TranslationKey = keyof typeof translations.en;
+export type TranslationKey =
+  | 'dashboard'
+  | 'list'
+  | 'dates'
+  | 'timer'
+  | 'settings'
+  | 'typeEntry'
+  | 'saving'
+  | 'sendingEntry'
+  | 'deletingEntry'
+  | 'transmissionProtocol'
+  | 'terminationProtocol'
+  | 'entryCannotBeEmpty'
+  | 'pleaseSignIn'
+  | 'errorSavingEntry'
+  | 'entrySaved'
+  | 'noEntriesYet'
+  | 'loadingHistory'
+  | 'accomplished'
+  | 'editing'
+  | 'pressEnterToSave'
+  | 'save'
+  | 'cancel'
+  | 'deletionProtocol'
+  | 'warningIrreversible'
+  | 'confirmEntry'
+  | 'areYouSure'
+  | 'delete'
+  | 'yesDelete'
+  | 'noCancel'
+  | 'securityLevel'
+  | 'homeTerminalWidgets'
+  | 'showUserInfo'
+  | 'showCurrentTime'
+  | 'showCurrentDate'
+  | 'showSunriseSunset'
+  | 'showWeekNumber'
+  | 'appearance'
+  | 'fontColor'
+  | 'fontOpacity'
+  | 'clockSettings'
+  | 'timezone'
+  | 'showSeconds'
+  | 'language'
+  | 'reset'
+  | 'resetToDefault'
+  | 'preferencesLoadOuts'
+  | 'english'
+  | 'spanish'
+  | 'french'
+  | 'german'
+  | 'italian'
+  | 'portuguese'
+  | 'russian'
+  | 'chinese'
+  | 'japanese'
+  | 'korean'
+  | 'welcomeBack'
+  | 'quickActions'
+  | 'newNote'
+  | 'createNewNote'
+  | 'viewNotes'
+  | 'browseNotes'
+  | 'logEntry'
+  | 'addNewEntry'
+  | 'customizeTerminal'
+  | 'signIn'
+  | 'signUp'
+  | 'email'
+  | 'password'
+  | 'forgotPassword'
+  | 'apply'
+  | 'load'
+  | 'confirm'
+  | 'edit'
+  | 'remove'
+  | 'close'
+  | 'return'
+  // New keys for UI refactor:
+  | 'signInLoading'
+  | 'signUpLoading'
+  | 'resending'
+  | 'resendVerification'
+  | 'signUpSuccess'
+  | 'signUpSuccessMessage'
+  | 'signUpSuccessResend'
+  | 'goToSignIn'
+  | 'dismiss'
+  | 'please_sign_in_to_make_entries'
+  | 'entry_cannot_be_empty'
+  | 'entry_saved'
+  | 'error_saving_entry'
+  | 'quick_entry_terminal'
+  | 'type_your_entry_and_press_enter'
+  | 'press_enter_to_submit'
+  | 'type_quick_notes_thoughts_or_reminders'
+  | 'entryTerminalTitle'
+  | 'entryTerminalSubtitle'
+  | 'password_reset_email_sent'
+  | 'email_already_verified'
+  | 'incorrect_password_resend_verification'
+  | 'failed_to_resend_verification'
+  | 'entry_submitted_successfully'
+  | 'entry_submission_failed'
+  | 'entry_field_placeholder'
+  | 'entry_field_disabled'
+  | 'entry_field_enabled'
+  | 'initializing_entry_terminal'
+  | 'loading_interface'
+  | 'please_enter_email_first'
+  | 'verification_email_resent'
+  | 'failed_to_send_password_reset'
+  | 'userLabel'
+  | 'dateLabel'
+  | 'timeLabel'
+  | 'weekLabel'
+  | 'sunriseLabel'
+  | 'sunsetLabel'
+  | 'notSignedIn'
+  | 'loading';
 
 // Helper function to get translated text with interpolation support
 export function t(key: TranslationKey, language: Language = 'en', variables?: Record<string, string>): string {

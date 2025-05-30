@@ -8,12 +8,14 @@ import DashboardLayout from "@/components/DashboardLayout";
 import TerminalDisplay from "@/components/TerminalDisplay";
 import EntryHistory from "@/components/EntryHistory";
 import { usePreferencesStore } from "@/store/preferencesStore";
+import { useTranslation } from '@/hooks/useTranslation';
 
 export default function UserDashboardPage() {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [showWelcome, setShowWelcome] = useState(true);
   const router = useRouter();
+  const { t } = useTranslation();
 
   // Get preferences for styling
   const fontColor = usePreferencesStore((s) => s.fontColor);
@@ -106,9 +108,9 @@ export default function UserDashboardPage() {
               <button
                 onClick={handleCloseWelcome}
                 className="absolute top-2 left-1/2 transform -translate-x-1/2 text-gray-400 hover:text-white transition-colors px-2 py-1 text-sm border border-gray-600 hover:border-gray-400 rounded"
-                aria-label="Close welcome message"
+                aria-label={t('close')}
               >
-                close
+                {t('close')}
               </button>
               <div className="text-green-300 mb-4 text-xl mt-6">✓ Welcome to Hyper Terminal</div>
               <div className="text-sm space-y-2">
@@ -122,39 +124,35 @@ export default function UserDashboardPage() {
 
           {/* Quick Actions */}
           <div className="space-y-4">
-            <div className="text-cyan-400 mb-4 text-lg">Quick Actions:</div>
-            
+            <div className="text-cyan-400 mb-4 text-lg">{t('quickActions')}</div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <button
                 onClick={() => router.push("/notes")}
                 className="border border-cyan-500 text-cyan-500 hover:bg-cyan-500/10 transition-colors p-4 text-left"
               >
-                <div className="text-lg mb-2">&gt; New Note</div>
-                <div className="text-sm text-gray-400">Create a new terminal note</div>
+                <div className="text-lg mb-2">{t('newNote')}</div>
+                <div className="text-sm text-gray-400">{t('createNewNote')}</div>
               </button>
-
               <button
                 onClick={() => router.push("/notes/list")}
                 className="border border-blue-500 text-blue-500 hover:bg-blue-500/10 transition-colors p-4 text-left"
               >
-                <div className="text-lg mb-2">&gt; View Notes</div>
-                <div className="text-sm text-gray-400">Browse your saved notes</div>
+                <div className="text-lg mb-2">{t('viewNotes')}</div>
+                <div className="text-sm text-gray-400">{t('browseNotes')}</div>
               </button>
-
               <button
                 onClick={() => router.push("/entryterminal")}
                 className="border border-yellow-500 text-yellow-500 hover:bg-yellow-500/10 transition-colors p-4 text-left"
               >
-                <div className="text-lg mb-2">&gt; Log Entry</div>
-                <div className="text-sm text-gray-400">Add a new log entry</div>
+                <div className="text-lg mb-2">{t('logEntry')}</div>
+                <div className="text-sm text-gray-400">{t('addNewEntry')}</div>
               </button>
-
               <button
                 onClick={() => router.push("/settings")}
                 className="border border-purple-500 text-purple-500 hover:bg-purple-500/10 transition-colors p-4 text-left"
               >
-                <div className="text-lg mb-2">&gt; Settings</div>
-                <div className="text-sm text-gray-400">Customize your terminal</div>
+                <div className="text-lg mb-2">{t('settings')}</div>
+                <div className="text-sm text-gray-400">{t('customizeTerminal')}</div>
               </button>
             </div>
           </div>
@@ -166,10 +164,10 @@ export default function UserDashboardPage() {
           <div className="border border-gray-600 text-gray-300 p-4 bg-black/10 rounded">
             <div className="text-gray-300 mb-3 text-lg">Available Commands:</div>
             <div className="space-y-1 font-mono text-sm">
-              <div><span className="text-cyan-400">&gt; notes --new</span> <span className="text-gray-500"># Create a new note</span></div>
-              <div><span className="text-cyan-400">&gt; notes --list</span> <span className="text-gray-500"># View all notes</span></div>
-              <div><span className="text-cyan-400">&gt; logs --add</span> <span className="text-gray-500"># Add log entry</span></div>
-              <div><span className="text-cyan-400">&gt; settings --open</span> <span className="text-gray-500"># Open settings</span></div>
+              <div><span className="text-cyan-400">&gt; notes --new</span> <span className="text-gray-500"># {t('createNewNote')}</span></div>
+              <div><span className="text-cyan-400">&gt; notes --list</span> <span className="text-gray-500"># {t('viewNotes')}</span></div>
+              <div><span className="text-cyan-400">&gt; logs --add</span> <span className="text-gray-500"># {t('addNewEntry')}</span></div>
+              <div><span className="text-cyan-400">&gt; settings --open</span> <span className="text-gray-500"># {t('customizeTerminal')}</span></div>
               <div><span className="text-cyan-400">&gt; auth --logout</span> <span className="text-gray-500"># Sign out</span></div>
               <div><span className="text-cyan-400">&gt; help --all</span> <span className="text-gray-500"># Show all commands</span></div>
             </div>

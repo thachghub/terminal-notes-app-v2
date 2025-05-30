@@ -5,14 +5,16 @@ import { onAuthStateChanged, User } from 'firebase/auth';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, db } from '@/firebase/firebase';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from '@/hooks/useTranslation';
 
-export default function EntryTerminal() {
+export default function EntryTerminal({ inputPlaceholder }: { inputPlaceholder?: string }) {
   const [user, setUser] = useState<User | null>(null);
   const [entry, setEntry] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [feedback, setFeedback] = useState('');
   const [showFeedback, setShowFeedback] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -32,14 +34,14 @@ export default function EntryTerminal() {
     e.preventDefault();
     
     if (!user || !user.emailVerified) {
-      setFeedback('> Please sign in to make entries.');
+      setFeedback(t('please_sign_in_to_make_entries'));
       setShowFeedback(true);
       setTimeout(() => setShowFeedback(false), 3000);
       return;
     }
 
     if (!entry.trim()) {
-      setFeedback('> Entry cannot be empty.');
+      setFeedback(t('entry_cannot_be_empty'));
       setShowFeedback(true);
       setTimeout(() => setShowFeedback(false), 2000);
       return;
@@ -54,7 +56,7 @@ export default function EntryTerminal() {
         updatedAt: serverTimestamp()
       });
 
-      setFeedback(`> Entry saved: "${entry.trim()}"`);
+      setFeedback(t('entry_submitted_successfully'));
       setShowFeedback(true);
       setEntry(''); // Clear the input field
       
@@ -62,7 +64,7 @@ export default function EntryTerminal() {
       setTimeout(() => setShowFeedback(false), 2000);
     } catch (error) {
       console.error('Error saving entry:', error);
-      setFeedback('> Error saving entry. Please try again.');
+      setFeedback(t('entry_submission_failed'));
       setShowFeedback(true);
       setTimeout(() => setShowFeedback(false), 3000);
     } finally {
@@ -84,7 +86,7 @@ export default function EntryTerminal() {
     <div className="space-y-4">
       {/* Entry Terminal Section */}
       <div className="border border-cyan-500 text-cyan-400 p-4 bg-black/10 rounded">
-        <div className="text-cyan-400 mb-3 text-lg">Quick Entry Terminal:</div>
+        <div className="text-cyan-400 mb-3 text-lg">{t('quick_entry_terminal')}:</div>
         
         <form onSubmit={handleSubmit} className="space-y-2">
           <div className="flex items-center space-x-2">
@@ -95,12 +97,12 @@ export default function EntryTerminal() {
               value={entry}
               onChange={(e) => setEntry(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder={user && user.emailVerified ? "Type your entry and press Enter..." : "Please sign in to make entries."}
+              placeholder={user && user.emailVerified ? (inputPlaceholder || t('typeEntry')) : t('entry_field_disabled')}
               disabled={!user || !user.emailVerified || isSubmitting}
               className="flex-1 bg-transparent border-none outline-none text-cyan-400 placeholder-cyan-600 font-mono"
             />
             {isSubmitting && (
-              <span className="text-yellow-400 text-sm">saving...</span>
+              <span className="text-yellow-400 text-sm">{t('saving')}</span>
             )}
           </div>
         </form>
@@ -108,7 +110,7 @@ export default function EntryTerminal() {
         {/* Authentication message for non-authenticated users */}
         {(!user || !user.emailVerified) && (
           <div className="mt-2 text-gray-400 text-sm font-mono">
-            &gt; Please sign in to make entries.
+            &gt; {t('entry_field_disabled')}
           </div>
         )}
 
@@ -129,7 +131,7 @@ export default function EntryTerminal() {
         {/* Instructions */}
         {user && user.emailVerified && (
           <div className="mt-3 text-gray-500 text-xs">
-            Press Enter to submit • Type quick notes, thoughts, or reminders
+            {t('press_enter_to_submit')} • {t('type_quick_notes_thoughts_or_reminders')}
           </div>
         )}
       </div>

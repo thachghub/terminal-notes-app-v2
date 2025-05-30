@@ -13,6 +13,7 @@ import { signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVe
 import { auth } from '@/firebase/firebase';
 import { emailVerificationSettings } from '@/firebase/config';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from '@/hooks/useTranslation';
 
 export default function TerminalDisplay({ 
   fontColor, 
@@ -47,6 +48,7 @@ export default function TerminalDisplay({
   const [successMessage, setSuccessMessage] = useState('');
   const [showWelcome, setShowWelcome] = useState(false);
   const [welcomeStep, setWelcomeStep] = useState(0);
+  const { t } = useTranslation();
 
   // State for form inputs
   const [signInEmail, setSignInEmail] = useState('');
@@ -158,7 +160,7 @@ export default function TerminalDisplay({
 
   const handleResendSignUpVerification = async () => {
     if (!signUpEmail) {
-      setAuthError('Please enter your email address first');
+      setAuthError(t('please_enter_email_first'));
       return;
     }
 
@@ -170,18 +172,18 @@ export default function TerminalDisplay({
       if (userCredential.user && !userCredential.user.emailVerified) {
         await sendEmailVerification(userCredential.user, emailVerificationSettings);
         await signOut(auth); // Sign out immediately after sending verification
-        setSuccessMessage('Verification email resent! Please check your inbox.');
+        setSuccessMessage(t('verification_email_resent'));
         setShowResendSignUp(false);
       } else if (userCredential.user && userCredential.user.emailVerified) {
         await signOut(auth);
-        setAuthError('Email is already verified. You can sign in normally.');
+        setAuthError(t('email_already_verified'));
         setShowResendSignUp(false);
       }
     } catch (err: any) {
       if (err.code === 'auth/wrong-password') {
-        setAuthError('Incorrect password. Please enter the correct password to resend verification.');
+        setAuthError(t('incorrect_password_resend_verification'));
       } else {
-        setAuthError('Failed to resend verification email: ' + err.message);
+        setAuthError(t('failed_to_resend_verification', { error: err.message }));
       }
     } finally {
       setAuthLoading(false);
@@ -190,7 +192,7 @@ export default function TerminalDisplay({
 
   const handleForgotPassword = async () => {
     if (!signInEmail) {
-      setAuthError('Please enter your email address first');
+      setAuthError(t('please_enter_email_first'));
       return;
     }
 
@@ -199,9 +201,9 @@ export default function TerminalDisplay({
     try {
       await sendPasswordResetEmail(auth, signInEmail);
       setAuthError(null);
-      alert(`Password reset email sent to ${signInEmail}`);
+      alert(t('password_reset_email_sent', { email: signInEmail }));
     } catch (err: any) {
-      setAuthError(err.message || 'Failed to send password reset email');
+      setAuthError(err.message || t('failed_to_send_password_reset'));
     } finally {
       setAuthLoading(false);
     }
@@ -333,14 +335,14 @@ export default function TerminalDisplay({
               className="inline-block border border-cyan-500 text-cyan-500 hover:text-yellow-400 hover:bg-cyan-500/10 transition-colors px-3 py-1 text-sm w-32"
               aria-label="Open sign in form"
             >
-              / sign in
+              {t('signIn')}
             </button>
             <button
               onClick={handleSignUpClick}
               className="inline-block border border-yellow-400 text-yellow-400 hover:bg-yellow-400/10 transition-colors px-3 py-1 text-sm w-32"
               aria-label="Open create account form"
             >
-              / create account
+              {t('signUp')}
             </button>
           </div>
 
@@ -353,8 +355,8 @@ export default function TerminalDisplay({
                 className="panel mt-4 bg-transparent"
                 aria-label="Sign In Form"
               >
-                <div>/ sign in</div>
-                <label htmlFor="signin-email">email:</label>
+                <div>{t('signIn')}</div>
+                <label htmlFor="signin-email">{t('email')}:</label>
                 <input 
                   type="email" 
                   id="signin-email" 
@@ -364,7 +366,7 @@ export default function TerminalDisplay({
                   aria-label="Email address"
                   disabled={isAuthLoading}
                 />
-                <label htmlFor="signin-password">password:</label>
+                <label htmlFor="signin-password">{t('password')}:</label>
                 <input 
                   type="password" 
                   id="signin-password" 
@@ -375,7 +377,7 @@ export default function TerminalDisplay({
                   aria-label="Password"
                   disabled={isAuthLoading}
                 />
-                {isAuthLoading && <p>Signing in...</p>}
+                {isAuthLoading && <p>{t('signInLoading')}</p>}
                 {authError && <p className="text-red-500">{authError}</p>}
                 {successMessage && <p className="text-green-400">{successMessage}</p>}
                 <div className="flex gap-3 mt-2">
@@ -385,7 +387,7 @@ export default function TerminalDisplay({
                     aria-label="Submit sign in"
                     disabled={isAuthLoading}
                   >
-                    {isAuthLoading ? 'Loading…' : '> sign in'}
+                    {isAuthLoading ? t('signInLoading') : t('signIn')}
                   </button>
                   <button
                     type="button"
@@ -394,7 +396,7 @@ export default function TerminalDisplay({
                     aria-label="Forgot password"
                     disabled={isAuthLoading}
                   >
-                    forgot password
+                    {t('forgotPassword')}
                   </button>
                 </div>
               </motion.div>
@@ -409,8 +411,8 @@ export default function TerminalDisplay({
                 style={{ borderColor: '#FFD700' }}
                 aria-label="Create Account Form"
               >
-                <div>/ create account</div>
-                <label htmlFor="signup-email" className="text-yellow-400" style={{ color: '#FFD700' }}>email:</label>
+                <div>{t('signUp')}</div>
+                <label htmlFor="signup-email" className="text-yellow-400" style={{ color: '#FFD700' }}>{t('email')}:</label>
                 <input 
                   type="email" 
                   id="signup-email" 
@@ -420,7 +422,7 @@ export default function TerminalDisplay({
                   aria-label="Email address"
                   disabled={isAuthLoading}
                 />
-                <label htmlFor="signup-password" className="text-yellow-400" style={{ color: '#FFD700' }}>password:</label>
+                <label htmlFor="signup-password" className="text-yellow-400" style={{ color: '#FFD700' }}>{t('password')}:</label>
                 <input 
                   type="password" 
                   id="signup-password" 
@@ -431,7 +433,7 @@ export default function TerminalDisplay({
                   aria-label="Password"
                   disabled={isAuthLoading}
                 />
-                {isAuthLoading && <p>Signing up...</p>}
+                {isAuthLoading && <p>{t('signUpLoading')}</p>}
                 {authError && <p className="text-red-500">{authError}</p>}
                 {successMessage && <p className="text-green-400">{successMessage}</p>}
                 <button 
@@ -440,7 +442,7 @@ export default function TerminalDisplay({
                   aria-label="Submit create account"
                   disabled={isAuthLoading}
                 >
-                  {isAuthLoading ? 'Loading…' : '> sign up'}
+                  {isAuthLoading ? t('signUpLoading') : t('signUp')}
                 </button>
                 {showResendSignUp && (
                   <button 
@@ -448,7 +450,7 @@ export default function TerminalDisplay({
                     disabled={isAuthLoading}
                     className="w-full mt-2 bg-orange-600 text-white p-2 hover:bg-orange-500 transition-colors disabled:opacity-50 border border-orange-400"
                   >
-                    {isAuthLoading ? "Resending..." : "Resend Verification Email"}
+                    {isAuthLoading ? t('resending') : t('resendVerification')}
                   </button>
                 )}
               </motion.div>
@@ -464,12 +466,12 @@ export default function TerminalDisplay({
                 exit={{ opacity: 0, y: -20 }}
                 className="mt-4 border border-green-400 text-green-300 p-4 bg-black/20 rounded"
               >
-                <div className="text-green-300 mb-2 text-lg">✓ Account Created Successfully</div>
+                <div className="text-green-300 mb-2 text-lg">{t('signUpSuccess')}</div>
                 <div className="text-sm mb-4">
-                  A verification email has been sent to your email address. Please check your inbox and click the verification link before signing in.
+                  {t('signUpSuccessMessage')}
                 </div>
                 <div className="text-xs text-gray-400 mb-3">
-                  Don't see the email? Check your spam folder or try the resend option below.
+                  {t('signUpSuccessResend')}
                 </div>
                 <div className="flex gap-3">
                   <button
@@ -479,13 +481,13 @@ export default function TerminalDisplay({
                     }}
                     className="border border-cyan-500 text-cyan-500 hover:bg-cyan-500/10 transition-colors px-3 py-1 text-sm"
                   >
-                    Go to Sign In
+                    {t('goToSignIn')}
                   </button>
                   <button
                     onClick={() => setShowSignUpSuccess(false)}
                     className="text-gray-400 hover:text-white transition-colors px-3 py-1 text-sm"
                   >
-                    Dismiss
+                    {t('dismiss')}
                   </button>
                 </div>
               </motion.div>
@@ -496,7 +498,7 @@ export default function TerminalDisplay({
 
       {showEntryTerminal && (
         <section className="mt-8" aria-label="Entry Terminal">
-          <EntryTerminal />
+          <EntryTerminal inputPlaceholder={t('typeEntry')} />
         </section>
       )}
 
