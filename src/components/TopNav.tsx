@@ -29,33 +29,43 @@ export default function TopNav({ fontColor, fontOpacity, bgColor, bgOpacity }: {
     router.push('/entryterminal');
   };
 
+  const handleDeepEntryClick = () => {
+    router.push('/deepterminal');
+  };
+
+  const logEntryText = t('logEntry').replace(/^\s*>/, '').trim();
+  const signInText = t('signIn').replace(/^\s*>/, '').trim();
+
   return (
     <header aria-label="Top Navigation Bar">
       <div
         className="flex items-start space-x-2 min-h-[3.5rem] py-2"
       >
-        {/* Nav Buttons */}
-        <button style={{ borderColor }} className="px-4 border text-cyan-300 hover:text-yellow-400 text-sm whitespace-normal py-2 h-auto min-h-[2.5rem]" aria-label={t('newNote')}>
-          {t('newNote')}
-        </button>
-        <button style={{ borderColor }} className="px-4 border text-cyan-300 hover:text-yellow-400 text-sm whitespace-normal py-2 h-auto min-h-[2.5rem]" aria-label={t('viewNotes')}>
-          {t('viewNotes')}
-        </button>
+        {/* Nav Buttons - New Order: Log Entry, Deep Entry, Sign In */}
         <button 
           onClick={handleLogEntryClick}
           style={{ borderColor }} 
           className="px-4 border text-cyan-300 hover:text-yellow-400 text-sm whitespace-normal py-2 h-auto min-h-[2.5rem]" 
-          aria-label={t('logEntry')}
+          aria-label={logEntryText}
         >
-          {t('logEntry')}
+          {`> ${logEntryText}`}
+        </button>
+        <button 
+          onClick={handleDeepEntryClick}
+          style={{ borderColor }}
+          className="px-4 border text-cyan-300 hover:text-yellow-400 text-sm whitespace-normal py-2 h-auto min-h-[2.5rem]" 
+          aria-label={"Deep Entry" /* TODO: Replace with t('deepEntry') after adding to en.json */}
+        >
+          {/* TODO: Replace with t('deepEntry') after adding to en.json */}
+          {`> ${("Deep Entry")}`}
         </button>
         <button 
           onClick={handleAuthClick}
           style={{ borderColor }} 
           className="px-4 border text-cyan-300 hover:text-yellow-400 text-sm whitespace-normal py-2 h-auto min-h-[2.5rem]" 
-          aria-label={t('signIn')}
+          aria-label={signInText}
         >
-          {t('signIn')}
+          {`> ${signInText}`}
         </button>
       </div>
     </header>
