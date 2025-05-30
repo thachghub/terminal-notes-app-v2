@@ -3,12 +3,14 @@
 import { useEditor, EditorContent, Editor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 interface TiptapEditorProps {
   content?: string;
   placeholder?: string;
   onChange?: (content: string) => void;
+  onTimestampChange?: (timestamp: Date) => void;
+  defaultTimestamp?: Date;
 }
 
 const ensureFirstBlockIsH1 = (editor: Editor) => {
@@ -48,7 +50,25 @@ const ensureFirstBlockIsH1 = (editor: Editor) => {
   }
 };
 
-export default function TiptapEditor({ content = '', placeholder = 'Start typing...', onChange }: TiptapEditorProps) {
+// Helper function to count words and characters
+const getTextStats = (text: string) => {
+  const plainText = text.replace(/<[^>]*>/g, '').trim(); // Strip HTML tags
+  const words = plainText ? plainText.split(/\s+/).length : 0;
+  const characters = plainText.length;
+  return { words, characters };
+};
+
+export default function TiptapEditor({ 
+  content = '', 
+  placeholder = 'Start typing...', 
+  onChange,
+  onTimestampChange,
+  defaultTimestamp = new Date()
+}: TiptapEditorProps) {
+  const [customTimestamp, setCustomTimestamp] = useState<Date>(defaultTimestamp);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [textStats, setTextStats] = useState({ words: 0, characters: 0 });
+
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -76,6 +96,9 @@ export default function TiptapEditor({ content = '', placeholder = 'Start typing
     },
     onCreate({ editor }) {
       ensureFirstBlockIsH1(editor);
+      // Initialize text stats
+      const htmlContent = editor.getHTML();
+      setTextStats(getTextStats(htmlContent));
     },
     onUpdate({ editor }) {
       // More refined logic will be needed here to prevent loops and respect user overrides.
@@ -95,15 +118,93 @@ export default function TiptapEditor({ content = '', placeholder = 'Start typing
         }
       }
       
+      const htmlContent = editor.getHTML();
+      
+      // Update text stats
+      setTextStats(getTextStats(htmlContent));
+      
       if (onChange) {
-        onChange(editor.getHTML());
+        onChange(htmlContent);
       }
     },
   });
 
+  // Watch for content prop changes and update editor content
+  useEffect(() => {
+    if (editor && content !== undefined) {
+      const currentContent = editor.getHTML();
+      // Only update if the content is actually different to avoid infinite loops
+      if (currentContent !== content) {
+        editor.commands.setContent(content || '<h1></h1>', false);
+        // Focus the editor and scroll to it
+        setTimeout(() => {
+          editor.commands.focus('start');
+          // Scroll the editor into view
+          const editorElement = editor.view.dom;
+          if (editorElement) {
+            editorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }, 100);
+      }
+    }
+  }, [editor, content]);
+
+  // Handle timestamp changes
+  const handleTimestampChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newDate = new Date(e.target.value);
+    setCustomTimestamp(newDate);
+    if (onTimestampChange) {
+      onTimestampChange(newDate);
+    }
+  };
+
+  // Format date for display
+  const formatDate = (date: Date) => {
+    return date.toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    });
+  };
+
   return (
-    <div className="w-full border border-cyan-700/40 rounded bg-black/10 p-2 focus-within:border-cyan-400 transition-all">
-      <EditorContent editor={editor} />
+    <div className="space-y-2">
+      {/* Date Picker Section */}
+      <div className="flex items-center justify-between text-xs text-cyan-400/80">
+        <div className="flex items-center space-x-2">
+          <button
+            type="button"
+            onClick={() => setShowDatePicker(!showDatePicker)}
+            className="px-2 py-1 border border-cyan-700/40 rounded hover:border-cyan-400/60 transition-colors"
+          >
+            {formatDate(customTimestamp)}
+          </button>
+          {showDatePicker && (
+            <input
+              type="datetime-local"
+              value={customTimestamp.toISOString().slice(0, 16)}
+              onChange={handleTimestampChange}
+              className="px-2 py-1 border border-cyan-700/40 rounded hover:border-cyan-400/60 transition-colors text-white bg-transparent focus:border-cyan-400/60 focus:outline-none cursor-pointer"
+              style={{
+                colorScheme: 'dark'
+              }}
+            />
+          )}
+        </div>
+      </div>
+
+      {/* Editor Section */}
+      <div className="relative w-full border border-cyan-700/40 rounded bg-black/10 p-2 focus-within:border-cyan-400 transition-all">
+        <EditorContent editor={editor} />
+        
+        {/* Word/Character Counter */}
+        <div className="absolute bottom-2 right-2 text-sm text-gray-500 font-mono opacity-60">
+          {textStats.words} words • {textStats.characters} chars
+        </div>
+      </div>
     </div>
   );
 } 
