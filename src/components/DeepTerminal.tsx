@@ -107,6 +107,22 @@ export default function DeepTerminal({ inputPlaceholder }: { inputPlaceholder?: 
     }
   }, [showCyberAnimation]);
 
+  useEffect(() => {
+    if (!user || !user.emailVerified) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+        e.preventDefault();
+        if (!isSubmitting) {
+          // Use a synthetic event for handleSubmit
+          const fakeEvent = { preventDefault: () => {} } as React.FormEvent;
+          handleSubmit(fakeEvent);
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [user, isSubmitting, entry, editingEntry, customTimestamp]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -356,7 +372,7 @@ export default function DeepTerminal({ inputPlaceholder }: { inputPlaceholder?: 
         {/* Instructions */}
         {user && user.emailVerified && (
           <div className="mt-3 text-gray-500 text-xs">
-            {t('press_enter_to_submit')} • {t('type_quick_notes_thoughts_or_reminders')}
+            Press Cmd+Enter (Ctrl+Enter) to submit long form entry records
           </div>
         )}
 
