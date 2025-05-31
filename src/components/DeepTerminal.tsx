@@ -57,6 +57,8 @@ export default function DeepTerminal({ inputPlaceholder }: { inputPlaceholder?: 
   const [selectMode, setSelectMode] = useState(false);
   const [selectedEntries, setSelectedEntries] = useState<string[]>([]);
   const [reminderAt, setReminderAt] = useState<Date | null>(null);
+  const [showThumbnailPanel, setShowThumbnailPanel] = useState(false);
+  const [showDates, setShowDates] = useState(true);
 
   useEffect(() => {
     if (!user || !user.emailVerified) {
@@ -135,7 +137,7 @@ export default function DeepTerminal({ inputPlaceholder }: { inputPlaceholder?: 
       return;
     }
 
-    // Entry state already contains HTML from TiptapEditor
+    // Entry state already contains HTML from Tiptap
     if (!entry.trim() || entry.trim() === '<p></p>' || entry.trim() === '<h1></h1>') { // Check for empty Tiptap content
       setFeedback(t('entry_cannot_be_empty'));
       setShowFeedback(true);
@@ -322,238 +324,377 @@ export default function DeepTerminal({ inputPlaceholder }: { inputPlaceholder?: 
     return plainTextToHtml(content);
   };
 
+  // Helper function to extract first line from HTML content
+  const getFirstLine = (htmlContent: string): string => {
+    if (!htmlContent) return 'Untitled';
+    
+    // Create a temporary div to parse HTML safely
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = htmlContent;
+    
+    // Try to find h1 first, then any first text node
+    const h1 = tempDiv.querySelector('h1');
+    if (h1 && h1.textContent?.trim()) {
+      return h1.textContent.trim();
+    }
+    
+    // Try to find first paragraph
+    const p = tempDiv.querySelector('p');
+    if (p && p.textContent?.trim()) {
+      return p.textContent.trim();
+    }
+    
+    // Fallback to first text content
+    const textContent = tempDiv.textContent?.trim();
+    if (textContent) {
+      return textContent;
+    }
+    
+    return 'Untitled';
+  };
+
   return (
-    <div className="space-y-4">
-      {/* Deep Terminal Section */}
-      <div className="text-cyan-400">
-        {editingEntry && (
-          <div className="mb-4 p-3 bg-cyan-900/20 border border-cyan-700/40 rounded text-sm">
-            <div className="flex items-center justify-between">
-              <span className="text-cyan-300">✏️ Editing entry from {formatTimestamp(editingEntry.createdAt)}</span>
-              <button 
-                onClick={handleCancelEdit}
-                className="text-xs text-gray-400 hover:text-cyan-400 transition-colors"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-2" onClick={(e) => e.stopPropagation()}>
-          <TiptapEditor
-            key={editorKey} // Force re-initialization when key changes
-            content={editingEntry ? editingEntry.content : entry} // Pass editing content or current entry
-            placeholder={user && user.emailVerified ? (inputPlaceholder || t('typeEntry')) : t('entry_field_disabled')}
-            onChange={setEntry} // onChange provides HTML output from Tiptap
-            onTimestampChange={setCustomTimestamp} // Handle custom timestamp changes
-            defaultTimestamp={customTimestamp || new Date()} // Use custom timestamp or current time
-            reminderAt={reminderAt}
-            onReminderChange={setReminderAt}
-          />
-          {isSubmitting && (
-            <span className="text-yellow-400 text-sm pt-2">{t('saving')}</span>
-          )}
-          <button 
-            type="submit" 
-            disabled={isSubmitting || !user || !user.emailVerified}
-            className="mt-2 px-4 py-2 border border-cyan-500 text-cyan-300 hover:bg-cyan-500/10 disabled:opacity-50 font-mono text-sm"
-          >
-            {isSubmitting ? t('saving') : (editingEntry ? 'Update Entry' : "Submit Entry")}
-          </button>
-        </form>
-
-        {/* Authentication message for non-authenticated users */}
-        {(!user || !user.emailVerified) && (
-          <div className="mt-2 text-gray-400 text-sm font-mono">
-            &gt;&gt; {t('entry_field_disabled')}
-          </div>
-        )}
-
-        {/* Feedback messages */}
-        <AnimatePresence>
-          {showFeedback && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="mt-2 text-green-400 text-sm font-mono"
-            >
-              {feedback}
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Instructions */}
-        {user && user.emailVerified && (
-          <div className="mt-3 text-gray-500 text-xs">
-            Press Cmd+Enter (Ctrl+Enter) to submit long form entry records
-          </div>
-        )}
-
-        {/* Cyber Animation */}
-        <AnimatePresence>
-          {showCyberAnimation && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              className="mb-4 p-4 border border-cyan-400 bg-black/80 rounded font-mono text-cyan-400"
-            >
-              <div className="flex items-center space-x-2">
-                <div className="text-green-400 animate-spin text-3xl">▲</div>
-                <div className="text-cyan-400 animate-pulse text-2xl">sending entry</div>
-                <div className="flex space-x-1">
-                  <motion.span
-                    animate={{ opacity: [0, 1, 0] }}
-                    transition={{ duration: 0.5, repeat: Infinity, delay: 0 }}
-                  >.</motion.span>
-                  <motion.span
-                    animate={{ opacity: [0, 1, 0] }}
-                    transition={{ duration: 0.5, repeat: Infinity, delay: 0.2 }}
-                  >.</motion.span>
-                  <motion.span
-                    animate={{ opacity: [0, 1, 0] }}
-                    transition={{ duration: 0.5, repeat: Infinity, delay: 0.4 }}
-                  >.</motion.span>
+    <>
+      <div className="flex gap-4 min-h-screen">
+        {/* Main Editor Column */}
+        <div className={`transition-all duration-300 ${showThumbnailPanel ? 'mr-64' : 'w-full'}`}>
+          <div className="space-y-4">
+            {/* Deep Terminal Section */}
+            <div className="text-cyan-400">
+              {editingEntry && (
+                <div className="mb-4 p-3 bg-cyan-900/20 border border-cyan-700/40 rounded text-sm">
+                  <div className="flex items-center justify-between">
+                    <span className="text-cyan-300">✏️ Editing entry from {formatTimestamp(editingEntry.createdAt)}</span>
+                    <button 
+                      onClick={handleCancelEdit}
+                      className="text-xs text-gray-400 hover:text-cyan-400 transition-colors"
+                    >
+                      Cancel
+                    </button>
+                  </div>
                 </div>
+              )}
+
+              <form onSubmit={handleSubmit} className="space-y-2" onClick={(e) => e.stopPropagation()}>
+                <TiptapEditor
+                  key={editorKey} // Force re-initialization when key changes
+                  content={editingEntry ? editingEntry.content : entry} // Pass editing content or current entry
+                  placeholder={user && user.emailVerified ? (inputPlaceholder || t('typeEntry')) : t('entry_field_disabled')}
+                  onChange={setEntry} // onChange provides HTML output from Tiptap
+                  onTimestampChange={setCustomTimestamp} // Handle custom timestamp changes
+                  defaultTimestamp={customTimestamp || new Date()} // Use custom timestamp or current time
+                  reminderAt={reminderAt}
+                  onReminderChange={setReminderAt}
+                />
+                {isSubmitting && (
+                  <span className="text-yellow-400 text-sm pt-2">{t('saving')}</span>
+                )}
+                <button 
+                  type="submit" 
+                  disabled={isSubmitting || !user || !user.emailVerified}
+                  className="mt-2 px-4 py-2 border border-cyan-500 text-cyan-300 hover:bg-cyan-500/10 disabled:opacity-50 font-mono text-sm"
+                >
+                  {isSubmitting ? t('saving') : (editingEntry ? 'Update Entry' : "Submit Entry")}
+                </button>
+              </form>
+
+              {/* Authentication message for non-authenticated users */}
+              {(!user || !user.emailVerified) && (
+                <div className="mt-2 text-gray-400 text-sm font-mono">
+                  &gt;&gt; {t('entry_field_disabled')}
+                </div>
+              )}
+
+              {/* Feedback messages */}
+              <AnimatePresence>
+                {showFeedback && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="mt-2 text-green-400 text-sm font-mono"
+                  >
+                    {feedback}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Instructions */}
+              {user && user.emailVerified && (
+                <div className="mt-3 text-gray-500 text-xs">
+                  Press Cmd+Enter (Ctrl+Enter) to submit long form entry records
+                </div>
+              )}
+
+              {/* Cyber Animation */}
+              <AnimatePresence>
+                {showCyberAnimation && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    className="mb-4 p-4 border border-cyan-400 bg-black/80 rounded font-mono text-cyan-400"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <div className="text-green-400 animate-spin text-3xl">▲</div>
+                      <div className="text-cyan-400 animate-pulse text-2xl">sending entry</div>
+                      <div className="flex space-x-1">
+                        <motion.span
+                          animate={{ opacity: [0, 1, 0] }}
+                          transition={{ duration: 0.5, repeat: Infinity, delay: 0 }}
+                        >.</motion.span>
+                        <motion.span
+                          animate={{ opacity: [0, 1, 0] }}
+                          transition={{ duration: 0.5, repeat: Infinity, delay: 0.2 }}
+                        >.</motion.span>
+                        <motion.span
+                          animate={{ opacity: [0, 1, 0] }}
+                          transition={{ duration: 0.5, repeat: Infinity, delay: 0.4 }}
+                        >.</motion.span>
+                      </div>
+                    </div>
+                    {/* Loading Bar - Blocky Style */}
+                    <div className="mt-4 w-full h-2 bg-cyan-900/40 border border-cyan-700/40 flex">
+                      {Array.from({ length: blockCount }).map((_, i) => (
+                        <div
+                          key={i}
+                          className="flex-1 h-full mx-[1px]"
+                          style={{
+                            backgroundColor: i < progress ? '#22d3ee' : 'transparent',
+                            boxShadow: i < progress ? '0 0 6px #22d3ee, 0 0 12px #22d3ee40' : undefined,
+                            transition: 'background-color 0.2s, box-shadow 0.2s',
+                          }}
+                        />
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+            
+            {/* Display saved entries */}
+            {user && user.emailVerified && (
+              <div className="mt-8 pt-4 border-t border-cyan-700/30 relative">
+                {/* Top controls and title in a flex row */}
+                <div className="flex items-center gap-4 mb-4">
+                  {selectMode && (
+                    <>
+                      <button
+                        onClick={cancelSelection}
+                        className="text-green-400 hover:text-cyan-400 text-2xl font-bold bg-black/70 rounded-full w-8 h-8 flex items-center justify-center border border-green-400 hover:border-cyan-400 transition-colors"
+                        title="Cancel selection mode"
+                      >
+                        ×
+                      </button>
+                      {selectedEntries.length > 0 && (
+                        <button
+                          onClick={handleBatchDelete}
+                          className="px-3 py-1 border border-cyan-400 text-cyan-300 font-mono text-xs rounded hover:bg-cyan-400/10 transition-colors"
+                        >
+                          Delete Selected ({selectedEntries.length})
+                        </button>
+                      )}
+                    </>
+                  )}
+                  <h3 className="text-lg text-cyan-300">Saved Deep Entries:</h3>
+                  {/* Thumbnail Panel Toggle Button */}
+                  <button
+                    onClick={() => setShowThumbnailPanel(!showThumbnailPanel)}
+                    className="ml-auto px-2 py-1 text-xs text-cyan-400 hover:text-yellow-400 transition-colors font-mono border border-cyan-700/40 rounded"
+                    title="Toggle entry thumbnails"
+                  >
+                    {showThumbnailPanel ? '← Hide' : 'Show →'}
+                  </button>
+                </div>
+                {loading ? (
+                  <div className="text-gray-400 text-sm">Loading entries...</div>
+                ) : entries.length === 0 ? (
+                  <div className="text-gray-500 text-sm">No deep entries yet. Start typing above!</div>
+                ) : (
+                  <div className="space-y-6">
+                    {entries.map((item) => (
+                      <div key={item.id} className="relative group text-cyan-400 font-mono bg-black/20 p-4 rounded border border-cyan-700/20">
+                        {/* Checkbox and timestamp layout for select mode */}
+                        {selectMode ? (
+                          <div className="flex items-center gap-2 text-xs text-gray-400 mb-2">
+                            <input
+                              type="checkbox"
+                              checked={selectedEntries.includes(item.id)}
+                              onChange={() => handleSelectEntry(item.id)}
+                              className="w-4 h-4 accent-green-400 border-green-400 bg-black ring-1 ring-green-400 focus:ring-2 focus:ring-green-300 transition-shadow duration-150 rounded-none"
+                            />
+                            <span>{formatTimestamp(item.createdAt)}</span>
+                            {item.updatedAt && item.updatedAt.seconds !== item.createdAt.seconds && (
+                              <span className="italic">(edited: {formatTimestamp(item.updatedAt)})</span>
+                            )}
+                          </div>
+                        ) : (
+                          <div className="text-xs text-gray-500 mb-2 flex justify-between items-center">
+                            <div className="flex items-center space-x-4">
+                              <span>{formatTimestamp(item.createdAt)}</span>
+                              {item.updatedAt && item.updatedAt.seconds !== item.createdAt.seconds && (
+                                <span className="italic">(edited: {formatTimestamp(item.updatedAt)})</span>
+                              )}
+                              {/* Hover controls next to timestamp */}
+                              {!selectMode && (
+                                <div className="opacity-0 group-hover:opacity-100 transition-opacity text-xs text-cyan-400 space-x-2 flex items-center">
+                                  <button 
+                                    onClick={() => handleCopy(item.content)}
+                                    className="hover:text-cyan-200 transition-colors"
+                                    title="Copy to clipboard"
+                                  >
+                                    Copy
+                                  </button>
+                                  <button 
+                                    onClick={() => handleEdit(item)}
+                                    className="hover:text-cyan-200 transition-colors"
+                                  >
+                                    Edit
+                                  </button>
+                                  <button 
+                                    onClick={() => handleDelete(item.id)}
+                                    className="hover:text-red-400 transition-colors"
+                                  >
+                                    Delete
+                                  </button>
+                                  <span
+                                    onClick={toggleSelectMode}
+                                    className="ml-2 cursor-pointer text-cyan-400 hover:text-cyan-200"
+                                    title="Select Multiple Entries"
+                                  >
+                                    Select Multiple
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        )}
+                        {/* Render processed content using dangerouslySetInnerHTML */}
+                        <div 
+                          className="prose prose-sm prose-invert max-w-none text-cyan-200 tiptap-rendered-content"
+                          dangerouslySetInnerHTML={{ __html: getDisplayContent(item.content, item.entryType) }}
+                        />
+                        {/* Reminder label in entry UI */}
+                        {item.reminderAt && (() => {
+                          let reminderDate: Date;
+                          if (item.reminderAt && 'toDate' in item.reminderAt && typeof item.reminderAt.toDate === 'function') {
+                            reminderDate = item.reminderAt.toDate();
+                          } else if (item.reminderAt instanceof Date) {
+                            reminderDate = item.reminderAt;
+                          } else {
+                            reminderDate = new Date(item.reminderAt as any);
+                          }
+                          const now = new Date();
+                          if (reminderDate > now) {
+                            return <div className="mt-2 text-xs text-cyan-400 font-mono flex items-center gap-1">🔔 Reminds at {reminderDate.toLocaleString()}</div>;
+                          } else {
+                            return <div className="mt-2 text-xs text-gray-500 font-mono flex items-center gap-1">⏰ Missed reminder at {reminderDate.toLocaleString()}</div>;
+                          }
+                        })()}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
-              {/* Loading Bar - Blocky Style */}
-              <div className="mt-4 w-full h-2 bg-cyan-900/40 border border-cyan-700/40 flex">
-                {Array.from({ length: blockCount }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="flex-1 h-full mx-[1px]"
-                    style={{
-                      backgroundColor: i < progress ? '#22d3ee' : 'transparent',
-                      boxShadow: i < progress ? '0 0 6px #22d3ee, 0 0 12px #22d3ee40' : undefined,
-                      transition: 'background-color 0.2s, box-shadow 0.2s',
-                    }}
-                  />
-                ))}
+            )}
+          </div>
+        </div>
+
+        {/* Thumbnail Panel */}
+        <AnimatePresence>
+          {showThumbnailPanel && (
+            <motion.div
+              initial={{ width: 0, opacity: 0 }}
+              animate={{ width: 256, opacity: 1 }}
+              exit={{ width: 0, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="w-64 border-l border-cyan-700/30 pl-4 overflow-hidden fixed right-0 top-0 h-screen z-40"
+              style={{
+                background: 'linear-gradient(to top, #0a1417 0%, #0f2124 100%)',
+                backdropFilter: 'blur(4px)'
+              }}
+            >
+              <div className="h-full pt-16"> {/* Add top padding to account for navigation */}
+                <div className="flex items-center justify-between mb-3 sticky top-0 py-2 border-b border-cyan-700/20 bg-transparent">
+                  <h4 className="text-sm text-cyan-300 font-mono">
+                    Entry Thumbnails
+                  </h4>
+                  <button
+                    onClick={() => setShowDates(!showDates)}
+                    className="text-xs text-cyan-400 hover:text-yellow-400 transition-colors font-mono px-2 py-1"
+                    title="Toggle date visibility"
+                  >
+                    Date
+                  </button>
+                </div>
+                <div className="space-y-2 max-h-[calc(100vh-8rem)] overflow-y-auto scrollbar-thin scrollbar-track-cyan-900/20 scrollbar-thumb-cyan-700/40 pr-2">
+                  {entries.map((item) => {
+                    const firstLine = getFirstLine(item.content);
+                    const isCurrentlyEditing = editingEntry?.id === item.id;
+                    
+                    return (
+                      <div
+                        key={item.id}
+                        onClick={() => handleEdit(item)}
+                        className={`p-3 cursor-pointer transition-all duration-200 font-mono ${
+                          isCurrentlyEditing 
+                            ? 'bg-yellow-400/10' 
+                            : 'bg-transparent hover:bg-cyan-400/5'
+                        }`}
+                      >
+                        {/* First Line */}
+                        <div className={`text-sm font-mono truncate mb-2 ${
+                          isCurrentlyEditing ? 'text-yellow-300' : 'text-cyan-300'
+                        }`}>
+                          {firstLine}
+                        </div>
+                        
+                        {/* Timestamp - conditional */}
+                        {showDates && (
+                          <div className="text-xs text-gray-400 truncate">
+                            {formatTimestamp(item.createdAt)}
+                          </div>
+                        )}
+                        
+                        {/* Updated indicator */}
+                        {item.updatedAt && item.updatedAt.seconds !== item.createdAt.seconds && (
+                          <div className="text-xs text-cyan-500 italic mt-1">
+                            edited
+                          </div>
+                        )}
+                        
+                        {/* Reminder indicator */}
+                        {item.reminderAt && (() => {
+                          let reminderDate: Date;
+                          if (item.reminderAt && 'toDate' in item.reminderAt && typeof item.reminderAt.toDate === 'function') {
+                            reminderDate = item.reminderAt.toDate();
+                          } else if (item.reminderAt instanceof Date) {
+                            reminderDate = item.reminderAt;
+                          } else {
+                            reminderDate = new Date(item.reminderAt as any);
+                          }
+                          const now = new Date();
+                          if (reminderDate > now) {
+                            return <div className="text-xs text-cyan-300 mt-1">🔔 reminder</div>;
+                          } else {
+                            return <div className="text-xs text-gray-500 mt-1">⏰ missed</div>;
+                          }
+                        })()}
+                      </div>
+                    );
+                  })}
+                  
+                  {entries.length === 0 && (
+                    <div className="text-gray-500 text-sm text-center py-8 font-mono">
+                      No entries yet
+                    </div>
+                  )}
+                </div>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
       </div>
-      
-      {/* Display saved entries */}
-      {user && user.emailVerified && (
-        <div className="mt-8 pt-4 border-t border-cyan-700/30 relative">
-          {/* Top controls and title in a flex row */}
-          <div className="flex items-center gap-4 mb-4">
-            {selectMode && (
-              <>
-                <button
-                  onClick={cancelSelection}
-                  className="text-green-400 hover:text-cyan-400 text-2xl font-bold bg-black/70 rounded-full w-8 h-8 flex items-center justify-center border border-green-400 hover:border-cyan-400 transition-colors"
-                  title="Cancel selection mode"
-                >
-                  ×
-                </button>
-                {selectedEntries.length > 0 && (
-                  <button
-                    onClick={handleBatchDelete}
-                    className="px-3 py-1 border border-cyan-400 text-cyan-300 font-mono text-xs rounded hover:bg-cyan-400/10 transition-colors"
-                  >
-                    Delete Selected ({selectedEntries.length})
-                  </button>
-                )}
-              </>
-            )}
-            <h3 className="text-lg text-cyan-300">Saved Deep Entries:</h3>
-          </div>
-          {loading ? (
-            <div className="text-gray-400 text-sm">Loading entries...</div>
-          ) : entries.length === 0 ? (
-            <div className="text-gray-500 text-sm">No deep entries yet. Start typing above!</div>
-          ) : (
-            <div className="space-y-6">
-              {entries.map((item) => (
-                <div key={item.id} className="relative group text-cyan-400 font-mono bg-black/20 p-4 rounded border border-cyan-700/20">
-                  {/* Checkbox and timestamp layout for select mode */}
-                  {selectMode ? (
-                    <div className="flex items-center gap-2 text-xs text-gray-400 mb-2">
-                      <input
-                        type="checkbox"
-                        checked={selectedEntries.includes(item.id)}
-                        onChange={() => handleSelectEntry(item.id)}
-                        className="w-4 h-4 accent-green-400 border-green-400 bg-black ring-1 ring-green-400 focus:ring-2 focus:ring-green-300 transition-shadow duration-150 rounded-none"
-                      />
-                      <span>{formatTimestamp(item.createdAt)}</span>
-                      {item.updatedAt && item.updatedAt.seconds !== item.createdAt.seconds && (
-                        <span className="italic">(edited: {formatTimestamp(item.updatedAt)})</span>
-                      )}
-                    </div>
-                  ) : (
-                    <div className="text-xs text-gray-500 mb-2 flex justify-between items-center">
-                      <div className="flex items-center space-x-4">
-                        <span>{formatTimestamp(item.createdAt)}</span>
-                        {item.updatedAt && item.updatedAt.seconds !== item.createdAt.seconds && (
-                          <span className="italic">(edited: {formatTimestamp(item.updatedAt)})</span>
-                        )}
-                        {/* Hover controls next to timestamp */}
-                        {!selectMode && (
-                          <div className="opacity-0 group-hover:opacity-100 transition-opacity text-xs text-cyan-400 space-x-2 flex items-center">
-                            <button 
-                              onClick={() => handleCopy(item.content)}
-                              className="hover:text-cyan-200 transition-colors"
-                              title="Copy to clipboard"
-                            >
-                              Copy
-                            </button>
-                            <button 
-                              onClick={() => handleEdit(item)}
-                              className="hover:text-cyan-200 transition-colors"
-                            >
-                              Edit
-                            </button>
-                            <button 
-                              onClick={() => handleDelete(item.id)}
-                              className="hover:text-red-400 transition-colors"
-                            >
-                              Delete
-                            </button>
-                            <span
-                              onClick={toggleSelectMode}
-                              className="ml-2 cursor-pointer text-cyan-400 hover:text-cyan-200"
-                              title="Select Multiple Entries"
-                            >
-                              Select Multiple
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                  {/* Render processed content using dangerouslySetInnerHTML */}
-                  <div 
-                    className="prose prose-sm prose-invert max-w-none text-cyan-200 tiptap-rendered-content"
-                    dangerouslySetInnerHTML={{ __html: getDisplayContent(item.content, item.entryType) }}
-                  />
-                  {/* Reminder label in entry UI */}
-                  {item.reminderAt && (() => {
-                    let reminderDate: Date;
-                    if (item.reminderAt && 'toDate' in item.reminderAt && typeof item.reminderAt.toDate === 'function') {
-                      reminderDate = item.reminderAt.toDate();
-                    } else if (item.reminderAt instanceof Date) {
-                      reminderDate = item.reminderAt;
-                    } else {
-                      reminderDate = new Date(item.reminderAt as any);
-                    }
-                    const now = new Date();
-                    if (reminderDate > now) {
-                      return <div className="mt-2 text-xs text-cyan-400 font-mono flex items-center gap-1">🔔 Reminds at {reminderDate.toLocaleString()}</div>;
-                    } else {
-                      return <div className="mt-2 text-xs text-gray-500 font-mono flex items-center gap-1">⏰ Missed reminder at {reminderDate.toLocaleString()}</div>;
-                    }
-                  })()}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
 
       {/* Delete Confirmation Modal */}
       <AnimatePresence>
@@ -628,6 +769,6 @@ export default function DeepTerminal({ inputPlaceholder }: { inputPlaceholder?: 
           </motion.div>
         ) : null}
       </AnimatePresence>
-    </div>
+    </>
   );
 } 
