@@ -3,7 +3,7 @@
 import { useEditor, EditorContent, Editor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
 interface TiptapEditorProps {
   content?: string;
@@ -11,6 +11,8 @@ interface TiptapEditorProps {
   onChange?: (content: string) => void;
   onTimestampChange?: (timestamp: Date) => void;
   defaultTimestamp?: Date;
+  reminderAt?: Date | null;
+  onReminderChange?: (reminder: Date | null) => void;
 }
 
 const ensureFirstBlockIsH1 = (editor: Editor) => {
@@ -63,11 +65,15 @@ export default function TiptapEditor({
   placeholder = 'Start typing...', 
   onChange,
   onTimestampChange,
-  defaultTimestamp = new Date()
+  defaultTimestamp = new Date(),
+  reminderAt,
+  onReminderChange
 }: TiptapEditorProps) {
   const [customTimestamp, setCustomTimestamp] = useState<Date>(defaultTimestamp);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [textStats, setTextStats] = useState({ words: 0, characters: 0 });
+  const dateInputRef = useRef<HTMLInputElement>(null);
+  const reminderInputRef = useRef<HTMLInputElement>(null);
 
   const editor = useEditor({
     extensions: [
@@ -158,6 +164,37 @@ export default function TiptapEditor({
     }
   };
 
+  // Handle clicking on date to open picker
+  const handleDateClick = () => {
+    if (dateInputRef.current) {
+      dateInputRef.current.showPicker();
+    }
+  };
+
+  // Handle reminder button click
+  const handleReminderClick = () => {
+    if (!reminderAt && onReminderChange) {
+      // If no reminder is set, set it to current time and open picker
+      const newReminder = new Date();
+      onReminderChange(newReminder);
+      setTimeout(() => {
+        if (reminderInputRef.current) {
+          reminderInputRef.current.showPicker();
+        }
+      }, 10);
+    } else if (onReminderChange) {
+      // If reminder exists, clear it
+      onReminderChange(null);
+    }
+  };
+
+  // Handle reminder time change
+  const handleReminderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (onReminderChange) {
+      onReminderChange(new Date(e.target.value));
+    }
+  };
+
   // Format date for display
   const formatDate = (date: Date) => {
     return date.toLocaleString('en-US', {
@@ -174,25 +211,50 @@ export default function TiptapEditor({
     <div className="space-y-2">
       {/* Date Picker Section */}
       <div className="flex items-center justify-between text-xs text-cyan-400/80">
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-4">
           <button
             type="button"
-            onClick={() => setShowDatePicker(!showDatePicker)}
-            className="px-2 py-1 border border-cyan-700/40 rounded hover:border-cyan-400/60 transition-colors"
+            onClick={handleDateClick}
+            className="px-2 py-1 hover:text-yellow-400 transition-colors text-cyan-400 font-mono"
           >
             {formatDate(customTimestamp)}
           </button>
-          {showDatePicker && (
-            <input
-              type="datetime-local"
-              value={customTimestamp.toISOString().slice(0, 16)}
-              onChange={handleTimestampChange}
-              className="px-2 py-1 border border-cyan-700/40 rounded hover:border-cyan-400/60 transition-colors text-white bg-transparent focus:border-cyan-400/60 focus:outline-none cursor-pointer"
-              style={{
-                colorScheme: 'dark'
-              }}
-            />
+          
+          <button
+            type="button"
+            onClick={handleReminderClick}
+            className="px-2 py-1 hover:text-yellow-400 transition-colors text-cyan-400 font-mono text-xs"
+          >
+            {reminderAt ? 'Clear Reminder' : 'Set Reminder'}
+          </button>
+          
+          {reminderAt && (
+            <span className="text-xs text-cyan-400 font-mono hover:text-yellow-400 transition-colors cursor-pointer" onClick={handleReminderClick}>
+              Reminds at {reminderAt.toLocaleString()}
+            </span>
           )}
+          
+          {/* Hidden datetime input that gets triggered programmatically */}
+          <input
+            ref={dateInputRef}
+            type="datetime-local"
+            value={customTimestamp.toISOString().slice(0, 16)}
+            onChange={handleTimestampChange}
+            className="absolute opacity-0 pointer-events-none"
+            style={{
+              colorScheme: 'dark'
+            }}
+          />
+          
+          {/* Hidden reminder input that gets triggered programmatically */}
+          <input
+            ref={reminderInputRef}
+            type="datetime-local"
+            value={reminderAt && !isNaN(reminderAt.getTime()) ? reminderAt.toISOString().slice(0, 16) : ''}
+            onChange={handleReminderChange}
+            className="absolute opacity-0 pointer-events-none"
+            style={{ colorScheme: 'dark' }}
+          />
         </div>
       </div>
 

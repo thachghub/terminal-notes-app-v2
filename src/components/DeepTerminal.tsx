@@ -16,6 +16,7 @@ interface Entry {
   createdAt: Timestamp;
   updatedAt?: Timestamp;
   customTimestamp?: Timestamp | Date | null; // Can be either Firebase Timestamp or Date
+  reminderAt?: Timestamp | Date | null;
 }
 
 const TiptapEditor = dynamic(() => import('./TiptapEditor'), { ssr: false });
@@ -55,6 +56,7 @@ export default function DeepTerminal({ inputPlaceholder }: { inputPlaceholder?: 
   const [showDeleteModal, setShowDeleteModal] = useState<{ id: string | null, batch?: boolean }>( { id: null, batch: false });
   const [selectMode, setSelectMode] = useState(false);
   const [selectedEntries, setSelectedEntries] = useState<string[]>([]);
+  const [reminderAt, setReminderAt] = useState<Date | null>(null);
 
   useEffect(() => {
     if (!user || !user.emailVerified) {
@@ -150,7 +152,8 @@ export default function DeepTerminal({ inputPlaceholder }: { inputPlaceholder?: 
         await updateDoc(entryRef, {
           content: entry,
           updatedAt: new Date(),
-          customTimestamp: customTimestamp ? customTimestamp : editingEntry.customTimestamp
+          customTimestamp: customTimestamp ? customTimestamp : editingEntry.customTimestamp,
+          reminderAt: reminderAt ? reminderAt : null
         });
         setFeedback('Entry updated successfully');
         setEditingEntry(null);
@@ -163,7 +166,8 @@ export default function DeepTerminal({ inputPlaceholder }: { inputPlaceholder?: 
           entryType: 'deep_tiptap', // Mark as new Tiptap entry
           createdAt: timestamp,
           updatedAt: timestamp,
-          customTimestamp: customTimestamp ? timestamp : null // Store custom timestamp if set
+          customTimestamp: customTimestamp ? timestamp : null, // Store custom timestamp if set
+          reminderAt: reminderAt ? reminderAt : null
         });
         setFeedback(t('entry_submitted_successfully'));
       }
@@ -171,6 +175,7 @@ export default function DeepTerminal({ inputPlaceholder }: { inputPlaceholder?: 
       setShowFeedback(true);
       setEntry(''); // Clear the Tiptap editor (it will reset via its content prop)
       setCustomTimestamp(null); // Reset custom timestamp
+      setReminderAt(null); // Reset reminder
       setTimeout(() => setShowFeedback(false), 2000);
       setTimeout(() => setShowCyberAnimation(false), 2000); // Hide cyber animation after 2s
     } catch (error) {
@@ -189,21 +194,29 @@ export default function DeepTerminal({ inputPlaceholder }: { inputPlaceholder?: 
     setEntry(entryToEdit.content);
     // Convert Firebase Timestamp to JavaScript Date if it exists
     if (entryToEdit.customTimestamp) {
-      // Check if it's a Firebase Timestamp object
       if (entryToEdit.customTimestamp && 'toDate' in entryToEdit.customTimestamp && typeof entryToEdit.customTimestamp.toDate === 'function') {
         setCustomTimestamp((entryToEdit.customTimestamp as Timestamp).toDate());
       } else if (entryToEdit.customTimestamp instanceof Date) {
         setCustomTimestamp(entryToEdit.customTimestamp);
       } else {
-        // Fallback: try to create a Date from the value
         setCustomTimestamp(new Date(entryToEdit.customTimestamp as any));
       }
     } else {
       setCustomTimestamp(null);
     }
-    // Force editor re-initialization with new key
+    // Handle reminderAt
+    if (entryToEdit.reminderAt) {
+      if (entryToEdit.reminderAt && 'toDate' in entryToEdit.reminderAt && typeof entryToEdit.reminderAt.toDate === 'function') {
+        setReminderAt((entryToEdit.reminderAt as Timestamp).toDate());
+      } else if (entryToEdit.reminderAt instanceof Date) {
+        setReminderAt(entryToEdit.reminderAt);
+      } else {
+        setReminderAt(new Date(entryToEdit.reminderAt as any));
+      }
+    } else {
+      setReminderAt(null);
+    }
     setEditorKey(`edit-${entryToEdit.id}-${Date.now()}`);
-    // Scroll to top of the form
     setTimeout(() => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }, 100);
@@ -335,6 +348,8 @@ export default function DeepTerminal({ inputPlaceholder }: { inputPlaceholder?: 
             onChange={setEntry} // onChange provides HTML output from Tiptap
             onTimestampChange={setCustomTimestamp} // Handle custom timestamp changes
             defaultTimestamp={customTimestamp || new Date()} // Use custom timestamp or current time
+            reminderAt={reminderAt}
+            onReminderChange={setReminderAt}
           />
           {isSubmitting && (
             <span className="text-yellow-400 text-sm pt-2">{t('saving')}</span>
@@ -516,6 +531,23 @@ export default function DeepTerminal({ inputPlaceholder }: { inputPlaceholder?: 
                     className="prose prose-sm prose-invert max-w-none text-cyan-200 tiptap-rendered-content"
                     dangerouslySetInnerHTML={{ __html: getDisplayContent(item.content, item.entryType) }}
                   />
+                  {/* Reminder label in entry UI */}
+                  {item.reminderAt && (() => {
+                    let reminderDate: Date;
+                    if (item.reminderAt && 'toDate' in item.reminderAt && typeof item.reminderAt.toDate === 'function') {
+                      reminderDate = item.reminderAt.toDate();
+                    } else if (item.reminderAt instanceof Date) {
+                      reminderDate = item.reminderAt;
+                    } else {
+                      reminderDate = new Date(item.reminderAt as any);
+                    }
+                    const now = new Date();
+                    if (reminderDate > now) {
+                      return <div className="mt-2 text-xs text-cyan-400 font-mono flex items-center gap-1">🔔 Reminds at {reminderDate.toLocaleString()}</div>;
+                    } else {
+                      return <div className="mt-2 text-xs text-gray-500 font-mono flex items-center gap-1">⏰ Missed reminder at {reminderDate.toLocaleString()}</div>;
+                    }
+                  })()}
                 </div>
               ))}
             </div>
