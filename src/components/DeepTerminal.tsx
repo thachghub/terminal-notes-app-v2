@@ -408,8 +408,30 @@ export default function DeepTerminal({ inputPlaceholder }: { inputPlaceholder?: 
       
       {/* Display saved entries */}
       {user && user.emailVerified && (
-        <div className="mt-8 pt-4 border-t border-cyan-700/30">
-          <h3 className="text-lg text-cyan-300 mb-4">Saved Deep Entries:</h3>
+        <div className="mt-8 pt-4 border-t border-cyan-700/30 relative">
+          {/* Top controls and title in a flex row */}
+          <div className="flex items-center gap-4 mb-4">
+            {selectMode && (
+              <>
+                <button
+                  onClick={cancelSelection}
+                  className="text-green-400 hover:text-cyan-400 text-2xl font-bold bg-black/70 rounded-full w-8 h-8 flex items-center justify-center border border-green-400 hover:border-cyan-400 transition-colors"
+                  title="Cancel selection mode"
+                >
+                  ×
+                </button>
+                {selectedEntries.length > 0 && (
+                  <button
+                    onClick={handleBatchDelete}
+                    className="px-3 py-1 border border-cyan-400 text-cyan-300 font-mono text-xs rounded hover:bg-cyan-400/10 transition-colors"
+                  >
+                    Delete Selected ({selectedEntries.length})
+                  </button>
+                )}
+              </>
+            )}
+            <h3 className="text-lg text-cyan-300">Saved Deep Entries:</h3>
+          </div>
           {loading ? (
             <div className="text-gray-400 text-sm">Loading entries...</div>
           ) : entries.length === 0 ? (
@@ -418,54 +440,61 @@ export default function DeepTerminal({ inputPlaceholder }: { inputPlaceholder?: 
             <div className="space-y-6">
               {entries.map((item) => (
                 <div key={item.id} className="relative group text-cyan-400 font-mono bg-black/20 p-4 rounded border border-cyan-700/20">
-                  {/* Checkbox for select mode */}
-                  {selectMode && (
-                    <input
-                      type="checkbox"
-                      checked={selectedEntries.includes(item.id)}
-                      onChange={() => handleSelectEntry(item.id)}
-                      className="absolute top-2 left-2 w-4 h-4 accent-cyan-400 border-cyan-400 bg-black/80 rounded-none"
-                    />
-                  )}
-                  <div className="text-xs text-gray-500 mb-2 flex justify-between items-center">
-                    <div className="flex items-center space-x-4">
+                  {/* Checkbox and timestamp layout for select mode */}
+                  {selectMode ? (
+                    <div className="flex items-center gap-2 text-xs text-gray-400 mb-2">
+                      <input
+                        type="checkbox"
+                        checked={selectedEntries.includes(item.id)}
+                        onChange={() => handleSelectEntry(item.id)}
+                        className="w-4 h-4 accent-green-400 border-green-400 bg-black ring-1 ring-green-400 focus:ring-2 focus:ring-green-300 transition-shadow duration-150 rounded-none"
+                      />
                       <span>{formatTimestamp(item.createdAt)}</span>
                       {item.updatedAt && item.updatedAt.seconds !== item.createdAt.seconds && (
                         <span className="italic">(edited: {formatTimestamp(item.updatedAt)})</span>
                       )}
-                      {/* Hover controls next to timestamp */}
-                      {!selectMode && (
-                        <div className="opacity-0 group-hover:opacity-100 transition-opacity text-xs text-cyan-400 space-x-2 flex items-center">
-                          <button 
-                            onClick={() => handleCopy(item.content)}
-                            className="hover:text-cyan-200 transition-colors"
-                            title="Copy to clipboard"
-                          >
-                            Copy
-                          </button>
-                          <button 
-                            onClick={() => handleEdit(item)}
-                            className="hover:text-cyan-200 transition-colors"
-                          >
-                            Edit
-                          </button>
-                          <button 
-                            onClick={() => handleDelete(item.id)}
-                            className="hover:text-red-400 transition-colors"
-                          >
-                            Delete
-                          </button>
-                          <span
-                            onClick={toggleSelectMode}
-                            className="ml-2 cursor-pointer text-cyan-400 hover:text-cyan-200"
-                            title="Select Multiple Entries"
-                          >
-                            Select Multiple
-                          </span>
-                        </div>
-                      )}
                     </div>
-                  </div>
+                  ) : (
+                    <div className="text-xs text-gray-500 mb-2 flex justify-between items-center">
+                      <div className="flex items-center space-x-4">
+                        <span>{formatTimestamp(item.createdAt)}</span>
+                        {item.updatedAt && item.updatedAt.seconds !== item.createdAt.seconds && (
+                          <span className="italic">(edited: {formatTimestamp(item.updatedAt)})</span>
+                        )}
+                        {/* Hover controls next to timestamp */}
+                        {!selectMode && (
+                          <div className="opacity-0 group-hover:opacity-100 transition-opacity text-xs text-cyan-400 space-x-2 flex items-center">
+                            <button 
+                              onClick={() => handleCopy(item.content)}
+                              className="hover:text-cyan-200 transition-colors"
+                              title="Copy to clipboard"
+                            >
+                              Copy
+                            </button>
+                            <button 
+                              onClick={() => handleEdit(item)}
+                              className="hover:text-cyan-200 transition-colors"
+                            >
+                              Edit
+                            </button>
+                            <button 
+                              onClick={() => handleDelete(item.id)}
+                              className="hover:text-red-400 transition-colors"
+                            >
+                              Delete
+                            </button>
+                            <span
+                              onClick={toggleSelectMode}
+                              className="ml-2 cursor-pointer text-cyan-400 hover:text-cyan-200"
+                              title="Select Multiple Entries"
+                            >
+                              Select Multiple
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
                   {/* Render processed content using dangerouslySetInnerHTML */}
                   <div 
                     className="prose prose-sm prose-invert max-w-none text-cyan-200 tiptap-rendered-content"
@@ -473,28 +502,6 @@ export default function DeepTerminal({ inputPlaceholder }: { inputPlaceholder?: 
                   />
                 </div>
               ))}
-            </div>
-          )}
-          {/* Batch Delete Bar (only in select mode) */}
-          {selectMode && (
-            <div className="flex items-center justify-between mt-4 mb-2">
-              <span className="text-cyan-400 text-xs font-mono">Select entries to delete</span>
-              <div className="flex items-center space-x-2">
-                {selectedEntries.length > 0 && (
-                  <button
-                    onClick={handleBatchDelete}
-                    className="px-3 py-1 border border-red-400 text-red-300 font-mono text-xs rounded hover:bg-red-400/10 transition-colors"
-                  >
-                    Delete Selected ({selectedEntries.length})
-                  </button>
-                )}
-                <button
-                  onClick={cancelSelection}
-                  className="px-3 py-1 border border-cyan-400 text-cyan-300 font-mono text-xs rounded hover:bg-cyan-400/10 transition-colors"
-                >
-                  Cancel
-                </button>
-              </div>
             </div>
           )}
         </div>
