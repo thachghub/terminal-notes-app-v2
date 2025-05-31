@@ -13,6 +13,8 @@ interface TiptapEditorProps {
   defaultTimestamp?: Date;
   reminderAt?: Date | null;
   onReminderChange?: (reminder: Date | null) => void;
+  showMainEntryDates?: boolean;
+  onToggleMainEntryDates?: () => void;
 }
 
 const ensureFirstBlockIsH1 = (editor: Editor) => {
@@ -67,7 +69,9 @@ export default function TiptapEditor({
   onTimestampChange,
   defaultTimestamp = new Date(),
   reminderAt,
-  onReminderChange
+  onReminderChange,
+  showMainEntryDates,
+  onToggleMainEntryDates
 }: TiptapEditorProps) {
   const [customTimestamp, setCustomTimestamp] = useState<Date>(defaultTimestamp);
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -227,6 +231,17 @@ export default function TiptapEditor({
           >
             {reminderAt ? 'Clear Reminder' : 'Set Reminder'}
           </button>
+          
+          {/* Date toggle for main entry list */}
+          {onToggleMainEntryDates && (
+            <button
+              type="button"
+              onClick={onToggleMainEntryDates}
+              className="px-2 py-1 hover:text-yellow-400 transition-colors text-cyan-400 font-mono text-xs"
+            >
+              [date]
+            </button>
+          )}
           
           {reminderAt && (
             <span className="text-xs text-cyan-400 font-mono hover:text-yellow-400 transition-colors cursor-pointer" onClick={handleReminderClick}>

@@ -59,6 +59,7 @@ export default function DeepTerminal({ inputPlaceholder }: { inputPlaceholder?: 
   const [reminderAt, setReminderAt] = useState<Date | null>(null);
   const [showThumbnailPanel, setShowThumbnailPanel] = useState(false);
   const [showDates, setShowDates] = useState(true);
+  const [showMainEntryDates, setShowMainEntryDates] = useState(true);
 
   useEffect(() => {
     if (!user || !user.emailVerified) {
@@ -151,12 +152,26 @@ export default function DeepTerminal({ inputPlaceholder }: { inputPlaceholder?: 
       if (editingEntry) {
         // Update existing entry
         const entryRef = doc(db, 'deepterminalentries', editingEntry.id);
-        await updateDoc(entryRef, {
+        
+        // Build update object with only defined fields
+        const updateData: any = {
           content: entry,
           updatedAt: new Date(),
-          customTimestamp: customTimestamp ? customTimestamp : editingEntry.customTimestamp,
-          reminderAt: reminderAt ? reminderAt : null
-        });
+        };
+        
+        // Only add customTimestamp if it has a value, otherwise preserve existing or set to null
+        if (customTimestamp) {
+          updateData.customTimestamp = customTimestamp;
+        } else if (editingEntry.customTimestamp !== undefined) {
+          updateData.customTimestamp = editingEntry.customTimestamp;
+        } else {
+          updateData.customTimestamp = null;
+        }
+        
+        // Only add reminderAt if it has a value, otherwise set to null
+        updateData.reminderAt = reminderAt || null;
+        
+        await updateDoc(entryRef, updateData);
         setFeedback('Entry updated successfully');
         setEditingEntry(null);
       } else {
@@ -385,6 +400,8 @@ export default function DeepTerminal({ inputPlaceholder }: { inputPlaceholder?: 
                   defaultTimestamp={customTimestamp || new Date()} // Use custom timestamp or current time
                   reminderAt={reminderAt}
                   onReminderChange={setReminderAt}
+                  showMainEntryDates={showMainEntryDates}
+                  onToggleMainEntryDates={() => setShowMainEntryDates(!showMainEntryDates)}
                 />
                 {isSubmitting && (
                   <span className="text-yellow-400 text-sm pt-2">{t('saving')}</span>
@@ -523,16 +540,16 @@ export default function DeepTerminal({ inputPlaceholder }: { inputPlaceholder?: 
                               onChange={() => handleSelectEntry(item.id)}
                               className="w-4 h-4 accent-green-400 border-green-400 bg-black ring-1 ring-green-400 focus:ring-2 focus:ring-green-300 transition-shadow duration-150 rounded-none"
                             />
-                            <span>{formatTimestamp(item.createdAt)}</span>
-                            {item.updatedAt && item.updatedAt.seconds !== item.createdAt.seconds && (
+                            {showMainEntryDates && <span>{formatTimestamp(item.createdAt)}</span>}
+                            {showMainEntryDates && item.updatedAt && item.updatedAt.seconds !== item.createdAt.seconds && (
                               <span className="italic">(edited: {formatTimestamp(item.updatedAt)})</span>
                             )}
                           </div>
                         ) : (
                           <div className="text-xs text-gray-500 mb-2 flex justify-between items-center">
                             <div className="flex items-center space-x-4">
-                              <span>{formatTimestamp(item.createdAt)}</span>
-                              {item.updatedAt && item.updatedAt.seconds !== item.createdAt.seconds && (
+                              {showMainEntryDates && <span>{formatTimestamp(item.createdAt)}</span>}
+                              {showMainEntryDates && item.updatedAt && item.updatedAt.seconds !== item.createdAt.seconds && (
                                 <span className="italic">(edited: {formatTimestamp(item.updatedAt)})</span>
                               )}
                               {/* Hover controls next to timestamp */}
