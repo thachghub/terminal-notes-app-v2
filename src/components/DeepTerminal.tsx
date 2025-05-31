@@ -52,6 +52,9 @@ export default function DeepTerminal({ inputPlaceholder }: { inputPlaceholder?: 
   const [progress, setProgress] = useState(0); // For block loading bar
   const blockCount = 15;
   const animationDuration = 2000; // ms
+  const [showDeleteModal, setShowDeleteModal] = useState<{ id: string | null, batch?: boolean }>( { id: null, batch: false });
+  const [selectMode, setSelectMode] = useState(false);
+  const [selectedEntries, setSelectedEntries] = useState<string[]>([]);
 
   useEffect(() => {
     if (!user || !user.emailVerified) {
@@ -198,22 +201,66 @@ export default function DeepTerminal({ inputPlaceholder }: { inputPlaceholder?: 
     setEditorKey(`new-entry-${Date.now()}`);
   };
 
-  const handleDelete = async (entryId: string) => {
-    if (!window.confirm('Are you sure you want to delete this entry? This action cannot be undone.')) {
+  const handleDelete = (entryId: string) => {
+    setShowDeleteModal({ id: entryId, batch: false });
+  };
+
+  const handleBatchDelete = () => {
+    setShowDeleteModal({ id: null, batch: true });
+  };
+
+  const confirmDelete = async () => {
+    if (showDeleteModal.batch) {
+      // Batch delete
+      const batchIds = [...selectedEntries];
+      setShowDeleteModal({ id: null, batch: false });
+      setSelectMode(false);
+      setSelectedEntries([]);
+      try {
+        await Promise.all(batchIds.map(id => deleteDoc(doc(db, 'deepterminalentries', id))));
+        setFeedback('Selected entries deleted successfully');
+        setShowFeedback(true);
+        setTimeout(() => setShowFeedback(false), 2000);
+      } catch (error) {
+        setFeedback('Failed to delete selected entries');
+        setShowFeedback(true);
+        setTimeout(() => setShowFeedback(false), 3000);
+      }
       return;
     }
-
+    if (!showDeleteModal.id) return;
     try {
-      await deleteDoc(doc(db, 'deepterminalentries', entryId));
+      await deleteDoc(doc(db, 'deepterminalentries', showDeleteModal.id));
       setFeedback('Entry deleted successfully');
       setShowFeedback(true);
       setTimeout(() => setShowFeedback(false), 2000);
     } catch (error) {
-      console.error('Error deleting entry:', error);
       setFeedback('Failed to delete entry');
       setShowFeedback(true);
       setTimeout(() => setShowFeedback(false), 3000);
+    } finally {
+      setShowDeleteModal({ id: null, batch: false });
     }
+  };
+
+  const cancelDelete = () => {
+    setShowDeleteModal({ id: null, batch: false });
+  };
+
+  const toggleSelectMode = () => {
+    setSelectMode((prev) => !prev);
+    setSelectedEntries([]);
+  };
+
+  const handleSelectEntry = (id: string) => {
+    setSelectedEntries((prev) =>
+      prev.includes(id) ? prev.filter((eid) => eid !== id) : [...prev, id]
+    );
+  };
+
+  const cancelSelection = () => {
+    setSelectMode(false);
+    setSelectedEntries([]);
   };
 
   const handleCopy = async (content: string) => {
@@ -371,6 +418,15 @@ export default function DeepTerminal({ inputPlaceholder }: { inputPlaceholder?: 
             <div className="space-y-6">
               {entries.map((item) => (
                 <div key={item.id} className="relative group text-cyan-400 font-mono bg-black/20 p-4 rounded border border-cyan-700/20">
+                  {/* Checkbox for select mode */}
+                  {selectMode && (
+                    <input
+                      type="checkbox"
+                      checked={selectedEntries.includes(item.id)}
+                      onChange={() => handleSelectEntry(item.id)}
+                      className="absolute top-2 left-2 w-4 h-4 accent-cyan-400 border-cyan-400 bg-black/80 rounded-none"
+                    />
+                  )}
                   <div className="text-xs text-gray-500 mb-2 flex justify-between items-center">
                     <div className="flex items-center space-x-4">
                       <span>{formatTimestamp(item.createdAt)}</span>
@@ -378,27 +434,36 @@ export default function DeepTerminal({ inputPlaceholder }: { inputPlaceholder?: 
                         <span className="italic">(edited: {formatTimestamp(item.updatedAt)})</span>
                       )}
                       {/* Hover controls next to timestamp */}
-                      <div className="opacity-0 group-hover:opacity-100 transition-opacity text-xs text-cyan-400 space-x-2">
-                        <button 
-                          onClick={() => handleCopy(item.content)}
-                          className="hover:text-cyan-200 transition-colors"
-                          title="Copy to clipboard"
-                        >
-                          Copy
-                        </button>
-                        <button 
-                          onClick={() => handleEdit(item)}
-                          className="hover:text-cyan-200 transition-colors"
-                        >
-                          Edit
-                        </button>
-                        <button 
-                          onClick={() => handleDelete(item.id)}
-                          className="hover:text-red-400 transition-colors"
-                        >
-                          Delete
-                        </button>
-                      </div>
+                      {!selectMode && (
+                        <div className="opacity-0 group-hover:opacity-100 transition-opacity text-xs text-cyan-400 space-x-2 flex items-center">
+                          <button 
+                            onClick={() => handleCopy(item.content)}
+                            className="hover:text-cyan-200 transition-colors"
+                            title="Copy to clipboard"
+                          >
+                            Copy
+                          </button>
+                          <button 
+                            onClick={() => handleEdit(item)}
+                            className="hover:text-cyan-200 transition-colors"
+                          >
+                            Edit
+                          </button>
+                          <button 
+                            onClick={() => handleDelete(item.id)}
+                            className="hover:text-red-400 transition-colors"
+                          >
+                            Delete
+                          </button>
+                          <span
+                            onClick={toggleSelectMode}
+                            className="ml-2 cursor-pointer text-cyan-400 hover:text-cyan-200"
+                            title="Select Multiple Entries"
+                          >
+                            Select Multiple
+                          </span>
+                        </div>
+                      )}
                     </div>
                   </div>
                   {/* Render processed content using dangerouslySetInnerHTML */}
@@ -410,8 +475,104 @@ export default function DeepTerminal({ inputPlaceholder }: { inputPlaceholder?: 
               ))}
             </div>
           )}
+          {/* Batch Delete Bar (only in select mode) */}
+          {selectMode && (
+            <div className="flex items-center justify-between mt-4 mb-2">
+              <span className="text-cyan-400 text-xs font-mono">Select entries to delete</span>
+              <div className="flex items-center space-x-2">
+                {selectedEntries.length > 0 && (
+                  <button
+                    onClick={handleBatchDelete}
+                    className="px-3 py-1 border border-red-400 text-red-300 font-mono text-xs rounded hover:bg-red-400/10 transition-colors"
+                  >
+                    Delete Selected ({selectedEntries.length})
+                  </button>
+                )}
+                <button
+                  onClick={cancelSelection}
+                  className="px-3 py-1 border border-cyan-400 text-cyan-300 font-mono text-xs rounded hover:bg-cyan-400/10 transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
+
+      {/* Delete Confirmation Modal */}
+      <AnimatePresence>
+        {showDeleteModal.id || showDeleteModal.batch ? (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/80 flex items-center justify-center z-50"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ type: 'spring', damping: 20 }}
+              className="bg-black border border-green-400 shadow-lg shadow-green-400/20 p-6 max-w-md w-full mx-4 font-mono relative"
+            >
+              {/* Scanning line */}
+              <motion.div
+                className="absolute top-0 left-0 w-full h-0.5 bg-green-400"
+                animate={{ opacity: [0, 1, 0] }}
+                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+              />
+              <div className="relative z-10">
+                {/* Header */}
+                <div className="text-green-400 mb-4 text-center">
+                  <div className="text-sm font-bold">DELETION PROTOCOL</div>
+                </div>
+                {/* Main content */}
+                <div className="text-center mb-6">
+                  <motion.div
+                    className="text-yellow-400 text-xs mb-3"
+                    animate={{ opacity: [0.7, 1, 0.7] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  >
+                    ⚠️ WARNING: IRREVERSIBLE OPERATION
+                  </motion.div>
+                  <div className="text-gray-300 mb-4 text-sm">
+                    <div className="text-green-400 mb-2">$ rm --confirm {showDeleteModal.batch ? 'selected' : 'entry'}</div>
+                    <div className="text-cyan-400">
+                      {showDeleteModal.batch
+                        ? `Are you sure you want to delete ${selectedEntries.length} selected entries?`
+                        : 'Are you sure you want to delete this entry?'}
+                    </div>
+                  </div>
+                </div>
+                {/* Buttons */}
+                <div className="flex space-x-3 justify-center">
+                  <motion.button
+                    onClick={confirmDelete}
+                    className="bg-green-900/30 text-green-400 border border-green-400 hover:bg-green-400 hover:text-black px-4 py-2 transition-all duration-200 font-bold"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    [Y] DELETE
+                  </motion.button>
+                  <motion.button
+                    onClick={cancelDelete}
+                    className="bg-gray-900/30 text-cyan-400 border border-cyan-400 hover:bg-cyan-400 hover:text-black px-4 py-2 transition-all duration-200 font-bold"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    [N] CANCEL
+                  </motion.button>
+                </div>
+                {/* Minimal footer */}
+                <div className="text-xs text-gray-500 mt-4 text-center opacity-60">
+                  SECURITY LEVEL: HIGH
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
     </div>
   );
 } 
