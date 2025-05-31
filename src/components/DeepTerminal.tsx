@@ -627,7 +627,10 @@ export default function DeepTerminal({ inputPlaceholder }: { inputPlaceholder?: 
               transition={{ duration: 0.3 }}
               className="w-64 pl-4 overflow-hidden fixed right-0 top-0 h-screen z-40 border-l border-l-cyan-400"
               style={{
-                background: 'linear-gradient(to top, #0e1f22 0%, #0d171a 50%, #0f2124 100%)',
+                background: `
+                  linear-gradient(to right, rgba(14, 31, 34, 0.6) 0%, transparent 60%),
+                  linear-gradient(to top, #0e1f22 0%, #0d171a 50%, #0f2124 100%)
+                `,
                 backdropFilter: 'blur(4px)'
               }}
             >
