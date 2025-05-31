@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { collection, addDoc, query, where, orderBy, onSnapshot, Timestamp, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '@/firebase/firebase';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -48,6 +48,10 @@ export default function DeepTerminal({ inputPlaceholder }: { inputPlaceholder?: 
   const [customTimestamp, setCustomTimestamp] = useState<Date | null>(null);
   const [editingEntry, setEditingEntry] = useState<Entry | null>(null);
   const [editorKey, setEditorKey] = useState<string>('new-entry');
+  const [showCyberAnimation, setShowCyberAnimation] = useState(false);
+  const [progress, setProgress] = useState(0); // For block loading bar
+  const blockCount = 15;
+  const animationDuration = 2000; // ms
 
   useEffect(() => {
     if (!user || !user.emailVerified) {
@@ -80,6 +84,26 @@ export default function DeepTerminal({ inputPlaceholder }: { inputPlaceholder?: 
     return () => unsubscribe();
   }, [user]);
 
+  // Animate progress for blocky loading bar
+  useEffect(() => {
+    if (showCyberAnimation) {
+      setProgress(0);
+      const interval = setInterval(() => {
+        setProgress((prev) => {
+          if (prev < blockCount) {
+            return prev + 1;
+          } else {
+            clearInterval(interval);
+            return prev;
+          }
+        });
+      }, animationDuration / blockCount);
+      return () => clearInterval(interval);
+    } else {
+      setProgress(0);
+    }
+  }, [showCyberAnimation]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -90,7 +114,7 @@ export default function DeepTerminal({ inputPlaceholder }: { inputPlaceholder?: 
       return;
     }
 
-    // Entry state already contains HTML from Tiptap
+    // Entry state already contains HTML from TiptapEditor
     if (!entry.trim() || entry.trim() === '<p></p>' || entry.trim() === '<h1></h1>') { // Check for empty Tiptap content
       setFeedback(t('entry_cannot_be_empty'));
       setShowFeedback(true);
@@ -100,6 +124,7 @@ export default function DeepTerminal({ inputPlaceholder }: { inputPlaceholder?: 
 
     setIsSubmitting(true);
     try {
+      setShowCyberAnimation(true); // Show cyber animation
       if (editingEntry) {
         // Update existing entry
         const entryRef = doc(db, 'deepterminalentries', editingEntry.id);
@@ -128,11 +153,13 @@ export default function DeepTerminal({ inputPlaceholder }: { inputPlaceholder?: 
       setEntry(''); // Clear the Tiptap editor (it will reset via its content prop)
       setCustomTimestamp(null); // Reset custom timestamp
       setTimeout(() => setShowFeedback(false), 2000);
+      setTimeout(() => setShowCyberAnimation(false), 2000); // Hide cyber animation after 2s
     } catch (error) {
       console.error('Error saving entry:', error);
       setFeedback(editingEntry ? 'Failed to update entry' : t('entry_submission_failed'));
       setShowFeedback(true);
       setTimeout(() => setShowFeedback(false), 3000);
+      setShowCyberAnimation(false);
     } finally {
       setIsSubmitting(false);
     }
@@ -285,6 +312,51 @@ export default function DeepTerminal({ inputPlaceholder }: { inputPlaceholder?: 
             {t('press_enter_to_submit')} • {t('type_quick_notes_thoughts_or_reminders')}
           </div>
         )}
+
+        {/* Cyber Animation */}
+        <AnimatePresence>
+          {showCyberAnimation && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              className="mb-4 p-4 border border-cyan-400 bg-black/80 rounded font-mono text-cyan-400"
+            >
+              <div className="flex items-center space-x-2">
+                <div className="text-green-400 animate-spin text-3xl">▲</div>
+                <div className="text-cyan-400 animate-pulse text-2xl">sending entry</div>
+                <div className="flex space-x-1">
+                  <motion.span
+                    animate={{ opacity: [0, 1, 0] }}
+                    transition={{ duration: 0.5, repeat: Infinity, delay: 0 }}
+                  >.</motion.span>
+                  <motion.span
+                    animate={{ opacity: [0, 1, 0] }}
+                    transition={{ duration: 0.5, repeat: Infinity, delay: 0.2 }}
+                  >.</motion.span>
+                  <motion.span
+                    animate={{ opacity: [0, 1, 0] }}
+                    transition={{ duration: 0.5, repeat: Infinity, delay: 0.4 }}
+                  >.</motion.span>
+                </div>
+              </div>
+              {/* Loading Bar - Blocky Style */}
+              <div className="mt-4 w-full h-2 bg-cyan-900/40 border border-cyan-700/40 flex">
+                {Array.from({ length: blockCount }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="flex-1 h-full mx-[1px]"
+                    style={{
+                      backgroundColor: i < progress ? '#22d3ee' : 'transparent',
+                      boxShadow: i < progress ? '0 0 6px #22d3ee, 0 0 12px #22d3ee40' : undefined,
+                      transition: 'background-color 0.2s, box-shadow 0.2s',
+                    }}
+                  />
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
       
       {/* Display saved entries */}
